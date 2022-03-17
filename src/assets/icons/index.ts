@@ -1,0 +1,9 @@
+export { ReactComponent as LogoIcon } from "./logo.svg";
+export { ReactComponent as SearchIcon } from "./fi_search.svg";
+export { ReactComponent as MoreIcon } from "./fi_more-horizontal.svg";
+export { ReactComponent as LoadingIcon } from "./loading.svg";
+export { ReactComponent as PictureIcon } from "./PictureIcon.svg";
+export { ReactComponent as GifIcon } from "./GifIcon.svg";
+export { ReactComponent as SendIcon } from "./SendIcon.svg";
+export { ReactComponent as Emoij } from "./Emoji.svg";
+export { ReactComponent as RemoveIcon } from "./RemoveIcon.svg";

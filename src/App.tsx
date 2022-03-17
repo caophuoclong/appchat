@@ -1,10 +1,13 @@
 import React from 'react';
-
+import { Provider } from 'react-redux';
+import { Chat } from './components/chatBoard';
+import { store } from './store';
+import "./app.css";
 function App() {
   return (
-    <div className="App">
-      
-    </div>
+    <Provider store={store}>
+      <Chat/>
+    </Provider>
   );
 }
 
