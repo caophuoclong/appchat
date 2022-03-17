@@ -25,7 +25,7 @@ export function LeftBar(props: ILeftBarProps) {
       style={{
         boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.25)',
       }}
-      className="w-1/5 min-w-347 bg-leftBarBackground flex flex-col"
+      className="w-1/5 min-w-360 bg-leftBarBackground flex flex-col"
     >
       <div className="h-5/6">
       <Logo className="flex items-center m-6 mr-3" />

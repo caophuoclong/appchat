@@ -19,7 +19,7 @@ export function Friend({friendInfo}: IFriendProps) {
       <div className="w-full">
         <div className="flex justify-between gap-8 w-full items-center">
           <div className="flex gap-2 w-52">
-            <p id={id} className="text-base font-semibold">{name}</p>
+            <p id={id} className="text-base font-semibold truncate">{name}</p>
             {
               name.length <= 12?<p className="truncate text-sm">@{username}</p>:null
             }

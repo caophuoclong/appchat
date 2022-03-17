@@ -16,14 +16,14 @@ export function InputBox(props: IInputBoxProps) {
     const fileArray = (event.target as HTMLInputElement).files;
     const formData = new FormData();
     if(fileArray){
-      uploadImage(fileArray[0])
-      .then(res=>{
-        console.log(res)
-      })
-      .catch(error=>{
-        console.log("Error: ");
-        console.log(error);
-      });
+      // uploadImage(fileArray[0])
+      // .then(res=>{
+      //   console.log(res)
+      // })
+      // .catch(error=>{
+      //   console.log("Error: ");
+      //   console.log(error);
+      // });
       for(let i = 0; i < fileArray.length; i++){
         const file = fileArray[i];
         const url = URL.createObjectURL(file);

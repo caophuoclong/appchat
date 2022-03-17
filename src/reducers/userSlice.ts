@@ -13,7 +13,7 @@ interface UserState {
 const initialState: UserState = {
     id: "26032001",
     name: "Phuoc Long",
-    username: "caophuoclong",
+    username: "caophuoclong1",
     imgUrl: "https://picsum.photos/40",
     listFriend: [
         {

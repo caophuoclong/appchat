@@ -5,7 +5,7 @@ interface GlobalState {
     leftBarLoading: boolean,
     mainChatLoading: boolean,
     message: {
-        text?: string;
+        text: string;
         file: Array<string>;
     }
 }
