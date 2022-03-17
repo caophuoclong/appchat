@@ -25,15 +25,15 @@ export function LeftBar(props: ILeftBarProps) {
       style={{
         boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.25)',
       }}
-      className="w-1/5 min-w-360 bg-leftBarBackground flex flex-col"
+      className="w-1/5 min-w-400 bg-leftBarBackground flex flex-col"
     >
       <div className="h-5/6">
       <Logo className="flex items-center m-6 mr-3" />
       <p className="mt-12 text-2xl font-semibold m-6 mr-3">Message</p>
       <SearchBox onSearch={handleSearch} className="border-2 border-gray-300 flex px-4 py-2 justify-between rounded-full m-6 mr-3" />
-      <ListFriend searchListFriend={resultSearch} className="max-h-75 my-8 overflow-auto" />
+      <ListFriend searchListFriend={resultSearch} className="max-h-70 my-8 overflow-auto" />
       </div>
-      <User className="mt-auto mb-4 py-auto flex items-center gap-4 bg-leftBarBackground pl-6"/>
+      <User className="mt-auto mb-4 py-auto flex items-center gap-4 bg-leftBarBackground pl-2"/>
     </div>
   );
 }
