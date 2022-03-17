@@ -16,8 +16,8 @@ const Right = ({ message, date }: { message: string; date: number }) => {
   formatDate(date);
   return (
     <div className="bg-glareGreen text-white w-fit max-w-1/2 ml-auto mr-16 py-3 px-8 my-2 rounded-2xl rounded-br-none">
-      {/* {message} */}
-      <img src="https://picsum.photos/200" alt="" />
+      {message}
+      {/* <img src="https://picsum.photos/200" alt="" /> */}
       <br/>
       <p className="text-right text-xs text-glareGray500 mt-2">{formatDate(date)}</p>
     </div>
