@@ -7,3 +7,5 @@ export { ReactComponent as GifIcon } from "./GifIcon.svg";
 export { ReactComponent as SendIcon } from "./SendIcon.svg";
 export { ReactComponent as Emoij } from "./Emoji.svg";
 export { ReactComponent as RemoveIcon } from "./RemoveIcon.svg";
+export { ReactComponent as VietNamIcon } from "./VietNamIcon.svg";
+export { ReactComponent as USIcon } from "./USIcon.svg";

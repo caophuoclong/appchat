@@ -1,9 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+type SelectedType = "settings" | "information" | null;
+
 interface GlobalState {
     showModalOption: boolean,
     leftBarLoading: boolean,
     mainChatLoading: boolean,
+    language: "vn" | "en",
+    selectedModal: SelectedType,
     message: {
         text: string;
         file: Array<ArrayBuffer | string>;
@@ -14,6 +18,8 @@ const initialState: GlobalState = {
     showModalOption: false,
     leftBarLoading: false,
     mainChatLoading: false,
+    language: window.localStorage.getItem("lang") as "en" | "vn",
+    selectedModal: null,
     message: {
         text: "",
         file: [],
@@ -24,18 +30,12 @@ const globalSlice = createSlice({
     name: "globalSlice",
     initialState,
     reducers: {
-        toggleShowModalOption: (state: GlobalState, action: PayloadAction<boolean>) => {
-            const { payload } = action;
-            if (!payload) {
-                return {
-                    ...state,
-                    showModalOption: false,
-                }
-            } else
-                return {
-                    ...state,
-                    showModalOption: !state.showModalOption
-                }
+        toggleShowModalOption: (state: GlobalState) => {
+            return {
+                ...state,
+                showModalOption: !state.showModalOption
+            }
+
         },
         handleChangeMessageText: (state: GlobalState, action: PayloadAction<string>) => {
             const { payload } = action;
@@ -74,9 +74,21 @@ const globalSlice = createSlice({
                     file: state.message.file.filter(item => item !== action.payload)
                 }
             }
+        },
+        setSelectedModal: (state: GlobalState, action: PayloadAction<SelectedType>) => {
+            return {
+                ...state,
+                selectedModal: action.payload,
+            }
+        },
+        changeLanguage: (state: GlobalState, action: PayloadAction<"en" | "vn">) => {
+            return {
+                ...state,
+                language: action.payload
+            }
         }
     }
 })
 
-export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty } = globalSlice.actions;
+export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage } = globalSlice.actions;
 export default globalSlice.reducer;

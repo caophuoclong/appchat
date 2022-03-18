@@ -15,7 +15,7 @@ const Right = ({ message, date, type }: { message: string; date: number, type: "
   switch(type){
     case "text": 
     return (
-      <div className="bg-glareGreen text-white w-fit max-w-1/2 ml-auto mr-16 py-3 px-8 my-2 rounded-2xl rounded-br-none">
+      <div className="bg-glareGreen text-white w-fit max-w-1/2 ml-auto mr-16 py-3 px-8 my-2 rounded-2xl rounded-br-none -z-10">
         {message}
         
         <br/>

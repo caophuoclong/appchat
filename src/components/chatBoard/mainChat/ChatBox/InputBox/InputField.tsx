@@ -8,6 +8,7 @@ import IMessage from "../../../../../interface/IMessage";
 import { addNewMessage } from '../../../../../reducers/message';
 import { uploadImage } from '../../../../../services';
 import { CLOUD_NAME } from '../../../../../configs';
+import {textRegex, emojiRegex, escapeSpecialChars} from "../../../../../constants/textIsEmoji"
 export interface IInputFieldProps {}
 
 export function InputField() {
@@ -18,15 +19,32 @@ export function InputField() {
   const dispatch = useAppDispatch();
   const text = useAppSelector((state) => state.global.message.text);
   const files = useAppSelector((state) => state.global.message.file);
+  const lang = useAppSelector((state) => state.global.language);
   const userState = useAppSelector((state) => state.user);
   const handleTypingText = (event: React.ChangeEvent) => {
     const element = event.target as HTMLInputElement;
-    const value = element.value;
-    dispatch(handleChangeMessageText(value));
+    // const value = element.value;
+    let textss = element.value;
+      for (let i in emojiRegex){
+        const regex = new RegExp(escapeSpecialChars(i), "gim");
+        textss = textss = textss.replace(regex, emojiRegex[i])
+      }
+    dispatch(handleChangeMessageText(textss));
   };
   const handleEmojiClick = (event: any, emojiObject: IEmojiData) => {
     dispatch(handleChangeMessageText(text + emojiObject.emoji));
   };
+  // const handleSpacePress = (key: string)=>{
+  //   // if(key === " "){
+  //   //   let textss = text;
+  //   //   for (let i in emojiRegex){
+  //   //     const regex = new RegExp(escapeSpecialChars(i), "gim");
+  //   //     textss = textss = textss.replace(regex, emojiRegex[i])
+  //   //   }
+  //   //   dispatch(handleChangeMessageText(textss));
+  //   //   // console.log(textss);
+  //   // }
+  // }
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) =>{
     if(event.key === "Enter" && text.length > 0){
       const message: IMessage ={
@@ -62,8 +80,7 @@ export function InputField() {
           }
         }).catch(error=>{
           console.log(error);
-          alert("Something went wrong!");
-
+          // alert("Something went wrong!\n" + error);
         });
       })
       dispatch(handleMakeImageListEmpty());
@@ -77,9 +94,10 @@ export function InputField() {
       <input
         type="text"
         className="text-glareGray500 px-1 py-1 outline-none bg-transparent w-full"
-        placeholder="Start a new message"
+        placeholder={lang === "en"? "Type a new message": "Nhập tin nhắn"}
         onChange={handleTypingText}
         onKeyDown={handleEnterPress}
+        
         value={text}
       />
       <button

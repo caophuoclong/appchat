@@ -10,6 +10,7 @@ export interface ILeftBarProps {}
 
 export function LeftBar(props: ILeftBarProps) {
   const userState = useAppSelector(state => state.user);
+  const lang = useAppSelector(state => state.global.language);
   const [resultSearch, setResultSearch] = React.useState<IFriend[] | null>(null);
   const handleSearch = (event: React.ChangeEvent)=>{
     const text = (event.target as HTMLInputElement).value;
@@ -29,7 +30,7 @@ export function LeftBar(props: ILeftBarProps) {
     >
       <div className="h-5/6">
       <Logo className="flex items-center m-6 mr-3" />
-      <p className="mt-12 text-2xl font-semibold m-6 mr-3">Message</p>
+      <p className="mt-12 text-2xl font-semibold m-6 mr-3">{lang === "en"? "Message": "Tin nhắn"}</p>
       <SearchBox onSearch={handleSearch} className="border-2 border-gray-300 flex px-4 py-2 justify-between rounded-full m-6 mr-3" />
       <ListFriend searchListFriend={resultSearch} className="max-h-70 my-8 overflow-auto" />
       </div>
