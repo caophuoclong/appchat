@@ -3,9 +3,11 @@ import type { IEmojiData } from 'emoji-picker-react';
 import * as React from 'react';
 import { Emoij } from '../../../../../assets/icons';
 import { useAppDispatch, useAppSelector } from '../../../../../hook';
-import { handleChangeMessageText } from '../../../../../reducers/globalSlice';
+import {  handleChangeMessageText, handleMakeImageListEmpty } from '../../../../../reducers/globalSlice';
 import IMessage from "../../../../../interface/IMessage";
 import { addNewMessage } from '../../../../../reducers/message';
+import { uploadImage } from '../../../../../services';
+import { CLOUD_NAME } from '../../../../../configs';
 export interface IInputFieldProps {}
 
 export function InputField() {
@@ -15,6 +17,7 @@ export function InputField() {
   };
   const dispatch = useAppDispatch();
   const text = useAppSelector((state) => state.global.message.text);
+  const files = useAppSelector((state) => state.global.message.file);
   const userState = useAppSelector((state) => state.user);
   const handleTypingText = (event: React.ChangeEvent) => {
     const element = event.target as HTMLInputElement;
@@ -26,18 +29,46 @@ export function InputField() {
   };
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) =>{
     if(event.key === "Enter" && text.length > 0){
-      
       const message: IMessage ={
         text: text,
         date: Date.now(),
         receiverId: userState.choosenFriend!.id,
         receiverUsername: userState.choosenFriend!.username,
         senderId: userState.id,
-        senderUsername: userState.username
+        senderUsername: userState.username,
+        type:"text"
       }
-      console.log(message);
       dispatch(addNewMessage(message));
       dispatch(handleChangeMessageText(""));
+    }
+    if(event.key === "Enter" && files.length > 0){
+      document.getElementById("previewPicture")?.classList.add("invisible");
+      files.forEach((file)=>{
+        uploadImage(file).then(result=>{
+          const {status, data} = result;
+          if(status === 200){
+            const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`
+            const message: IMessage ={
+              text: url,
+              date: Date.now(),
+              receiverId: userState.choosenFriend!.id,
+              receiverUsername: userState.choosenFriend!.username,
+              senderId: userState.id,
+              senderUsername: userState.username,
+              type:"image"
+            }
+            dispatch(addNewMessage(message));
+            
+          }
+        }).catch(error=>{
+          console.log(error);
+          alert("Something went wrong!");
+
+        });
+      })
+      dispatch(handleMakeImageListEmpty());
+      document.getElementById("previewPicture")?.classList.remove("invisible");
+      
     }
 
   }

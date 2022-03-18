@@ -1,0 +1,1 @@
+export const CLOUD_NAME = process.env.REACT_APP_CLOUD_NAME;

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { GifIcon, PictureIcon, SendIcon } from '../../../../../assets/icons';
 import { useAppDispatch } from '../../../../../hook';
 import { handleChangeImageFile } from '../../../../../reducers/globalSlice';
-import { uploadImage } from '../../../../../services';
 import { InputField } from './InputField';
 import { PreviewImage } from './PreviewImage';
 
@@ -12,26 +11,29 @@ export interface IInputBoxProps {
 
 export function InputBox(props: IInputBoxProps) {
   const dispatch = useAppDispatch();
+  const readFile = (file: File)=>{
+    return new Promise<ArrayBuffer | string >((resolve, reject)=>{
+      const fr = new FileReader();
+      fr.onload = ()=>{
+        resolve(fr.result!);
+      }
+      fr.onerror = ()=>{
+        reject(fr)
+      }
+      fr.readAsDataURL(file);
+    })
+  }
   const handleFileUpload = (event: React.ChangeEvent)=>{
     const fileArray = (event.target as HTMLInputElement).files;
-    const formData = new FormData();
     if(fileArray){
-      // uploadImage(fileArray[0])
-      // .then(res=>{
-      //   console.log(res)
-      // })
-      // .catch(error=>{
-      //   console.log("Error: ");
-      //   console.log(error);
-      // });
       for(let i = 0; i < fileArray.length; i++){
         const file = fileArray[i];
-        const url = URL.createObjectURL(file);
-        console.log(url);
-        dispatch(handleChangeImageFile(url))
+        readFile(file).then((result)=>{
+          dispatch(handleChangeImageFile(result))
+        })
       }
     }
-    console.log(formData.values());
+
   }
   return (
     <div

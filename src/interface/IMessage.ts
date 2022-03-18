@@ -5,5 +5,6 @@ interface message {
     receiverUsername: string;
     senderId: string;
     receiverId: string;
+    type: "text" | "image",
 }
 export default message;

@@ -13,7 +13,8 @@ const initialState: MessageState = {
             receiverId: "27831",
             receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1"
+            senderUsername: "caophuoclong1",
+            type: "text"
         },
         {
             text: "xin chao ban",
@@ -21,7 +22,8 @@ const initialState: MessageState = {
             receiverId: "27831",
             receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1"
+            senderUsername: "caophuoclong1",
+            type: "text"
         },
         {
             text: "xin chao ban",
@@ -29,7 +31,8 @@ const initialState: MessageState = {
             receiverId: "27831",
             receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1"
+            senderUsername: "caophuoclong1",
+            type: "text"
         },
         {
             text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
@@ -37,23 +40,8 @@ const initialState: MessageState = {
             receiverId: "27831",
             receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1"
-        },
-        {
-            text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
-            date: 2015,
-            receiverId: "26032001",
-            receiverUsername: "caophuoclong1",
-            senderId: "27831",
-            senderUsername: "caophuoclong"
-        },
-        {
-            text: "xin chao ban",
-            date: 2015,
-            receiverId: "27831",
-            receiverUsername: "caophuoclong",
-            senderId: "26032001",
-            senderUsername: "caophuoclong1"
+            senderUsername: "caophuoclong1",
+            type: "text"
         },
         {
             text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
@@ -61,7 +49,8 @@ const initialState: MessageState = {
             receiverId: "26032001",
             receiverUsername: "caophuoclong1",
             senderId: "27831",
-            senderUsername: "caophuoclong"
+            senderUsername: "caophuoclong",
+            type: "text"
         },
         {
             text: "xin chao ban",
@@ -69,15 +58,8 @@ const initialState: MessageState = {
             receiverId: "27831",
             receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1"
-        },
-        {
-            text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
-            date: 2015,
-            receiverId: "27831",
-            receiverUsername: "caophuoclong",
-            senderId: "26032001",
-            senderUsername: "caophuoclong1"
+            senderUsername: "caophuoclong1",
+            type: "text"
         },
         {
             text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
@@ -85,7 +67,8 @@ const initialState: MessageState = {
             receiverId: "26032001",
             receiverUsername: "caophuoclong1",
             senderId: "27831",
-            senderUsername: "caophuoclong"
+            senderUsername: "caophuoclong",
+            type: "text"
         },
         {
             text: "xin chao ban",
@@ -93,7 +76,35 @@ const initialState: MessageState = {
             receiverId: "27831",
             receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1"
+            senderUsername: "caophuoclong1",
+            type: "text"
+        },
+        {
+            text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
+            date: 2015,
+            receiverId: "27831",
+            receiverUsername: "caophuoclong",
+            senderId: "26032001",
+            senderUsername: "caophuoclong1",
+            type: "text"
+        },
+        {
+            text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
+            date: 2015,
+            receiverId: "26032001",
+            receiverUsername: "caophuoclong1",
+            senderId: "27831",
+            senderUsername: "caophuoclong",
+            type: "text"
+        },
+        {
+            text: "xin chao ban",
+            date: 2015,
+            receiverId: "27831",
+            receiverUsername: "caophuoclong",
+            senderId: "26032001",
+            senderUsername: "caophuoclong1",
+            type: "text"
         },
     ]
 }

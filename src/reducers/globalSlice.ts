@@ -6,7 +6,7 @@ interface GlobalState {
     mainChatLoading: boolean,
     message: {
         text: string;
-        file: Array<string>;
+        file: Array<ArrayBuffer | string>;
     }
 }
 
@@ -47,7 +47,7 @@ const globalSlice = createSlice({
                 }
             }
         },
-        handleChangeImageFile: (state: GlobalState, action: PayloadAction<string>) => {
+        handleChangeImageFile: (state: GlobalState, action: PayloadAction<ArrayBuffer | string>) => {
             const { payload } = action;
             return {
                 ...state,
@@ -56,11 +56,27 @@ const globalSlice = createSlice({
                     file: [...state.message.file, payload]
                 }
             }
+        },
+        handleMakeImageListEmpty: (state: GlobalState) => {
+            return {
+                ...state,
+                message: {
+                    ...state.message,
+                    file: []
+                }
+            }
+        },
+        handleRemoveImageFile: (state: GlobalState, action: PayloadAction<ArrayBuffer | string>) => {
+            return {
+                ...state,
+                message: {
+                    ...state.message,
+                    file: state.message.file.filter(item => item !== action.payload)
+                }
+            }
         }
-
-
     }
 })
 
-export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile } = globalSlice.actions;
+export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty } = globalSlice.actions;
 export default globalSlice.reducer;
