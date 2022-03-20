@@ -5,7 +5,7 @@ export interface IChatHeaderProps {
   className: string;
 }
 const CurrentFriend = (props: any)=>{
-  const choosenFriend = useAppSelector(state=> state.user.choosenFriend);
+  const choosenFriend = useAppSelector(state=> state.user.choosenFriend?.participation);
   return (
     <div className="flex gap-2">
       <img className="w-9 h-9 rounded-full" src={choosenFriend?.imgUrl} alt="" />

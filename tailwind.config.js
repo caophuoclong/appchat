@@ -7,6 +7,9 @@ module.exports = {
       backgroundColor: {
         leftBarBackground: "#FAFAFA",
         glareGreen: "#21978B",
+        glareGreen100: "#a7f0e9",
+        glareYellow: "#F8EDDD",
+        glareBrown: "#9E896A",
         glareGray200: "#E8E8E8",
       },
       colors: {
@@ -14,6 +17,7 @@ module.exports = {
         glareGray: "#4F5665",
         glareGray500: "#C7C3C3",
         glareGray200: "#E8E8E8",
+        glareBrown100: "#9E896A",
       },
       minWidth: {
         "347": "347px",

@@ -8,6 +8,7 @@ interface GlobalState {
     mainChatLoading: boolean,
     language: "vn" | "en",
     selectedModal: SelectedType,
+    socketId: string,
     message: {
         text: string;
         file: Array<ArrayBuffer | string>;
@@ -20,6 +21,7 @@ const initialState: GlobalState = {
     mainChatLoading: false,
     language: window.localStorage.getItem("lang") as "en" | "vn",
     selectedModal: null,
+    socketId: "",
     message: {
         text: "",
         file: [],
@@ -86,8 +88,15 @@ const globalSlice = createSlice({
                 ...state,
                 language: action.payload
             }
+        },
+        handleConnectToServer: (state: GlobalState, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                socketId: action.payload
+            }
         }
     }
+
 })
 
 export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage } = globalSlice.actions;

@@ -5,7 +5,7 @@ import moment from "moment";
 export interface IMessageProps {
   message: IMessage;
 }
-const formatDate = (now: number) : string=>{
+export const formatDate = (now: number) : string=>{
   const date = new Date( now);
   const formated = moment(date).format("MMM DD, hh:mm");
   return formated;
@@ -66,8 +66,7 @@ export function Message({ message }: IMessageProps) {
   const user = useAppSelector((state) => state.user);
   let isCurrentUser = false;
   if (
-    user.username === message.senderUsername ||
-    user.id === message.senderId
+    user._id === message.senderId
   ) {
       isCurrentUser = true;
   }
@@ -75,9 +74,9 @@ export function Message({ message }: IMessageProps) {
   return (
     <>
       {isCurrentUser ? (
-        <Right message={message.text} date={message.date} type={message.type} />
+        <Right message={message.text} date={new Date(message.createAt!).getTime()} type={message.type} />
       ) : (
-        <Left message={message.text} date={message.date} type={message.type} />
+        <Left message={message.text} date={new Date(message.createAt!).getTime()} type={message.type} />
       )}
     </>
   );

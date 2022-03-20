@@ -1,10 +1,9 @@
 interface message {
-    text: string;
-    date: number;
-    senderUsername: string;
-    receiverUsername: string;
-    senderId: string;
-    receiverId: string;
-    type: "text" | "image",
+    _id?: string,
+    text: string,
+    senderId: string,
+    receiverId: string,
+    type: "image" | "text",
+    createAt?: Date | string,
 }
 export default message;

@@ -35,7 +35,10 @@ export function SettingModal (props: ISettingModalProps) {
         <FiSettings size="24px"/>
         <p>{lang === "en"? "Settings": "Cài đặt"}</p>
       </Button>
-      <Button className="mt-auto mb-0">
+      <Button onClick={()=>{
+        window.localStorage.removeItem("access_token");
+        window.location.reload();
+      }} className="mt-auto mb-0">
         <FiLogOut size="24px"/>
         <p>{lang === "en"? "Log out": "Đăng xuất"}</p>
       </Button>

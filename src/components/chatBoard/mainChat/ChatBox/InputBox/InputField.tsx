@@ -49,11 +49,8 @@ export function InputField() {
     if(event.key === "Enter" && text.length > 0){
       const message: IMessage ={
         text: text,
-        date: Date.now(),
-        receiverId: userState.choosenFriend!.id,
-        receiverUsername: userState.choosenFriend!.username,
-        senderId: userState.id,
-        senderUsername: userState.username,
+        receiverId: userState.choosenFriend!.participation._id,
+        senderId: userState._id,
         type:"text"
       }
       dispatch(addNewMessage(message));
@@ -68,11 +65,8 @@ export function InputField() {
             const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`
             const message: IMessage ={
               text: url,
-              date: Date.now(),
-              receiverId: userState.choosenFriend!.id,
-              receiverUsername: userState.choosenFriend!.username,
-              senderId: userState.id,
-              senderUsername: userState.username,
+              receiverId: userState.choosenFriend!.participation._id,
+              senderId: userState._id,
               type:"image"
             }
             dispatch(addNewMessage(message));

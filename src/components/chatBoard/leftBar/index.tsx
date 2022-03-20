@@ -15,11 +15,11 @@ export function LeftBar(props: ILeftBarProps) {
   const handleSearch = (event: React.ChangeEvent)=>{
     const text = (event.target as HTMLInputElement).value;
     if(!text) setResultSearch([]);
-    const {listFriend} = userState;
-    const re = new RegExp(text , "gi");
-    setResultSearch(listFriend.filter((e,i,a)=>{
-      return e.name.search(re) !== -1 || e.username.search(re) !== -1;
-    }))
+    // const {listFriend} = userState;
+    // const re = new RegExp(text , "gi");
+    // setResultSearch(listFriend.filter((e,i,a)=>{
+    //   return e.name.search(re) !== -1 || e.username.search(re) !== -1;
+    // }))
   }
   return (
     <div

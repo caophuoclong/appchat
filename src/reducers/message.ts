@@ -1,109 +1,82 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit"
 import IMessage from "../interface/IMessage";
+import conversationApi from "../services/conversation.api";
 
 interface MessageState {
     messages: Array<IMessage>
 }
+export const getConversation = createAsyncThunk(
+    "getMessages", async (id: string) => {
+        return await conversationApi.getConversation(id);
+    }
+)
 
 const initialState: MessageState = {
     messages: [
         {
             text: "xin chao ban",
-            date: 2015,
             receiverId: "27831",
-            receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1",
             type: "text"
         },
         {
             text: "xin chao ban",
-            date: 2015,
             receiverId: "27831",
-            receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1",
             type: "text"
         },
         {
             text: "xin chao ban",
-            date: 2015,
             receiverId: "27831",
-            receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1",
             type: "text"
         },
         {
             text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
-            date: 2015,
             receiverId: "27831",
-            receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1",
             type: "text"
         },
         {
             text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
-            date: 2015,
             receiverId: "26032001",
-            receiverUsername: "caophuoclong1",
             senderId: "27831",
-            senderUsername: "caophuoclong",
             type: "text"
         },
         {
             text: "xin chao ban",
-            date: 2015,
             receiverId: "27831",
-            receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1",
             type: "text"
         },
         {
             text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
-            date: 2015,
             receiverId: "26032001",
-            receiverUsername: "caophuoclong1",
             senderId: "27831",
-            senderUsername: "caophuoclong",
             type: "text"
         },
         {
             text: "xin chao ban",
-            date: 2015,
             receiverId: "27831",
-            receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1",
             type: "text"
         },
         {
             text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
-            date: 2015,
             receiverId: "27831",
-            receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1",
             type: "text"
         },
         {
             text: "xin chao ban 2 chxin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch xin chao ban 2 ch  ",
-            date: 2015,
             receiverId: "26032001",
-            receiverUsername: "caophuoclong1",
             senderId: "27831",
-            senderUsername: "caophuoclong",
             type: "text"
         },
         {
             text: "xin chao ban",
-            date: 2015,
             receiverId: "27831",
-            receiverUsername: "caophuoclong",
             senderId: "26032001",
-            senderUsername: "caophuoclong1",
             type: "text"
         },
     ]
@@ -125,6 +98,14 @@ const messageSlice = createSlice({
                 messages: [...state.messages, action.payload]
             }
         }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(getConversation.fulfilled, (state, action) => {
+            return {
+                ...state,
+                messages: action.payload
+            }
+        })
     }
 })
 
