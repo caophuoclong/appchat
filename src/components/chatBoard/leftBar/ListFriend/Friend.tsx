@@ -15,6 +15,7 @@ export interface IFriendProps {
 
 export function Friend({friendInfo}: IFriendProps) {
   const { _id, participants, latest  } = friendInfo;
+  console.log(latest);
   const user = useAppSelector(state => state.user);
   const [participation, setParticipation] = React.useState<participation | null>(null);
   React.useEffect(()=>{

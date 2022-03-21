@@ -24,7 +24,6 @@ function dataURItoBlob(data: string | ArrayBuffer) {
 const upload = (imgBase64: string | ArrayBuffer) => {
     return new Promise<IResult>((resolve, reject) => {
         if (!CLOUD_NAME) reject("CLoud name is not define. You could define in .env");
-        return reject("Hi, Tính năng upload ảnh đang phát triển!");
         const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
         const file = dataURItoBlob(imgBase64);
         const formData = new FormData();

@@ -8,7 +8,7 @@ const CurrentFriend = (props: any)=>{
   const choosenFriend = useAppSelector(state=> state.user.choosenFriend?.participation);
   return (
     <div className="flex gap-2">
-      <img className="w-9 h-9 rounded-full" src={choosenFriend?.imgUrl} alt="" />
+      <img className="w-9 h-9 rounded-full" src={choosenFriend?.imgUrl || "https://picsum.photos/40"} alt="" />
       <div>
           <p className="text-base text-glareBlack">{choosenFriend?.name}</p>
           <p className="text-xs text-glareGray ">@{choosenFriend?.username}</p>

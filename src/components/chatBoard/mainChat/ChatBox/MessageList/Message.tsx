@@ -7,7 +7,7 @@ export interface IMessageProps {
 }
 export const formatDate = (now: number) : string=>{
   const date = new Date( now);
-  const formated = moment(date).format("MMM DD, hh:mm");
+  const formated = moment(date).format("hh:mm");
   return formated;
 }
 const Right = ({ message, date, type }: { message: string; date: number, type: "image" | "text" }) => {

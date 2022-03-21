@@ -12,11 +12,18 @@ interface IUser {
         month: number,
         year: number,
     },
-    conversations?: Array<{
-        _id: string,
-        participants: Array<participation>,
-        lastest?: IMessage,
-    }>
+    conversations?: Array<IConversation>
+}
+export interface IConversation {
+    _id: string,
+    participants: Array<participation>,
+    latest?: IMessage,
+}
+export interface IGetMeResponse {
+    code: number,
+    status: string,
+    message: string,
+    data: IUser,
 }
 export type participation = Pick<IUser, "_id" | "username" | "name" | "imgUrl">
 export default IUser;

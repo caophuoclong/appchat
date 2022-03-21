@@ -25,6 +25,7 @@ export default function SignIn({language}: Props) {
         console.log(user.data.accessToken);
         if(user){
             window.localStorage.setItem("access_token", JSON.stringify(user.data.accessToken));
+            window.localStorage.setItem("refresh_token", JSON.stringify(user.data.refreshToken));
             window.location.href = "/";
         }
     }

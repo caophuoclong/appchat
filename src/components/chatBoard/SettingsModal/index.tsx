@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {BiUser} from "react-icons/bi";
+import {BiUser, BiUserPlus} from "react-icons/bi";
 import {FiSettings, FiLogOut} from "react-icons/fi"
 import {FaTimes} from "react-icons/fa"
 import { useAppDispatch, useAppSelector } from '../../../hook';
@@ -35,10 +35,17 @@ export function SettingModal (props: ISettingModalProps) {
         <FiSettings size="24px"/>
         <p>{lang === "en"? "Settings": "Cài đặt"}</p>
       </Button>
+      <Button>
+        <BiUserPlus size="24px"/>
+        <p>{
+          lang === "en"? "Add Friend": "Thêm bạn"
+          }</p>
+
+      </Button>
       <Button onClick={()=>{
         window.localStorage.removeItem("access_token");
         window.location.reload();
-      }} className="mt-auto mb-0">
+      }} className="mt-12 mb-0">
         <FiLogOut size="24px"/>
         <p>{lang === "en"? "Log out": "Đăng xuất"}</p>
       </Button>

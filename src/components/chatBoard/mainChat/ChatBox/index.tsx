@@ -11,7 +11,7 @@ export function Chat (props: IChatProps) {
   return (
     <div className={props.className}>
       <ChatHeader className="px-9 py-3" />
-      <MessageList className="h-85 overflow-auto "/>
+      <MessageList className="h-85 overflow-auto relative"/>
       <InputBox className="px-9 py-5 mt-auto mr-0"/>
     </div>
   );

@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import IUser from "../interface/IUser";
+import IUser, { IGetMeResponse } from "../interface/IUser";
 import axiosClient from "./axiosClient";
 
 const userApi = {
@@ -11,6 +11,7 @@ const userApi = {
         })
         return user as AxiosResponse<{
             accessToken: string,
+            refreshToken: string,
         }>;
     },
     register: (username: string, password: string, email: string) => {
@@ -39,24 +40,56 @@ const userApi = {
 
     },
     getMe: () => {
-        return new Promise<AxiosResponse<IUser>>(async (resolve, reject) => {
+        return new Promise<IUser>(async (resolve, reject) => {
             const url = "/user/me";
             try {
-                const user = await axiosClient.get(url);
-                resolve(user);
+                const user: IGetMeResponse = await axiosClient.get(url);
+                if (user.code === 200) {
+                    resolve(user.data);
+                }
+                if (user.code === 400 && user.message === "Token expired!") {
+                    userApi.refreshToken().then(() => {
+                        reject("Done");
+                    });
+                }
+
 
             } catch (error) {
+                console.log(error);
                 reject(new Error("Some thing wrong"))
             }
         })
     },
-    updateUserInfomation: (data: IUser) => {
-        return new Promise<AxiosResponse<IUser>>(async (resolve, reject) => {
+    refreshToken: () => {
+        return new Promise<{}>(async (resolve, reject) => {
+            const url = "/token/refresh"
+            const token: {
+                code: number,
+                status: string,
+                message: string,
+                token: string,
+            } = await axiosClient.post(url, {
+                refreshToken: JSON.parse(localStorage.getItem("refresh_token")!)
+            })
+            if (token.code === 200) {
+                localStorage.setItem("access_token", JSON.stringify(token.token))
+                resolve({});
+            } else {
+                alert("Session expired!");
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
+                window.location.reload();
+            }
+        })
+    },
+    updateUserInfomation: (data: Partial<IUser>) => {
+        return new Promise<{ code: number, status: string, message: string, data: IUser }>(async (resolve, reject) => {
             const url = "/user/update";
             try {
-                const user = await axiosClient.post(url, {
+                const user: { code: number, status: string, message: string, data: IUser } = await axiosClient.put(url, {
                     ...data
                 });
+                console.log(user);
                 resolve(user);
 
             } catch (error) {

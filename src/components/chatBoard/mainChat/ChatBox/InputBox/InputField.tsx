@@ -5,10 +5,12 @@ import { Emoij } from '../../../../../assets/icons';
 import { useAppDispatch, useAppSelector } from '../../../../../hook';
 import {  handleChangeMessageText, handleMakeImageListEmpty } from '../../../../../reducers/globalSlice';
 import IMessage from "../../../../../interface/IMessage";
-import { addNewMessage } from '../../../../../reducers/message';
+import { addMessage, addNewMessage } from '../../../../../reducers/message';
 import { uploadImage } from '../../../../../services';
 import { CLOUD_NAME } from '../../../../../configs';
-import {textRegex, emojiRegex, escapeSpecialChars} from "../../../../../constants/textIsEmoji"
+import { emojiRegex, escapeSpecialChars} from "../../../../../constants/textIsEmoji"
+import { unwrapResult } from '@reduxjs/toolkit';
+import { updateLatestMessage } from '../../../../../reducers/userSlice';
 export interface IInputFieldProps {}
 
 export function InputField() {
@@ -19,6 +21,7 @@ export function InputField() {
   const dispatch = useAppDispatch();
   const text = useAppSelector((state) => state.global.message.text);
   const files = useAppSelector((state) => state.global.message.file);
+  const conversationId = useAppSelector((state) => state.user.choosenFriend?.conversationId);
   const lang = useAppSelector((state) => state.global.language);
   const userState = useAppSelector((state) => state.user);
   const handleTypingText = (event: React.ChangeEvent) => {
@@ -45,21 +48,28 @@ export function InputField() {
   //   //   // console.log(textss);
   //   // }
   // }
-  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) =>{
+  const handleEnterPress = async (event: React.KeyboardEvent<HTMLInputElement>) =>{
     if(event.key === "Enter" && text.length > 0){
       const message: IMessage ={
         text: text,
         receiverId: userState.choosenFriend!.participation._id,
         senderId: userState._id,
+        createAt: new Date().toString(),
         type:"text"
       }
       dispatch(addNewMessage(message));
+      const actionResult = await dispatch(addMessage({message, conversationId: conversationId!}));
+      const unwrap = unwrapResult(actionResult);
       dispatch(handleChangeMessageText(""));
+      dispatch(updateLatestMessage({
+        message,
+        conversationId: conversationId!,
+      }))
     }
     if(event.key === "Enter" && files.length > 0){
       document.getElementById("previewPicture")?.classList.add("invisible");
       files.forEach((file)=>{
-        uploadImage(file).then(result=>{
+        uploadImage(file).then(async result=>{
           const {status, data} = result;
           if(status === 200){
             const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`
@@ -67,10 +77,16 @@ export function InputField() {
               text: url,
               receiverId: userState.choosenFriend!.participation._id,
               senderId: userState._id,
+              createAt: new Date().toString(),
               type:"image"
             }
             dispatch(addNewMessage(message));
-            
+            const actionResult = await dispatch(addMessage({message, conversationId: conversationId!}));
+      const unwrap = unwrapResult(actionResult);
+      dispatch(updateLatestMessage({
+        message,
+        conversationId: conversationId!,
+      }))
           }
         }).catch(error=>{
           console.log(error);

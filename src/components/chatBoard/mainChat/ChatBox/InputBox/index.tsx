@@ -47,7 +47,7 @@ export function InputBox(props: IInputBoxProps) {
         <input
           type="file"
           id="choosePictureFile"
-          accept="image/png image/jpg image/jpeg"
+          accept="image/*"
           multiple
           hidden
           onChange={handleFileUpload}

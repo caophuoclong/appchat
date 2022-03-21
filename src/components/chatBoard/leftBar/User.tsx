@@ -12,6 +12,7 @@ export interface IUserProps {
 
 export function User (props: IUserProps) {
     const {imgUrl, name, username} = useAppSelector(state => state.user);
+    console.log(imgUrl);
     const  showModalOption  = useAppSelector(state => state.global.showModalOption);
     const  selectedModal  = useAppSelector(state => state.global.selectedModal);
     const dispatch = useAppDispatch();
@@ -20,7 +21,7 @@ export function User (props: IUserProps) {
     }
     return (
     <div className={props.className}>
-      <img className="w-12 h-12 rounded-full" src={imgUrl} alt="" />
+      <img className="w-12 h-12 rounded-full" src={imgUrl || "https://picsum.photos/40"} alt="" />
       <div>
         <p className="text-glareBlack text-base font-semibold">{name}</p>
         <p className="text-glareGray text-base font-normal">@{username}</p>

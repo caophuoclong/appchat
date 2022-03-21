@@ -1,11 +1,14 @@
 import * as React from 'react';
 import Select from 'react-select';
-import { dateType } from '../../../reducers/userSlice';
+import { dateType, updateInformation } from '../../../reducers/userSlice';
 import { monthOptions } from '../../../constants/monthOption';
 import { yearOptions } from '../../../constants/yearOption';
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { setSelectedModal } from '../../../reducers/globalSlice';
+import {AiOutlineCamera}  from "react-icons/ai"
 import Modal from './Modal';
+import upload from '../../../services/uploadImage';
+
 
 export interface IInformationProps {}
 
@@ -19,6 +22,10 @@ export default function Information(props: IInformationProps) {
   const [month, setMonth] = React.useState(user.dateOfBirth.month);
   const [year, setYear] = React.useState(user.dateOfBirth.year);
   const [gender, setGender] = React.useState(user.gender);
+  const [avatar, setAvatar] = React.useState({
+    isChange: false,
+    img: user.imgUrl
+  });
   const [isDisabled, setIsDisabled] = React.useState(true);
   const dispatch = useAppDispatch();
   const updateRef = React.useRef<HTMLButtonElement>(null);
@@ -39,14 +46,65 @@ export default function Information(props: IInformationProps) {
   };
 
   React.useEffect(()=>{
-    if(name !== user.name || email !== user.email || numberPhone !== user.numberPhone || date !== user.dateOfBirth.date || month !== user.dateOfBirth.month || year !== user.dateOfBirth.year || gender !== user.gender) 
+    if(name !== user.name || email !== user.email || numberPhone !== user.numberPhone || date !== user.dateOfBirth.date || month !== user.dateOfBirth.month || year !== user.dateOfBirth.year || gender !== user.gender || avatar.isChange === true) 
     setIsDisabled(false)
     else
     setIsDisabled(true);
-  },[name, email, numberPhone, date, month, year,gender])
-
-  const handleUpdateInformation = () => {
-    console.log('updated');
+  },[name, email, numberPhone, date, month, year,gender, avatar])
+  const readFile = (file: File)=>{
+    return new Promise<ArrayBuffer | string >((resolve, reject)=>{
+      const fr = new FileReader();
+      fr.onload = ()=>{
+        resolve(fr.result!);
+      }
+      fr.onerror = ()=>{
+        reject(fr)
+      }
+      fr.readAsDataURL(file);
+    })
+  }
+  const handleChangeAvatar = (event: React.ChangeEvent)=>{
+    const file = (event.target! as HTMLInputElement).files![0];
+    readFile(file).then(result=>{
+      setAvatar({
+        isChange: true,
+        img: result as string
+      });
+    })
+  }
+  const handleUpdateInformation = async () => {
+    if(avatar.isChange){
+      const result = await upload(avatar.img);
+      const {data} = result;
+      const CLOUD_NAME = process.env.REACT_APP_CLOUD_NAME
+      const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`
+      console.log(url);
+      dispatch(updateInformation({
+        name,
+        email,
+        numberPhone,
+        dateOfBirth:{
+          date,
+          month,
+          year,
+        },
+        gender,
+        imgUrl: url,
+      }))
+    }else{
+      dispatch(updateInformation({
+        name,
+        email,
+        numberPhone,
+        dateOfBirth:{
+          date,
+          month,
+          year,
+        },
+        gender,
+      }))
+    }
+    
   };
 
   return (
@@ -69,12 +127,16 @@ export default function Information(props: IInformationProps) {
           {lang === 'en' ? 'User information' : 'Thông tin người dùng'}
         </p>
       </div>
-      <div className="w-fit my-4 mx-auto">
+      <div className="w-fit my-4 mx-auto relative group">
         <img
           className="w-20 h-20 rounded-full"
-          src={user.imgUrl}
+          src={avatar.img || "https://picsum.photos/40"}
           alt="avatart user"
         />
+        <input onChange={handleChangeAvatar} type="file" accept="image/*" hidden id="avatarChange" />
+        <label htmlFor="avatarChange" className="absolute bottom-0 p-2 rounded-full right-0 group-hover:visible invisible bg-black cursor-pointer">
+            <AiOutlineCamera size="18px" fill="white"/>
+        </label>
       </div>
       <div className="mb-2">
         <label htmlFor="" className="text-sm">

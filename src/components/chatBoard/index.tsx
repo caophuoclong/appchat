@@ -3,7 +3,9 @@ import { LeftBar } from './leftBar';
 import { MainChat } from './mainChat';
 import { useNavigate } from "react-router-dom"
 import { getMe } from '../../reducers/userSlice';
-import { useAppDispatch } from '../../hook';
+import { useAppDispatch, useAppSelector } from '../../hook';
+import { unwrapResult } from '@reduxjs/toolkit';
+import FullPageLoading from './FullPageLoading';
 
 export interface IChatProps {
 }
@@ -11,6 +13,7 @@ export interface IChatProps {
 export function Chat (props: IChatProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const loading = useAppSelector(state => state.user.loading);
   React.useEffect(()=>{
     const access_token = localStorage.getItem('access_token');
     if(!access_token){
@@ -18,7 +21,8 @@ export function Chat (props: IChatProps) {
     }
     const xxx = async ()=>{
       try{
-        const actionResult = dispatch(getMe());
+        const actionResult = await dispatch(getMe());
+        const unwrap = unwrapResult(actionResult);
       }catch(error){
         console.log(error);
       }
@@ -29,6 +33,10 @@ export function Chat (props: IChatProps) {
 
   return (
     <div className="flex h-screen min-w-full">
+      {
+
+      loading && <FullPageLoading/>
+      }
       <LeftBar/>
       <MainChat/>
     </div>
