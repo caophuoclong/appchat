@@ -1,4 +1,5 @@
 import { AxiosResponse } from "axios";
+import Exception from "../exceptions";
 import IUser, { IGetMeResponse } from "../interface/IUser";
 import axiosClient from "./axiosClient";
 
@@ -49,14 +50,12 @@ const userApi = {
                 }
                 if (user.code === 400 && user.message === "Token expired!") {
                     userApi.refreshToken().then(() => {
-                        reject("Done");
+                        reject(new Exception(400, "Done"));
                     });
                 }
 
-
-            } catch (error) {
-                console.log(error);
-                reject(new Error("Some thing wrong"))
+            } catch (error: any) {
+                reject(new Exception(500, error.message))
             }
         })
     },
@@ -75,7 +74,8 @@ const userApi = {
                 localStorage.setItem("access_token", JSON.stringify(token.token))
                 resolve({});
             } else {
-                alert("Session expired!");
+                console.log(token);
+                alert("Session expired! Please login again");
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
                 window.location.reload();

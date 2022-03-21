@@ -35,7 +35,7 @@ export function Chat (props: IChatProps) {
     <div className="flex h-screen min-w-full">
       {
 
-      loading && <FullPageLoading/>
+      loading && <FullPageLoading className="h-screen"/>
       }
       <LeftBar/>
       <MainChat/>

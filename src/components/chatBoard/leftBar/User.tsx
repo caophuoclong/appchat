@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { MoreIcon } from '../../../assets/icons';
 import {  useAppDispatch, useAppSelector } from '../../../hook';
-import { toggleShowModalOption } from '../../../reducers/globalSlice';
+import { makeSearchedFriendsUndefined, toggleShowModalOption } from '../../../reducers/globalSlice';
 import Information from '../SettingsModal/Information';
+import MakeFriend from '../SettingsModal/Makefriend';
 import Settings from '../SettingsModal/Settings';
 import { ModalOptions } from './modalOptions';
 
@@ -12,13 +13,15 @@ export interface IUserProps {
 
 export function User (props: IUserProps) {
     const {imgUrl, name, username} = useAppSelector(state => state.user);
-    console.log(imgUrl);
     const  showModalOption  = useAppSelector(state => state.global.showModalOption);
     const  selectedModal  = useAppSelector(state => state.global.selectedModal);
     const dispatch = useAppDispatch();
     const handleChangeShowModal = ()=>{
       dispatch(toggleShowModalOption());
     }
+    React.useEffect(()=>{
+      dispatch(makeSearchedFriendsUndefined());
+    },[selectedModal])
     return (
     <div className={props.className}>
       <img className="w-12 h-12 rounded-full" src={imgUrl || "https://picsum.photos/40"} alt="" />
@@ -38,6 +41,9 @@ export function User (props: IUserProps) {
       }
       {
         selectedModal === "settings" && <Settings/>
+      }
+      {
+        selectedModal === "makeFriend" && <MakeFriend/>
       }
     </div>
   );

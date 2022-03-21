@@ -4,7 +4,7 @@ import SignIn from './SignIn';
 import Switch from './Switch';
 import SwitchCase from 'react-switch';
 import { UKFlag, VietNamFlag } from '../../assets/images';
-import SelectLanguage from '../SelectLanguage';
+import SelectLanguage from '../Select';
 export interface ISignProps {}
 
 const options: Array<{value: string, label: string}> = [
@@ -23,7 +23,7 @@ const options: Array<{value: string, label: string}> = [
 export default function Sign(props: ISignProps) {
   const [isSignUp, setIsSignUp] = React.useState(true);
   const [language, setLanguage] = React.useState(window.localStorage.getItem("lang") || "vn");
-  const handleChangeLanguage = (value: string)=>{
+  const handleChangeLanguage: (value: string)=> void = (value) =>{
         window.localStorage.setItem("lang", value);
         setLanguage(value);
   }

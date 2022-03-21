@@ -5,6 +5,7 @@ import { useAppDispatch } from '../../../hook';
 import { setSelectedModal, toggleShowModalOption } from '../../../reducers/globalSlice';
 export interface IModalProps {
     children: JSX.Element | JSX.Element[] | null,
+    heading?: JSX.Element | null,
     customStyle?: {
         [key: string] :{
             [key : string] : string
@@ -30,11 +31,19 @@ export default function Modal (props: IModalProps) {
     }
   return (
     <ReactModal onAfterClose={handleModalClosed} onAfterOpen={handleModalOpen} isOpen={show}  style={customStyle}>
-      <button className="right-4 absolute translate-y-1/4" onClick={()=>{setShow(prev => !prev)}}>
-          <FaTimes size="24px"/>
-      </button>
-        <div className="">
+        <div className="h-full">
+        <div className="flex items-center justify-between border-b-2 border-b-black h-8">
+            {props.heading}
+            <button className="right-4 translate-y-1/5" onClick={()=>{setShow(prev => !prev)}}>
+                <FaTimes size="24px"/>
+            </button>
+
+        </div>
+        <div style={{
+            height: "calc(100% - 2rem)"
+        }}>
           {props.children}
+        </div>
         </div>
           </ReactModal>
   );

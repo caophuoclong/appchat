@@ -1,31 +1,56 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import IUser from "../interface/IUser";
+import friendApi from "../services/friend";
 
-type SelectedType = "settings" | "information" | null;
+type SelectedType = "settings" | "information" | "makeFriend" | null;
 
 interface GlobalState {
     showModalOption: boolean,
     leftBarLoading: boolean,
     mainChatLoading: boolean,
+    resultSearchFriendLoading: boolean,
     language: "vn" | "en",
     selectedModal: SelectedType,
     socketId: string,
     message: {
         text: string;
         file: Array<ArrayBuffer | string>;
-    }
+    },
+    searchedFriend?: Array<Pick<IUser, "_id" | "name" | "username" | "imgUrl">>,
 }
-
+export const handleSearchFriend = createAsyncThunk("search_friend", (params: {
+    type: string, value: string
+}) => {
+    const { type, value } = params;
+    return new Promise<Array<Pick<IUser, "_id" | "name" | "username" | "imgUrl">>>((resolve, reject) => {
+        friendApi.searchFriend({ type, value }).then((data) => {
+            resolve(data);
+        }).catch((error) => {
+            reject(error);
+        })
+    });
+})
+export const sendFriendRequest = createAsyncThunk("send_friend_request", (param: string) => {
+    return new Promise<any>((resolve, reject) => {
+        friendApi.sendFriendRequest(param).then((data) => {
+            resolve(data);
+        }).catch((error) => {
+            reject(error);
+        })
+    })
+})
 const initialState: GlobalState = {
     showModalOption: false,
     leftBarLoading: false,
     mainChatLoading: false,
+    resultSearchFriendLoading: false,
     language: window.localStorage.getItem("lang") as "en" | "vn",
     selectedModal: null,
     socketId: "",
     message: {
         text: "",
         file: [],
-    }
+    },
 }
 
 const globalSlice = createSlice({
@@ -94,10 +119,31 @@ const globalSlice = createSlice({
                 ...state,
                 socketId: action.payload
             }
+        },
+        makeSearchedFriendsUndefined: (state: GlobalState) => {
+            return {
+                ...state,
+                searchedFriend: undefined
+            }
+
+
         }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(handleSearchFriend.pending, (state) => {
+            state.resultSearchFriendLoading = true;
+        });
+        builder.addCase(handleSearchFriend.fulfilled, (state, action) => {
+            state.resultSearchFriendLoading = false;
+            state.searchedFriend = action.payload;
+        })
+        builder.addCase(handleSearchFriend.rejected, (state, action) => {
+            state.resultSearchFriendLoading = false;
+            state.searchedFriend = [];
+        })
     }
 
 })
 
-export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage } = globalSlice.actions;
+export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined } = globalSlice.actions;
 export default globalSlice.reducer;

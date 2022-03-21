@@ -18,6 +18,7 @@ export default function Input ({id, name, register, errors, children}: IInputPro
         <input  className="w-11/12 outline-none bg-transparent px-2" {...register(id)} type={
             id.match(/password/i) ? "password" : "text"
         } id={id} />
+        <span className="text-xs text-red-500">*</span>
         {children}
         </div>
         {errors[id] && <span className="pl-8 text-xs text-red-500">{errors[id].message}</span>}

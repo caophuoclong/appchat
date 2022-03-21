@@ -5,7 +5,7 @@ import { useAppSelector } from "../hook";
 const SocketContext= React.createContext({});
 const Provider = (props: {children: JSX.Element})=>{
     const user = useAppSelector(state =>state.user);
-    const socket = io("http://localhost:4004",{
+    const socket = io(SOCKET_HOST!,{
         "transports" : ["websocket"]
     });
     socket.on("new_connection",(data=>{
@@ -14,6 +14,7 @@ const Provider = (props: {children: JSX.Element})=>{
     socket.on("receive_message",({_id}:{_id: string, message: string})=>{
 
     })
+
     return(
         <SocketContext.Provider value={socket} >
         {

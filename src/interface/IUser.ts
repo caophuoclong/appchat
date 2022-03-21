@@ -12,7 +12,11 @@ interface IUser {
         month: number,
         year: number,
     },
-    conversations?: Array<IConversation>
+    conversations?: Array<IConversation>,
+    friends: Array<string>,
+    friendsPending: Array<string>,
+    friendsRejected: Array<string>,
+    friendsRequested: Array<string>,
 }
 export interface IConversation {
     _id: string,

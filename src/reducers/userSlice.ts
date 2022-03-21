@@ -51,8 +51,11 @@ export const getMe = createAsyncThunk(
             try {
                 const xxx = await userApi.getMe();
                 resolve(xxx);
-            } catch (error) {
-                if (error === 'Done') thunkApi.dispatch(getMe());
+            } catch (error: any) {
+                if (error.message === 'Done') thunkApi.dispatch(getMe());
+                if (error.status === 500) {
+                    reject(error);
+                }
             }
         });
     }
@@ -125,6 +128,10 @@ const initialState: UserState = {
     ],
     choosenFriend: null,
     loading: false,
+    friends: [],
+    friendsPending: [],
+    friendsRejected: [],
+    friendsRequested: [],
 };
 
 export const userSlice = createSlice({
@@ -168,6 +175,7 @@ export const userSlice = createSlice({
         builder.addCase(getMe.fulfilled, (state, action) => {
             if (action.payload) {
                 const { ...data } = action.payload as IUser;
+                console.log(data);
                 state._id = data._id;
                 state.username = data.username;
                 state.name = data.name;
@@ -177,12 +185,17 @@ export const userSlice = createSlice({
                 state.dateOfBirth = data.dateOfBirth;
                 state.conversations = data.conversations;
                 state.imgUrl = data.imgUrl;
+                state.friends = data.friends!;
+                state.friendsPending = data.friendsPending!;
+                state.friendsRejected = data.friendsRejected!;
+                state.friendsRequested = data.friendsRequested!;
             }
             state.loading = false;
         });
 
         builder.addCase(getMe.rejected, (state, action) => {
             state.loading = false;
+            alert("Server is down!");
         });
 
         builder.addCase(updateInformation.pending, (state) => {
@@ -197,6 +210,7 @@ export const userSlice = createSlice({
                 dateOfBirth,
                 numberPhone,
                 imgUrl,
+
             } = action.payload;
             console.log(action.payload);
             state.name = name;
@@ -205,6 +219,7 @@ export const userSlice = createSlice({
             state.dateOfBirth = dateOfBirth!;
             state.numberPhone = numberPhone;
             state.imgUrl = imgUrl!;
+
         });
     },
 });

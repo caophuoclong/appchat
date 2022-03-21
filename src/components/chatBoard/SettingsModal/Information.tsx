@@ -27,6 +27,8 @@ export default function Information(props: IInformationProps) {
     img: user.imgUrl
   });
   const [isDisabled, setIsDisabled] = React.useState(true);
+  const [isIncorrectEmail, setIsIncorrectEmail] = React.useState(false);
+  const [isIncorrectPhone, setIsIncorrectPhone] = React.useState(false);
   const dispatch = useAppDispatch();
   const updateRef = React.useRef<HTMLButtonElement>(null);
   const handleCancelChangeInfo = () => {
@@ -50,7 +52,19 @@ export default function Information(props: IInformationProps) {
     setIsDisabled(false)
     else
     setIsDisabled(true);
-  },[name, email, numberPhone, date, month, year,gender, avatar])
+  },[name, email, numberPhone, date, month, year,gender, avatar]);
+  React.useEffect(()=>{
+    if(!email?.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/))
+    setIsIncorrectEmail(true);
+    else
+    setIsIncorrectEmail(false);
+  },[email])
+  React.useEffect(()=>{
+    if(!numberPhone?.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/))
+    setIsIncorrectPhone(true);
+    else
+    setIsIncorrectPhone(false);
+  },[numberPhone])
   const readFile = (file: File)=>{
     return new Promise<ArrayBuffer | string >((resolve, reject)=>{
       const fr = new FileReader();
@@ -74,35 +88,44 @@ export default function Information(props: IInformationProps) {
   }
   const handleUpdateInformation = async () => {
     if(avatar.isChange){
-      const result = await upload(avatar.img);
-      const {data} = result;
-      const CLOUD_NAME = process.env.REACT_APP_CLOUD_NAME
-      const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`
-      console.log(url);
-      dispatch(updateInformation({
-        name,
-        email,
-        numberPhone,
-        dateOfBirth:{
-          date,
-          month,
-          year,
-        },
-        gender,
-        imgUrl: url,
-      }))
+      if(numberPhone?.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/) && email?.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)){
+        const result = await upload(avatar.img);
+        const {data} = result;
+        const CLOUD_NAME = process.env.REACT_APP_CLOUD_NAME
+        const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`
+        dispatch(updateInformation({
+          name,
+          email,
+          numberPhone,
+          dateOfBirth:{
+            date,
+            month,
+            year,
+          },
+          gender,
+          imgUrl: url,
+        }))
+      }else {
+        alert("Data is incorrect")
+      }
     }else{
-      dispatch(updateInformation({
-        name,
-        email,
-        numberPhone,
-        dateOfBirth:{
-          date,
-          month,
-          year,
-        },
-        gender,
-      }))
+      if(numberPhone?.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/) && email?.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)){
+        dispatch(updateInformation({
+          name,
+          email,
+          numberPhone,
+          dateOfBirth:{
+            date,
+            month,
+            year,
+          },
+          gender,
+        }))
+      } else{
+        alert("Data is incorrect")
+
+      }
+      
     }
     
   };
@@ -121,12 +144,13 @@ export default function Information(props: IInformationProps) {
           minHeight: "580px"
         },
       }}
-    >
-      <div className="border-b-2 border-black">
+      heading={
         <p className="text-2xl font-bold text-left mr-20">
           {lang === 'en' ? 'User information' : 'Thông tin người dùng'}
         </p>
-      </div>
+      }
+    >
+      <div>
       <div className="w-fit my-4 mx-auto relative group">
         <img
           className="w-20 h-20 rounded-full"
@@ -147,8 +171,6 @@ export default function Information(props: IInformationProps) {
           value={name}
           onChange={(event) => {
             setName(event.target.value);
-            
-            
           }}
           type="text"
           className="border-2 border-gray-400 outline-none w-full py-1 px-2 rounded-lg"
@@ -163,11 +185,13 @@ export default function Information(props: IInformationProps) {
           value={email}
           onChange={(event) => {
             setEmail(event.target.value);
-            
           }}
           type="text"
           className="border-2 border-gray-400 outline-none w-full py-1 px-2 rounded-lg"
         />
+        {isIncorrectEmail && <span className="text-xs text-red-500">
+          {lang === 'en' ? 'Email is incorrect' : 'Email không hợp lệ'}
+        </span>}
       </div>
       <div className="mb-2">
         <label htmlFor="" className="text-sm">
@@ -178,11 +202,13 @@ export default function Information(props: IInformationProps) {
           value={numberPhone}
           onChange={(event) => {
             setNumberPhone(event.target.value);
-            
           }}
           type="text"
           className="border-2 border-gray-400 outline-none w-full py-1 px-2 rounded-lg"
         />
+        {isIncorrectPhone && <span className="text-xs text-red-500">
+          {lang === 'en' ? 'Number phone is incorrect' : 'Số điện thoại không hợp lệ'}
+        </span>}
       </div>
       <div className="mb-2">
         <label htmlFor="" className="text-sm">
@@ -295,6 +321,7 @@ export default function Information(props: IInformationProps) {
         >
           {lang === 'en' ? 'Update' : 'Cập nhật'}
         </button>
+      </div>
       </div>
     </Modal>
   );

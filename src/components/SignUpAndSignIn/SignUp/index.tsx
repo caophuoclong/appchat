@@ -22,12 +22,13 @@ export default function SignUp({language}: Props) {
         .string()
         .required(language === "en"?"Username is required": "Tên đăng nhập không được để trống")
         .min(5, language==="en"?"Username must be at least 5 characters": "Tối thiểu 5 ký tự")
-        .max(20, language==="en"?"Username must be at least 20 characters": "Tối đa 20 ký tự"),
+        .max(20, language==="en"?"Username no more than 20 characters": "Tối đa 20 ký tự")
+        .matches(/^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/, language === "en" ? "Invalid username" : "Tên đăng nhập không hợp lệ"),
         password: yup
         .string()
         .required(language === "en" ? "Password is required" : "Mật khẩu không được để trống")
-        .min(5, language==="en"?"Username must be at least 5 characters": "Tối thiểu 5 ký tự")
-        .max(20, language==="en"?"Username must be at least 20 characters": "Tối đa 20 ký tự")
+        .min(5, language ==="en"?"Password must be at least 5 characters": "Tối thiểu 5 ký tự")
+        .max(20, language ==="en"?"Password no more than 20 characters": "Tối đa 20 ký tự")
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
     language === "en" ? "Password must contain at least one lowercase letter, one uppercase letter, one number and one special character" : "Mật khẩu phải bao gồm chữ thường, chữ hoa, số và ký tự đặc biệt"),
         email: yup.string().email(language === "en" ? "Email is invalid": "Không đúng định dạng").required(language === "en" ? "Email is required": "Email không được để trống"),

@@ -37,14 +37,12 @@ export default function Settings(props: ISettingsProps) {
             borderRadius: "20px",
         },
       }}
+      heading={<div className="flex items-center gap-2 mb-2">
+      <GrLanguage size="24px" />
+      <p>{lang === "en" ? "Language" : "Ngôn ngữ"}</p>
+  </div>}
     >
       <div>
-        <div className=" border-b-2 border-black">
-          <div className="flex items-center gap-2 mb-2">
-              <GrLanguage size="24px" />
-              <p>{lang === "en" ? "Language" : "Ngôn ngữ"}</p>
-          </div>
-        </div>
         <label className="flex items-center gap-4 py-3">
           <span>{lang === "en" ? "Change language: " : "Thay đổi ngôn ngữ: "}</span>
           <img src={VietNamFlag} alt="Viet Nam Flag"/>

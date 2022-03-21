@@ -35,7 +35,7 @@ export function SettingModal (props: ISettingModalProps) {
         <FiSettings size="24px"/>
         <p>{lang === "en"? "Settings": "Cài đặt"}</p>
       </Button>
-      <Button>
+      <Button onClick={()=>{dispatch(setSelectedModal('makeFriend'))}}>
         <BiUserPlus size="24px"/>
         <p>{
           lang === "en"? "Add Friend": "Thêm bạn"
