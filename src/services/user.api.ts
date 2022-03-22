@@ -6,19 +6,22 @@ import axiosClient from "./axiosClient";
 const userApi = {
     login: async (username: string, password: string) => {
         const url = "/user/signin";
-        const user = await axiosClient.post(url, {
+        const user: {
+            code: number, status: string, message: string,
+            data: {
+                accessToken: string,
+                refreshToken: string,
+            }
+        } = await axiosClient.post(url, {
             username: username,
             password: password,
         })
-        return user as AxiosResponse<{
-            accessToken: string,
-            refreshToken: string,
-        }>;
+        return user;
     },
     register: (username: string, password: string, email: string) => {
         return new Promise<{
             code: number,
-            status: string,
+            status: string | number,
             message: string,
         }>(async (resolve, reject) => {
             const url = "/user/signup";

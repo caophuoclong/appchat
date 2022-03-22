@@ -6,8 +6,11 @@ import {MdOutlineMail} from "react-icons/md"
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup"
 import userApi from '../../../services/user.api';
+import sw2 from "sweetalert2"
 interface Props {
     language: string;
+    setIsSignUp: (value: boolean) => void;
+    handleSetUserNameAndPassword: (value:{username: string, password: string}) => void;
 }
 interface formValue{
     username: string;
@@ -16,7 +19,7 @@ interface formValue{
     email: string;
 }
 
-export default function SignUp({language}: Props) {
+export default function SignUp({language, setIsSignUp, handleSetUserNameAndPassword}: Props) {
     const schema = yup.object().shape({
         username: yup
         .string()
@@ -40,9 +43,27 @@ export default function SignUp({language}: Props) {
     const onSubmit = async (data: formValue)=>{
         try{
             const response = await userApi.register(data.username, data.confirmPassword, data.email);
-            if(response.code === 200){
-                alert("Đăng ký thành công");
-                
+            console.log(response);
+            if(response.status === 200){
+                sw2.fire({
+                    icon: 'success',
+                    title: language === "en" ? "Register successfully!" : "Đăng ký thành công!",
+                    showConfirmButton: true,
+                    timer: 1500
+                })
+                setIsSignUp(false);
+                handleSetUserNameAndPassword({
+                    username: data.username,
+                    password: data.password
+                })
+            }
+            if(response.code === 400){
+                sw2.fire({
+                    icon: 'error',
+                    title: language === "en" ? "Username already exists!" : "Tên đăng nhập đã tồn tại!",
+                    showConfirmButton: true,
+                    timer: 1500
+                })
             }
         }catch(error){
             console.log(error);

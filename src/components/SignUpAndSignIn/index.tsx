@@ -23,9 +23,16 @@ const options: Array<{value: string, label: string}> = [
 export default function Sign(props: ISignProps) {
   const [isSignUp, setIsSignUp] = React.useState(true);
   const [language, setLanguage] = React.useState(window.localStorage.getItem("lang") || "vn");
+  const [userNameAndPassowrd, setUserNameAndPassword] = React.useState({
+    username: "",
+    password: ""
+  })
   const handleChangeLanguage: (value: string)=> void = (value) =>{
         window.localStorage.setItem("lang", value);
         setLanguage(value);
+  }
+  const handleSetUserNameAndPassword = (value:{username: string, password: string})=>{
+    setUserNameAndPassword(value);
   }
   return (
     <div className="flex h-screen">
@@ -43,7 +50,7 @@ export default function Sign(props: ISignProps) {
             }}
           />
           <div className="my-4"></div>
-          {isSignUp ? <SignUp language={language} /> : <SignIn  language={language} />}
+          {isSignUp ? <SignUp language={language} setIsSignUp={setIsSignUp} handleSetUserNameAndPassword={handleSetUserNameAndPassword} /> : <SignIn userNameAndPassowrd={userNameAndPassowrd}  language={language} />}
         </div>
       </div>
     </div>

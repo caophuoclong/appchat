@@ -5,28 +5,59 @@ import Input from "../Input"
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import userApi from '../../../services/user.api';
+import sw2 from "sweetalert2";
 interface Props {
-    language: string
+    language: string,
+    userNameAndPassowrd: {
+        username: string,
+        password: string
+    }
 }
 interface formValue{
     username: string;
     password: string;
 }
-export default function SignIn({language}: Props) {
+export default function SignIn({language, userNameAndPassowrd}: Props) {
+
     const schema = yup.object().shape({
         username: yup.string().required(language === "en" ? "Username is required": "Tên đăng nhập không được trống"),
         password: yup.string().required(language === "en"?"Password is required": "Mật khẩu không được trống")
     })
-    const {register, handleSubmit, formState: {errors}}  = useForm<formValue>({
-        resolver: yupResolver(schema)
+    const {register, handleSubmit, setValue,formState: {errors}}  = useForm<formValue>({
+        resolver: yupResolver(schema),
+
     });
+    setValue("username", userNameAndPassowrd.username);
+    setValue("password", userNameAndPassowrd.password);
     const onSubmit = async (data: formValue)=>{
-        const user = await userApi.login(data.username, data.password);
-        console.log(user.data.accessToken);
-        if(user){
+        const user:{
+            code: number, status: string, message: string, data:{
+                accessToken: string,
+                refreshToken: string
+            }
+        } = await userApi.login(data.username, data.password);
+        if(user.code === 200){
             window.localStorage.setItem("access_token", JSON.stringify(user.data.accessToken));
             window.localStorage.setItem("refresh_token", JSON.stringify(user.data.refreshToken));
             window.location.href = "/";
+        }
+        if(user.code === 404){
+            sw2.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: language === "en" ? "Your account is not exist!": "Tài khoản không tồn tại!",
+                footer: language === "en" ? 'Please register!.': "Vui lòng đăng ký tài khoản"   ,
+                timer: 2000          
+            })
+        }
+        if(user.code === 401){
+            sw2.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: language === "en" ? "Your password is incorrect!": "Mật khẩu không đúng!",
+                footer: language === "en" ? 'Please retype your password!.': "Vui lòng nhập lại mật khẩu!"   ,
+                timer: 2000          
+            })
         }
     }
     return (
