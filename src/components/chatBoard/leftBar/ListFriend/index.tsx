@@ -21,7 +21,14 @@ const EmptySearchFriend = () =>{
 }
 
 export function ListFriend(props: IListFriendProps) {
-  const listFriend = useAppSelector(state => state.user.conversations!);
+  let listFriend = useAppSelector(state => state.user.conversations!);
+  const [xxx, setXXX] = React.useState([...listFriend]);
+  xxx.sort((a, b) => {
+    if(!a.latest) return -1;
+    if(!b.latest) return -1;
+    return new Date(b.latest.createAt!).getTime() - new Date(a.latest.createAt!).getTime();
+  })
+  
   const {searchListFriend} = props;
 
   return (
@@ -36,10 +43,21 @@ export function ListFriend(props: IListFriendProps) {
       )
       } */}
       {
-       listFriend.length === 0 ? <EmptySearchFriend/> : listFriend.map((value,index)=>
+       xxx.length === 0 ? <EmptySearchFriend/> : [...listFriend]
+       .sort((a, b) => {
+        if(!a.latest) return -1;
+        if(!b.latest) return -1;
+        return new Date(b.latest.createAt!).getTime() - new Date(a.latest.createAt!).getTime()
+       })
+       .map((item, i) => 
+       <Friend key={ i}  friendInfo={item}/>
+       )
+      }
+      {/* {
+       xxx.length === 0 ? <EmptySearchFriend/> : listFriend.map((value,index)=>
         <Friend key={index}  friendInfo={value}/>
       )
-      }
+      } */}
 
     </div>
   );

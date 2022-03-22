@@ -125,8 +125,12 @@ const globalSlice = createSlice({
                 ...state,
                 searchedFriend: undefined
             }
-
-
+        },
+        handleSetSocketId: (state: GlobalState, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                socketId: action.payload
+            }
         }
     },
     extraReducers: (builder) => {
@@ -145,5 +149,5 @@ const globalSlice = createSlice({
 
 })
 
-export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined } = globalSlice.actions;
+export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined, handleSetSocketId } = globalSlice.actions;
 export default globalSlice.reducer;

@@ -6,6 +6,8 @@ import { getMe } from '../../reducers/userSlice';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { unwrapResult } from '@reduxjs/toolkit';
 import FullPageLoading from './FullPageLoading';
+import { SocketContext } from '../../context/socket';
+import IUser from '../../interface/IUser';
 
 export interface IChatProps {
 }
@@ -14,6 +16,8 @@ export function Chat (props: IChatProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(state => state.user.loading);
+  const socket = React.useContext(SocketContext);
+  const [user, setUser] = React.useState<IUser>({} as IUser);
   React.useEffect(()=>{
     const access_token = localStorage.getItem('access_token');
     if(!access_token){
@@ -23,13 +27,18 @@ export function Chat (props: IChatProps) {
       try{
         const actionResult = await dispatch(getMe());
         const unwrap = unwrapResult(actionResult);
+        setUser(unwrap);
       }catch(error){
         console.log(error);
       }
     }
     xxx();
-    
   },[])
+  React.useEffect(()=>{
+    setTimeout(()=>{
+      socket && user._id && socket.emit("init_user", user._id);
+    },1);
+  },[socket, user])
 
   return (
     <div className="flex h-screen min-w-full">

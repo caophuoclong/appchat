@@ -41,6 +41,36 @@ const friendApi = {
 
         })
 
+    },
+    handleAcceptFriend: (id: string) => {
+        return new Promise<{ code: number, status: string, message: string }>(async (resolve, reject) => {
+            const url = "/user/acceptrequest"
+            const response: { code: number, status: string, message: string } = await axiosClient.put(url, {
+                _id: id
+            })
+            if (response.code === 200) {
+                resolve(response);
+            }
+            else {
+                reject(response)
+            }
+
+        })
+    },
+    handleRejectFriend: (id: string) => {
+        return new Promise<{ code: number, status: string, message: string }>(async (resolve, reject) => {
+            const url = "/user/rejectrequest"
+            const response: { code: number, status: string, message: string } = await axiosClient.put(url, {
+                _id: id
+            })
+            if (response.code === 200) {
+                resolve(response);
+            }
+            else {
+                reject(response)
+            }
+
+        })
     }
 }
 export default friendApi;

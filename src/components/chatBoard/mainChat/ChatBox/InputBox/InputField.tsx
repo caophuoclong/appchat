@@ -11,6 +11,7 @@ import { CLOUD_NAME } from '../../../../../configs';
 import { emojiRegex, escapeSpecialChars} from "../../../../../constants/textIsEmoji"
 import { unwrapResult } from '@reduxjs/toolkit';
 import { updateLatestMessage } from '../../../../../reducers/userSlice';
+import { SocketContext } from '../../../../../context/socket';
 export interface IInputFieldProps {}
 
 export function InputField() {
@@ -18,6 +19,7 @@ export function InputField() {
   const handleShowEmojiPicker = (event: React.MouseEvent) => {
     setIsPickerShow(!isPickerShow);
   };
+  const socket = React.useContext(SocketContext);
   const dispatch = useAppDispatch();
   const text = useAppSelector((state) => state.global.message.text);
   const files = useAppSelector((state) => state.global.message.file);
@@ -65,6 +67,12 @@ export function InputField() {
         message,
         conversationId: conversationId!,
       }))
+      // console.log(socket);
+      socket.emit("send_message", JSON.stringify({
+        message,
+        conversationId: conversationId!,
+      }))
+      
     }
     if(event.key === "Enter" && files.length > 0){
       document.getElementById("previewPicture")?.classList.add("invisible");
@@ -87,7 +95,11 @@ export function InputField() {
         message,
         conversationId: conversationId!,
       }))
-          }
+      socket.emit("send_message", JSON.stringify({
+        message,
+        conversationId: conversationId!,
+      }))
+      }
         }).catch(error=>{
           console.log(error);
           // alert("Something went wrong!\n" + error);

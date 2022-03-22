@@ -4,6 +4,7 @@ import { participation } from '../../../../interface/IUser';
 import { handleChooseFriend } from '../../../../reducers/userSlice';
 import IMessage from "../../../../interface/IMessage";
 import { formatDate } from '../../mainChat/ChatBox/MessageList/Message';
+import {ImFilePicture} from "react-icons/im"
 
 export interface IFriendProps {
   friendInfo: {
@@ -15,6 +16,7 @@ export interface IFriendProps {
 
 export function Friend({friendInfo}: IFriendProps) {
   const { _id, participants, latest  } = friendInfo;
+  const lang = useAppSelector(state => state.global.language);
   const user = useAppSelector(state => state.user);
   const [participation, setParticipation] = React.useState<participation | null>(null);
   React.useEffect(()=>{
@@ -38,11 +40,19 @@ export function Friend({friendInfo}: IFriendProps) {
               (participation ? participation!.name!.length : "") <= 12?<p className="truncate text-sm">@{participation ? participation!.username:""}</p>:null
             }
           </div>
-          <p className="text-xs">{formatDate(new Date(latest?.createAt as Date).getTime())}</p>
+          <div>
+            <p className="text-xs">{formatDate(new Date(latest?.createAt as Date).getTime())}</p>
+            <div className="text-white bg-red-500 rounded-full flex w-4 h-4 mx-auto justify-center items-center" style={{
+              fontSize: "10px"
+            }} >12</div>
+          </div>
         </div>
         <div className="w-full">
             <p className="truncate text-xs w-48">
-              {latest?.text}
+              {latest?.type === "text" ? latest?.text : <div className="flex">
+                <ImFilePicture size="12px"/>
+                {lang === "en" ? "Picture" : "Hình Ảnh"}
+              </div>}
             </p>
         </div>
       </div>
