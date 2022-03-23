@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import IUser from "../interface/IUser";
 import friendApi from "../services/friend";
 
-type SelectedType = "settings" | "information" | "makeFriend" | null;
+type SelectedType = "settings" | "information" | "makeFriend" | "showFriends" | null;
 
 interface GlobalState {
     showModalOption: boolean,
@@ -57,12 +57,17 @@ const globalSlice = createSlice({
     name: "globalSlice",
     initialState,
     reducers: {
-        toggleShowModalOption: (state: GlobalState) => {
+        setShowModalOptionFalse: (state: GlobalState) => {
             return {
                 ...state,
-                showModalOption: !state.showModalOption
+                showModalOption: false
             }
-
+        },
+        setShowModalOptionTrue: (state: GlobalState) => {
+            return {
+                ...state,
+                showModalOption: true,
+            }
         },
         handleChangeMessageText: (state: GlobalState, action: PayloadAction<string>) => {
             const { payload } = action;
@@ -149,5 +154,5 @@ const globalSlice = createSlice({
 
 })
 
-export const { toggleShowModalOption, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined, handleSetSocketId } = globalSlice.actions;
+export const { setShowModalOptionFalse, setShowModalOptionTrue, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined, handleSetSocketId } = globalSlice.actions;
 export default globalSlice.reducer;

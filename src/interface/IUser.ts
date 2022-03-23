@@ -17,7 +17,19 @@ interface IUser {
     friendsPending: Array<string>,
     friendsRejected: Array<string>,
     friendsRequested: Array<string>,
+    notifications: Array<INotification>
 
+}
+export interface INotification {
+    _id: string,
+    user: {
+        name: string,
+        imgUrl: string,
+        username: string,
+    },
+    type: string,
+    date: Date
+    seen: boolean
 }
 export interface IConversation {
     _id: string,

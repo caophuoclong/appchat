@@ -5,11 +5,11 @@ import { ListFriend } from './ListFriend';
 import { Logo } from './Logo';
 import { SearchBox } from './SearchBox';
 import { User } from './User';
-
+import Notification from './notification';
+import ShowFriends from './ShowFriends';
 export interface ILeftBarProps {}
 
 export function LeftBar(props: ILeftBarProps) {
-  const userState = useAppSelector(state => state.user);
   const lang = useAppSelector(state => state.global.language);
   const [resultSearch, setResultSearch] = React.useState<IFriend[] | null>(null);
   const handleSearch = (event: React.ChangeEvent)=>{
@@ -32,6 +32,10 @@ export function LeftBar(props: ILeftBarProps) {
       <Logo className="flex items-center m-6 mr-3" />
       <p className="mt-12 text-2xl font-semibold m-6 mr-3">{lang === "en"? "Message": "Tin nhắn"}</p>
       <SearchBox onSearch={handleSearch} className="border-2 border-gray-300 flex px-4 py-2 justify-between rounded-full m-6 mr-3" />
+      <div className="flex justify-end gap-4">
+        <ShowFriends/>
+        <Notification/>
+      </div>
       <ListFriend searchListFriend={resultSearch} className="max-h-70 my-8 overflow-auto" />
       </div>
       <User className="mt-auto mb-4 py-auto flex items-center gap-4 bg-leftBarBackground pl-2"/>

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import ReactModal from "react-modal"
 import { useAppDispatch } from '../../../hook';
-import { setSelectedModal, toggleShowModalOption } from '../../../reducers/globalSlice';
+import { setSelectedModal, setShowModalOptionFalse,  } from '../../../reducers/globalSlice';
 export interface IModalProps {
     children: JSX.Element | JSX.Element[] | null,
     heading?: JSX.Element | null,
@@ -27,7 +27,7 @@ export default function Modal (props: IModalProps) {
         dispatch(setSelectedModal(null));
     }
     const handleModalOpen = ()=>{
-        dispatch(toggleShowModalOption());
+        dispatch(setShowModalOptionFalse());
     }
   return (
     <ReactModal onAfterClose={handleModalClosed} onAfterOpen={handleModalOpen} isOpen={show}  style={customStyle}>
@@ -45,6 +45,6 @@ export default function Modal (props: IModalProps) {
           {props.children}
         </div>
         </div>
-          </ReactModal>
+    </ReactModal>
   );
 }

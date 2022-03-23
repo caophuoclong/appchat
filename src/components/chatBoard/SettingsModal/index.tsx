@@ -3,7 +3,7 @@ import {BiUser, BiUserPlus} from "react-icons/bi";
 import {FiSettings, FiLogOut} from "react-icons/fi"
 import {FaTimes} from "react-icons/fa"
 import { useAppDispatch, useAppSelector } from '../../../hook';
-import { setSelectedModal, toggleShowModalOption } from '../../../reducers/globalSlice';
+import { setSelectedModal, setShowModalOptionFalse } from '../../../reducers/globalSlice';
 export interface ISettingModalProps {
 }
 
@@ -20,7 +20,7 @@ export function SettingModal (props: ISettingModalProps) {
   const dispatch = useAppDispatch();
   const lang = useAppSelector(state => state.global.language);
   const handleCloseModal = ()=>{
-    dispatch(toggleShowModalOption());
+    dispatch(setShowModalOptionFalse());
   }
   return (
     <>

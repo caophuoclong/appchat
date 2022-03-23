@@ -113,17 +113,23 @@ export function InputField() {
       document.getElementById("previewPicture")?.classList.remove("invisible");
       
     }
-
+  }
+  const handleOnFocus =  ()=>{
+    socket.emit("on_typing", user.choosenFriend?.participation._id);
+  }
+  const handleOnBlur = ()=>{
+    socket.emit("not_typing", user.choosenFriend?.participation._id)
   }
   return (
     <div className="mx-8 px-6 border-collapse border border-glareGray200 rounded-full w-full relative flex items-center">
       <input
         type="text"
-        className="text-glareGray500 px-1 py-1 outline-none bg-transparent w-full"
+        className="text-black placeholder:text-glareGray500 px-1 py-1 outline-none bg-transparent w-full"
         placeholder={lang === "en"? "Type a new message": "Nhập tin nhắn"}
         onChange={handleTypingText}
         onKeyDown={handleEnterPress}
-        
+        onFocus={handleOnFocus}
+        onBlur={handleOnBlur}
         value={text}
       />
       <button

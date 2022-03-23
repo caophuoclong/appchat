@@ -53,7 +53,7 @@ export function ListFriend(props: IListFriendProps) {
         return new Date(b.latest.createAt!).getTime() - new Date(a.latest.createAt!).getTime()
        })
        .map((item, i) => 
-       <Friend key={ i}  friendInfo={item} unReadLength={(()=>item.unreadmessages.filter(message => message.senderId !== user._id).length)()}/>
+       <Friend key={i}  friendInfo={item} unReadLength={(()=>item.unreadmessages ? item.unreadmessages.filter(message => message.senderId !== user._id).length: 0)()}/>
        )
       }
       {/* {

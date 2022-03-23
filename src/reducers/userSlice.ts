@@ -3,9 +3,10 @@ import {
     PayloadAction,
     createAsyncThunk,
 } from '@reduxjs/toolkit';
-import IUser, { IConversation, participation } from '../interface/IUser';
+import IUser, { IConversation, INotification, participation } from '../interface/IUser';
 import IMessage from "../interface/IMessage";
 import userApi from '../services/user.api';
+import notiApi from '../services/notification';
 export type dateType =
     | 1
     | 2
@@ -92,7 +93,53 @@ export const updateInformation = createAsyncThunk(
         });
     }
 );
-
+export const markSeenNoti = createAsyncThunk("mark_seen_noti", (params: string) => {
+    return new Promise<string>(async (resolve, reject) => {
+        try {
+            const xxx = await notiApi.markSeenNoti(params);
+            resolve(xxx);
+        } catch (error) {
+            reject(error);
+        }
+    })
+})
+export const refreshNoti = createAsyncThunk("refresh_noti", () => {
+    return new Promise<Array<INotification>>((resolve, reject) => {
+        try {
+            const xxx = notiApi.getNotification();
+            console.log(xxx);
+            resolve(xxx);
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    })
+})
+export const refreshConversations = createAsyncThunk("refresh_conversations", () => {
+    return new Promise<Array<IConversation>>((resolve, reject) => {
+        try {
+            const xxx = userApi.getListConversation();
+            resolve(xxx);
+        } catch (error) {
+            reject(error);
+        }
+    })
+})
+export const refreshFriendsAll = createAsyncThunk("refresh_friends_all", () => {
+    return new Promise<{
+        friends: Array<string>,
+        friendsPending: Array<string>,
+        friendsRejected: Array<string>,
+        friendsRequested: Array<string>,
+    }>(async (resolve, reject) => {
+        try {
+            const xxx = userApi.getListFriendAll();
+            resolve(xxx);
+        } catch (error) {
+            reject(error);
+        }
+    })
+})
 const initialState: UserState = {
     _id: '26032001',
     name: 'Phuoc Long',
@@ -135,7 +182,8 @@ const initialState: UserState = {
     friendsPending: [],
     friendsRejected: [],
     friendsRequested: [],
-    temp: ""
+    temp: "",
+    notifications: [],
 };
 
 export const userSlice = createSlice({
@@ -219,6 +267,7 @@ export const userSlice = createSlice({
                 state.friendsPending = data.friendsPending!;
                 state.friendsRejected = data.friendsRejected!;
                 state.friendsRequested = data.friendsRequested!;
+                state.notifications = data.notifications!
             }
             state.loading = false;
         });
@@ -251,6 +300,21 @@ export const userSlice = createSlice({
             state.imgUrl = imgUrl!;
 
         });
+        builder.addCase(markSeenNoti.fulfilled, (state, action) => {
+            state.notifications.forEach(notification => { if (notification._id === action.payload) notification.seen = true })
+        })
+        builder.addCase(refreshNoti.fulfilled, (state, action) => {
+            state.notifications = action.payload;
+        })
+        builder.addCase(refreshConversations.fulfilled, (state, action) => {
+            state.conversations = action.payload;
+        })
+        builder.addCase(refreshFriendsAll.fulfilled, (state, action) => {
+            state.friends = action.payload.friends;
+            state.friendsPending = action.payload.friendsPending;
+            state.friendsRejected = action.payload.friendsRejected;
+            state.friendsRequested = action.payload.friendsRequested;
+        })
     },
 });
 

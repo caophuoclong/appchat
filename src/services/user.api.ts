@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import Exception from "../exceptions";
-import IUser, { IGetMeResponse } from "../interface/IUser";
+import IUser, { IConversation, IGetMeResponse } from "../interface/IUser";
 import axiosClient from "./axiosClient";
 
 const userApi = {
@@ -59,6 +59,52 @@ const userApi = {
 
             } catch (error: any) {
                 reject(new Exception(500, error.message))
+            }
+        })
+    },
+    getListConversation: () => {
+        return new Promise<Array<IConversation>>(async (resolve, reject) => {
+            try {
+                const url = "/user/conversations"
+                const res = await axiosClient.get(url) as {
+                    code: number,
+                    data: Array<IConversation>
+                };
+                if (res.code === 200) {
+                    resolve(res.data);
+                } else {
+                    reject("Error");
+                }
+            } catch (error) {
+                reject(error);
+            }
+        })
+    },
+    getListFriendAll: () => {
+        return new Promise<{
+            friends: Array<string>,
+            friendsPending: Array<string>,
+            friendsRejected: Array<string>,
+            friendsRequested: Array<string>,
+        }>(async (resolve, reject) => {
+            try {
+                const url = "/user/friendsall"
+                const res = await axiosClient.get(url) as {
+                    code: number,
+                    data: {
+                        friends: Array<string>,
+                        friendsPending: Array<string>,
+                        friendsRejected: Array<string>,
+                        friendsRequested: Array<string>,
+                    }
+                };
+                if (res.code === 200) {
+                    resolve(res.data);
+                } else {
+                    reject("Error");
+                }
+            } catch (error) {
+                reject(error);
             }
         })
     },

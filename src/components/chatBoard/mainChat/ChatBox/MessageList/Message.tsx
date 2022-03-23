@@ -5,9 +5,12 @@ import moment from "moment";
 export interface IMessageProps {
   message: IMessage;
 }
-export const formatDate = (now: number) : string=>{
+export const formatDate = (now: number) =>{
   const date = new Date( now);
   const formated = moment(date).format("hh:mm");
+  if(formated === "Invalid date"){
+    return null
+  }
   return formated;
 }
 const Right = ({ message, date, type }: { message: string; date: number, type: "image" | "text" }) => {

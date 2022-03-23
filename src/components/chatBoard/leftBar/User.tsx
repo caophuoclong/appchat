@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { MoreIcon } from '../../../assets/icons';
 import {  useAppDispatch, useAppSelector } from '../../../hook';
-import { makeSearchedFriendsUndefined, toggleShowModalOption } from '../../../reducers/globalSlice';
+import { makeSearchedFriendsUndefined, setShowModalOptionFalse, setShowModalOptionTrue } from '../../../reducers/globalSlice';
 import Information from '../SettingsModal/Information';
 import MakeFriend from '../SettingsModal/Makefriend';
 import Settings from '../SettingsModal/Settings';
@@ -17,7 +17,11 @@ export function User (props: IUserProps) {
     const  selectedModal  = useAppSelector(state => state.global.selectedModal);
     const dispatch = useAppDispatch();
     const handleChangeShowModal = ()=>{
-      dispatch(toggleShowModalOption());
+      if(showModalOption)
+      dispatch(setShowModalOptionFalse());
+      else
+      dispatch(setShowModalOptionTrue());
+
     }
     React.useEffect(()=>{
       dispatch(makeSearchedFriendsUndefined());
@@ -30,7 +34,7 @@ export function User (props: IUserProps) {
         <p className="text-glareGray text-base font-normal">@{username}</p>
       </div>
       <div className="relative justify-self-end ml-auto mr-4">
-      {showModalOption?<ModalOptions className="flex flex-col p-4 pb-2 absolute w-80 min-h-40 bg-gray-50 -translate-y-full -translate-x-8 -top-1/2 left-full after:content-[''] after:border-l-8 after:border-l-transparent after:border-r-8 after:border-r-transparent after:border-t-8 after:border-t-gray-50 after:absolute after:bottom-0 after:translate-y-full after:left-4 shadow-2xl rounded-xl drop-shadow-2xl z-10"/>:null}
+      {showModalOption ? <ModalOptions className="flex flex-col p-4 pb-2 absolute w-80 min-h-40 bg-gray-50 -translate-y-full -translate-x-8 -top-1/2 left-full after:content-[''] after:border-l-8 after:border-l-transparent after:border-r-8 after:border-r-transparent after:border-t-8 after:border-t-gray-50 after:absolute after:bottom-0 after:translate-y-full after:left-4 shadow-2xl rounded-xl drop-shadow-2xl z-10"/>:null}
       <button onClick={handleChangeShowModal} >
         
         <MoreIcon />

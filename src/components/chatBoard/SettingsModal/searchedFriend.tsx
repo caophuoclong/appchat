@@ -8,9 +8,12 @@ import {
 import {CgMoreO} from "react-icons/cg";
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { sendFriendRequest } from '../../../reducers/globalSlice';
-import { getMe } from '../../../reducers/userSlice';
+import { getMe, refreshConversations } from '../../../reducers/userSlice';
 import friendApi from '../../../services/friend';
+import notiApi from '../../../services/notification';
 import SelectLanguage from '../../Select';
+import sw2 from "sweetalert2";
+import { SocketContext } from '../../../context/socket';
 type Props = {
   _id: string;
   name?: string;
@@ -25,21 +28,34 @@ export default function SearchedFriend({
   username,
 }: Props) {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(state => state.user);
   const userFriends = useAppSelector((state) => state.user.friends);
   const userFriendsRequested = useAppSelector((state) => state.user.friendsRequested);
   const userFriendPending  = useAppSelector((state) => state.user.friendsPending);
   const userId = useAppSelector((state) => state.user._id);
   const [showButtonUpdate, setShowButtonUpdate] = React.useState(false);
   const [isAccept, setIsAccept] = React.useState<"n" | "y" | "none">("none");
-  console.log(userFriendsRequested);
   const lang = useAppSelector((state) => state.global.language);
+  const socket = React.useContext(SocketContext);
   const handleSendFriendRequest = async (id: string) => {
     try {
       const actionResul = await dispatch(sendFriendRequest(id));
       unwrapResult(actionResul);
       const actionResult = await dispatch(getMe());
       unwrapResult(actionResult)
-      alert('Send friend request success');
+      await notiApi.addNotification({notification: {
+        type: "makeFriend",
+        user: `${user._id}`,
+      },
+      _id: id
+      })
+      socket.emit("live_noti", )
+      sw2.fire({
+        icon: "success",
+        text: lang === "en" ? "Request sent" : "Yêu cầu kết bạn đã được gửi",
+        timer: 1500
+      })
+      socket.emit("live_noti", id);
     } catch (error) {
       alert('Send friend request failure');
     }
@@ -53,7 +69,14 @@ export default function SearchedFriend({
     if(isAccept){
       try{
         await friendApi.handleAcceptFriend(id);
-        const actionResult = await dispatch(getMe());
+        await notiApi.addNotification({notification: {
+          type: "acceptFriend",
+          user: `${user._id}`,
+        },
+        _id: id
+        })
+        socket.emit("accept_friend", id);
+        const actionResult = await dispatch(refreshConversations());
         unwrapResult(actionResult);
       }catch(error){
         alert("Error! Login again");
@@ -61,7 +84,7 @@ export default function SearchedFriend({
     }else{
       try{
         await friendApi.handleRejectFriend(id);
-        const actionResult = await dispatch(getMe());
+        const actionResult = await dispatch(refreshConversations());
         unwrapResult(actionResult);
       }catch(eror){
         alert('Error! Login again');

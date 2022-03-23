@@ -4,7 +4,7 @@ import {SOCKET_HOST} from "../configs/"
 import { useAppDispatch, useAppSelector } from "../hook";
 import { handleSetSocketId } from "../reducers/globalSlice";
 import IMessage from "../interface/IMessage"
-import { handleSetOnline, handleUpdateTemp, updateLatestMessage, updateUnReadMessasges } from "../reducers/userSlice";
+import { getMe, handleSetOnline, handleUpdateTemp, refreshConversations, refreshFriendsAll, refreshNoti, updateLatestMessage, updateUnReadMessasges } from "../reducers/userSlice";
 import { addNewMessage } from "../reducers/message";
 export const SocketContext= React.createContext<Socket>({} as Socket);
 const Provider = (props: {children: JSX.Element})=>{
@@ -34,6 +34,13 @@ const Provider = (props: {children: JSX.Element})=>{
         });
         socket.on("re_check_online", (data)=>{
             dispatch(handleSetOnline(data));
+        })
+        socket.on("rep_live_noti",()=>{
+            dispatch(refreshNoti());
+            dispatch(refreshFriendsAll());
+        })
+        socket.on("rep_accept_friend", ()=>{
+            dispatch(refreshConversations());
         })
         socket.on("check_online", ()=>{
 

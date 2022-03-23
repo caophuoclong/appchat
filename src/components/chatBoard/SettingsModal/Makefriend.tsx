@@ -87,7 +87,7 @@ export default function MakeFriend({}: Props) {
             {
               searchedFriend && searchedFriend.length === 0 ? <p>
               {lang === "en"? "No result" : "Không tìm thấy kết quả"}
-              </p>:searchedFriend && searchedFriend.map((friend, index)=><Friend key={index} _id={friend._id} name={friend.name} username={friend.username} imgUrl={friend.imgUrl}/>)
+              </p>:searchedFriend && searchedFriend.map((friend, index)=><Friend key={friend._id} _id={friend._id} name={friend.name} username={friend.username} imgUrl={friend.imgUrl}/>)
             }
         </div>
         <div className="flex justify-end mt-auto mb-0 gap-8">
