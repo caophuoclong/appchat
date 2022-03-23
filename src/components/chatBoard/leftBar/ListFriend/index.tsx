@@ -22,6 +22,7 @@ const EmptySearchFriend = () =>{
 
 export function ListFriend(props: IListFriendProps) {
   let listFriend = useAppSelector(state => state.user.conversations!);
+  const user = useAppSelector(state => state.user)
   const [xxx, setXXX] = React.useState([...listFriend]);
   xxx.sort((a, b) => {
     if(!a.latest) return -1;
@@ -30,6 +31,8 @@ export function ListFriend(props: IListFriendProps) {
   })
   
   const {searchListFriend} = props;
+  const [lengthUnRead, setLengthUnRead] = React.useState(0);
+
 
   return (
     <div className={props.className} style={{
@@ -50,7 +53,7 @@ export function ListFriend(props: IListFriendProps) {
         return new Date(b.latest.createAt!).getTime() - new Date(a.latest.createAt!).getTime()
        })
        .map((item, i) => 
-       <Friend key={ i}  friendInfo={item}/>
+       <Friend key={ i}  friendInfo={item} unReadLength={(()=>item.unreadmessages.filter(message => message.senderId !== user._id).length)()}/>
        )
       }
       {/* {

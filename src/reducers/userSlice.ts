@@ -43,6 +43,7 @@ interface UserState extends IUser {
         participation: participation;
     } | null;
     loading: boolean;
+    temp: string,
 }
 export const getMe = createAsyncThunk(
     'get_me',
@@ -124,14 +125,17 @@ const initialState: UserState = {
                 type: 'text',
                 createAt: '',
             },
+            unreadmessages: [],
         },
     ],
+
     choosenFriend: null,
     loading: false,
     friends: [],
     friendsPending: [],
     friendsRejected: [],
     friendsRequested: [],
+    temp: ""
 };
 
 export const userSlice = createSlice({
@@ -141,6 +145,9 @@ export const userSlice = createSlice({
         updateId: (state, action) => {
             const { payload } = action;
             state._id = payload;
+        },
+        handleSetOnline: (state: UserState, action: PayloadAction<boolean>) => {
+            state.choosenFriend!.participation!.isOnline = action.payload;
         },
         handleChooseFriend: (
             state: UserState,
@@ -154,6 +161,19 @@ export const userSlice = createSlice({
                 choosenFriend: action.payload,
             };
         },
+        handleUpdateTemp: (state: UserState, action: PayloadAction<string>) => {
+            state.temp = action.payload
+        },
+        makeUnReadMessagesEmpty: (state: UserState, action: PayloadAction<{ conversationId: string }>) => {
+            const xxx: Array<IConversation> = JSON.parse(JSON.stringify([...state.conversations!]));
+            xxx.forEach((conversation: IConversation) => {
+                if (conversation._id === action.payload.conversationId) {
+                    conversation.unreadmessages = []
+                }
+            })
+            console.log(xxx);
+            state.conversations = xxx;
+        },
         updateLatestMessage: (state: UserState, action: PayloadAction<{
             message: IMessage,
             conversationId: string
@@ -166,6 +186,15 @@ export const userSlice = createSlice({
                 }
             })
             state.conversations = xxx;
+        },
+        updateUnReadMessasges: (state: UserState, action: PayloadAction<{ conversationId: string, message: IMessage }>) => {
+            const xxx: Array<IConversation> = JSON.parse(JSON.stringify([...state.conversations!]));
+            xxx.forEach((conversation: IConversation) => {
+                if (conversation._id === action.payload.conversationId) {
+                    conversation.unreadmessages.push(action.payload.message);
+                }
+            })
+            state.conversations = xxx;
         }
     },
     extraReducers: (builder) => {
@@ -173,6 +202,7 @@ export const userSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(getMe.fulfilled, (state, action) => {
+            console.log(action.payload);
             if (action.payload) {
                 const { ...data } = action.payload as IUser;
                 console.log(data);
@@ -224,5 +254,5 @@ export const userSlice = createSlice({
     },
 });
 
-export const { updateId, handleChooseFriend, updateLatestMessage } = userSlice.actions;
+export const { updateId, handleChooseFriend, updateLatestMessage, updateUnReadMessasges, makeUnReadMessagesEmpty, handleUpdateTemp, handleSetOnline } = userSlice.actions;
 export default userSlice.reducer;

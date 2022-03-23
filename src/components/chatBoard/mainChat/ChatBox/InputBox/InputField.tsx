@@ -24,6 +24,7 @@ export function InputField() {
   const text = useAppSelector((state) => state.global.message.text);
   const files = useAppSelector((state) => state.global.message.file);
   const conversationId = useAppSelector((state) => state.user.choosenFriend?.conversationId);
+  const user = useAppSelector((state) => state.user);
   const lang = useAppSelector((state) => state.global.language);
   const userState = useAppSelector((state) => state.user);
   const handleTypingText = (event: React.ChangeEvent) => {
@@ -72,6 +73,8 @@ export function InputField() {
         message,
         conversationId: conversationId!,
       }))
+      socket.emit("check_online", user.choosenFriend?.participation._id);
+
       
     }
     if(event.key === "Enter" && files.length > 0){
@@ -99,6 +102,7 @@ export function InputField() {
         message,
         conversationId: conversationId!,
       }))
+      socket.emit("check_online", user.choosenFriend?.participation._id);
       }
         }).catch(error=>{
           console.log(error);

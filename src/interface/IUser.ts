@@ -17,11 +17,13 @@ interface IUser {
     friendsPending: Array<string>,
     friendsRejected: Array<string>,
     friendsRequested: Array<string>,
+
 }
 export interface IConversation {
     _id: string,
     participants: Array<participation>,
     latest?: IMessage,
+    unreadmessages: Array<IMessage>,
 }
 export interface IGetMeResponse {
     code: number,
@@ -29,5 +31,7 @@ export interface IGetMeResponse {
     message: string,
     data: IUser,
 }
-export type participation = Pick<IUser, "_id" | "username" | "name" | "imgUrl">
+export type participation = Pick<IUser, "_id" | "username" | "name" | "imgUrl"> & {
+    isOnline?: boolean,
+}
 export default IUser;
