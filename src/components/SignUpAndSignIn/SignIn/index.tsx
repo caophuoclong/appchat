@@ -53,6 +53,9 @@ export default function SignIn({language, userNameAndPassowrd, handleSetShowSign
                 footer: language === "en" ? 'Please register!.': "Vui lòng đăng ký tài khoản"   ,
                 timer: 2000          
             })
+            setTimeout(()=>{
+                handleSetShowSigning(false);
+            },1000)
         }
         if(user.code === 401){
             sw2.fire({
@@ -62,6 +65,9 @@ export default function SignIn({language, userNameAndPassowrd, handleSetShowSign
                 footer: language === "en" ? 'Please retype your password!.': "Vui lòng nhập lại mật khẩu!"   ,
                 timer: 2000          
             })
+            setTimeout(()=>{
+                handleSetShowSigning(false);
+            },1000)
         }
     }
     return (

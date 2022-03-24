@@ -24,7 +24,7 @@ export function InputField() {
   const dispatch = useAppDispatch();
   const text = useAppSelector((state) => state.global.message.text);
   const files = useAppSelector((state) => state.global.message.file);
-  const conversationId = useAppSelector((state) => state.user.choosenFriend?.conversationId);
+  const conversationId = useAppSelector((state) => state.user.choosenFriend.conversationId);
   const user = useAppSelector((state) => state.user);
   const lang = useAppSelector((state) => state.global.language);
   const userState = useAppSelector((state) => state.user);
@@ -72,7 +72,7 @@ export function InputField() {
         createAt: new Date().toString(),
         type:"text"
       }
-      dispatch(addNewMessage(message));
+      dispatch(addNewMessage({message, conversationId}));
       const actionResult = await dispatch(addMessage({message, conversationId: conversationId!}));
       const unwrap = unwrapResult(actionResult);
       dispatch(handleChangeMessageText(""));
@@ -102,7 +102,7 @@ export function InputField() {
               createAt: new Date().toString(),
               type:"image"
             }
-            dispatch(addNewMessage(message));
+            dispatch(addNewMessage({message, conversationId}));
             const actionResult = await dispatch(addMessage({message, conversationId: conversationId!}));
       const unwrap = unwrapResult(actionResult);
       dispatch(updateLatestMessage({

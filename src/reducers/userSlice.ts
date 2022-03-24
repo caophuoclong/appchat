@@ -42,7 +42,7 @@ interface UserState extends IUser {
     choosenFriend: {
         conversationId: string;
         participation: participation;
-    } | null;
+    };
     loading: boolean;
     temp: string,
 }
@@ -171,7 +171,10 @@ const initialState: UserState = {
         },
     ],
 
-    choosenFriend: null,
+    choosenFriend: {
+        conversationId: '',
+        participation: {} as participation,
+    },
     loading: false,
     friends: [],
     friendsPending: [],
@@ -248,10 +251,8 @@ export const userSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(getMe.fulfilled, (state, action) => {
-            console.log(action.payload);
             if (action.payload) {
                 const { ...data } = action.payload as IUser;
-                console.log(data);
                 state._id = data._id;
                 state.username = data.username;
                 state.name = data.name;

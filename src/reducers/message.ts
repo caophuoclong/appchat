@@ -8,13 +8,15 @@ import conversationApi from '../services/conversation.api';
 import messageApi from '../services/message.api';
 
 interface MessageState {
-    messages: Array<IMessage>;
+    messagesList: {
+        [key: string]: Array<IMessage>
+    };
     loading: boolean;
 }
 export const getConversation = createAsyncThunk(
     'getMessages',
-    async (id: string) => {
-        return await conversationApi.getConversation(id);
+    async ({ id, page }: { id: string, page: number }) => {
+        return await conversationApi.getConversation(id, page);
     }
 );
 export const addMessage = createAsyncThunk(
@@ -34,7 +36,7 @@ export const addMessage = createAsyncThunk(
 );
 
 const initialState: MessageState = {
-    messages: [],
+    messagesList: {},
     loading: false,
 };
 
@@ -53,14 +55,19 @@ const messageSlice = createSlice({
         },
         addNewMessage: (
             state: MessageState,
-            action: PayloadAction<IMessage>
+            action: PayloadAction<{ message: IMessage, conversationId: string }>
         ) => {
             const data = action.payload;
-
             return {
                 ...state,
-                messages: [...state.messages, data],
-            };
+                messagesList: {
+                    ...state.messagesList,
+                    [data.conversationId]: [
+                        ...state.messagesList[data.conversationId],
+                        data.message,
+                    ],
+                },
+            }
         },
     },
     extraReducers: (builder) => {
@@ -71,9 +78,15 @@ const messageSlice = createSlice({
             return {
                 ...state,
                 loading: false,
-                messages: action.payload,
+                messagesList: {
+                    ...state.messagesList,
+                    [action.payload.conversationId]: action.payload.messageList,
+                }
             };
         });
+        builder.addCase(getConversation.rejected, (state, action) => {
+            state.loading = false;
+        })
         builder.addCase(addMessage.pending, (state, action) => {
             console.log("Pending");
         });

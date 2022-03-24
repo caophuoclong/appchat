@@ -6,7 +6,6 @@ export interface IChatHeaderProps {
 }
 const CurrentFriend = (props: any)=>{
   const choosenFriend = useAppSelector(state=> state.user.choosenFriend?.participation);
-  console.log(choosenFriend);
   return (
     <div className="flex gap-2">
       <div className="relative">
