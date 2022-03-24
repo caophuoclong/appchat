@@ -131,10 +131,16 @@ export function InputField() {
     }
   }
   const handleOnFocus =  ()=>{
-    socket.emit("on_typing", user.choosenFriend?.participation._id);
+    socket.emit("on_typing", {
+      senderId: user.choosenFriend?.participation._id,
+      conversationId
+    });
   }
   const handleOnBlur = ()=>{
-    socket.emit("not_typing", user.choosenFriend?.participation._id)
+    socket.emit("not_typing", {
+      senderId: user.choosenFriend?.participation._id,
+      conversationId
+    })
   }
   const handleSendMessage = () => {
     handleSend();

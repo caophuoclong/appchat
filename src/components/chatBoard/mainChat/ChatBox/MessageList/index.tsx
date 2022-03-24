@@ -5,7 +5,9 @@ import { Message } from './Message';
 import ScrollToBottom from "react-scroll-to-bottom"
 import FullPageLoading from './FullPageLoading';
 import { SocketContext } from '../../../../../context/socket';
-import { makeUnReadMessagesEmpty } from '../../../../../reducers/userSlice';
+import { handleUpdateTemp, makeUnReadMessagesEmpty, updateLatestMessage, updateUnReadMessasges } from '../../../../../reducers/userSlice';
+import { addNewMessage } from '../../../../../reducers/message';
+import IMessage from "../../../../../interface/IMessage";
 export interface IMessageListProps {
     className: string;
 }
@@ -24,10 +26,28 @@ export function MessageList (props: IMessageListProps) {
     }
   },[messages])
   React.useEffect(()=>{
-    socket.on("reply_typing", (data: boolean)=>{
-      console.log(data);
-      setIsTyping(data);
+    socket.on("reply_typing", (data: {
+      isTyping: boolean,
+      conversationId: string,
+    })=>{
+      if(data.conversationId === user.choosenFriend!.conversationId)
+        setIsTyping(data.isTyping);
     })
+    socket.on("receive_message",(data: string)=>{
+      const {conversationId, message} = JSON.parse(data) as {
+          conversationId: string,
+          message: IMessage
+      }
+      dispatch(updateLatestMessage({
+          message,
+          conversationId
+      }))
+      dispatch(updateUnReadMessasges({conversationId, message}));
+      console.log(conversationId, user.choosenFriend);
+      if(conversationId === user.choosenFriend?.conversationId)
+        dispatch(addNewMessage(message));
+      dispatch(handleUpdateTemp(conversationId));
+  });
   },[socket])
   
   return (
