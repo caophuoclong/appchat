@@ -11,13 +11,13 @@ interface Props {
     userNameAndPassowrd: {
         username: string,
         password: string
-    }
+    },handleSetShowSigning: (value: boolean)=> void
 }
 interface formValue{
     username: string;
     password: string;
 }
-export default function SignIn({language, userNameAndPassowrd}: Props) {
+export default function SignIn({language, userNameAndPassowrd, handleSetShowSigning}: Props) {
 
     const schema = yup.object().shape({
         username: yup.string().required(language === "en" ? "Username is required": "Tên đăng nhập không được trống"),
@@ -30,6 +30,7 @@ export default function SignIn({language, userNameAndPassowrd}: Props) {
     setValue("username", userNameAndPassowrd.username);
     setValue("password", userNameAndPassowrd.password);
     const onSubmit = async (data: formValue)=>{
+        handleSetShowSigning(true);
         const user:{
             code: number, status: string, message: string, data:{
                 accessToken: string,
@@ -40,6 +41,9 @@ export default function SignIn({language, userNameAndPassowrd}: Props) {
             window.localStorage.setItem("access_token", JSON.stringify(user.data.accessToken));
             window.localStorage.setItem("refresh_token", JSON.stringify(user.data.refreshToken));
             window.location.href = "/";
+            setTimeout(()=>{
+                handleSetShowSigning(false);
+            },1000)
         }
         if(user.code === 404){
             sw2.fire({

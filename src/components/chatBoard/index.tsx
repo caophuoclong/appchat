@@ -2,7 +2,7 @@ import * as React from 'react';
 import { LeftBar } from './leftBar';
 import { MainChat } from './mainChat';
 import { useNavigate } from "react-router-dom"
-import { getMe } from '../../reducers/userSlice';
+import { getMe, turnOffLoading } from '../../reducers/userSlice';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { unwrapResult } from '@reduxjs/toolkit';
 import FullPageLoading from './FullPageLoading';
@@ -28,6 +28,9 @@ export function Chat (props: IChatProps) {
         const actionResult = await dispatch(getMe());
         const unwrap = unwrapResult(actionResult);
         setUser(unwrap);
+        setTimeout(()=>{
+          dispatch(turnOffLoading(false))
+        },500);
       }catch(error){
         console.log(error);
       }

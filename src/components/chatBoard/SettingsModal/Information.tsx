@@ -123,13 +123,9 @@ export default function Information(props: IInformationProps) {
         }))
       } else{
         alert("Data is incorrect")
-
       }
-      
     }
-    
   };
-
   return (
     <Modal
       customStyle={{
