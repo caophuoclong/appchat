@@ -60,7 +60,6 @@ export function InputBox(props: IInputBoxProps) {
           <GifIcon />
         </label>
         <InputField/>
-        <SendIcon />
       </div>
     </div>
   );

@@ -56,7 +56,7 @@ export default function Notification({}: Props) {
                 {numberOfNonSeenNoti}
             </div>}
         </button>
-        <div ref={modal} className="absolute top-0 -right-2 translate-x-full w-96 h-52 bg-white shadow-2xl transition-all rounded-3xl border border-gray-300 visible p-2 overflow-auto">
+        <div ref={modal} className="absolute top-0 -right-2 translate-x-full w-96 h-52 bg-white shadow-2xl transition-all rounded-3xl border border-gray-300 invisible p-2 overflow-auto">
         {
                 notifications.map((notification, index)=> <div key={index} onClick={()=>{handleMarkReadNoti(notification._id)}} className="mb-4 mt-2 flex gap-2 items-center cursor-pointer relative">
                 <img src={notification.user.imgUrl} alt="avatar" className="w-10 h-10r rounded-full" />

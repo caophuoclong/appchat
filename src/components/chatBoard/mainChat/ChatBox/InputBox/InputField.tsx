@@ -1,7 +1,7 @@
 import Picker from 'emoji-picker-react';
 import type { IEmojiData } from 'emoji-picker-react';
 import * as React from 'react';
-import { Emoij } from '../../../../../assets/icons';
+import { Emoij, SendIcon } from '../../../../../assets/icons';
 import { useAppDispatch, useAppSelector } from '../../../../../hook';
 import {  handleChangeMessageText, handleMakeImageListEmpty } from '../../../../../reducers/globalSlice';
 import IMessage from "../../../../../interface/IMessage";
@@ -12,7 +12,8 @@ import { emojiRegex, escapeSpecialChars} from "../../../../../constants/textIsEm
 import { unwrapResult } from '@reduxjs/toolkit';
 import { updateLatestMessage } from '../../../../../reducers/userSlice';
 import { SocketContext } from '../../../../../context/socket';
-export interface IInputFieldProps {}
+export interface IInputFieldProps {
+}
 
 export function InputField() {
   const [isPickerShow, setIsPickerShow] = React.useState(false);
@@ -27,6 +28,7 @@ export function InputField() {
   const user = useAppSelector((state) => state.user);
   const lang = useAppSelector((state) => state.global.language);
   const userState = useAppSelector((state) => state.user);
+  const buttonSendRef = React.useRef<HTMLButtonElement>(null)
   const handleTypingText = (event: React.ChangeEvent) => {
     const element = event.target as HTMLInputElement;
     // const value = element.value;
@@ -36,7 +38,17 @@ export function InputField() {
         textss = textss = textss.replace(regex, emojiRegex[i])
       }
     dispatch(handleChangeMessageText(textss));
+    
   };
+  React.useEffect(()=>{
+    if(text.length > 0 || files.length > 0){
+      buttonSendRef.current?.classList.remove("invisible");
+      buttonSendRef.current?.classList.add("visible");
+    }else{
+      buttonSendRef.current?.classList.add("invisible");
+      buttonSendRef.current?.classList.remove("visible");
+    }
+  },[text, files])
   const handleEmojiClick = (event: any, emojiObject: IEmojiData) => {
     dispatch(handleChangeMessageText(text + emojiObject.emoji));
   };
@@ -51,8 +63,8 @@ export function InputField() {
   //   //   // console.log(textss);
   //   // }
   // }
-  const handleEnterPress = async (event: React.KeyboardEvent<HTMLInputElement>) =>{
-    if(event.key === "Enter" && text.length > 0){
+  const handleSend = async ()=>{
+    if(text.length > 0){
       const message: IMessage ={
         text: text,
         receiverId: userState.choosenFriend!.participation._id,
@@ -74,10 +86,9 @@ export function InputField() {
         conversationId: conversationId!,
       }))
       socket.emit("check_online", user.choosenFriend?.participation._id);
-
       
     }
-    if(event.key === "Enter" && files.length > 0){
+    if(files.length > 0){
       document.getElementById("previewPicture")?.classList.add("invisible");
       files.forEach((file)=>{
         uploadImage(file).then(async result=>{
@@ -111,7 +122,12 @@ export function InputField() {
       })
       dispatch(handleMakeImageListEmpty());
       document.getElementById("previewPicture")?.classList.remove("invisible");
-      
+    }
+  }
+  
+  const handleEnterPress = async (event: React.KeyboardEvent<HTMLInputElement>) =>{
+    if(event.key === "Enter") {
+      handleSend();
     }
   }
   const handleOnFocus =  ()=>{
@@ -120,8 +136,11 @@ export function InputField() {
   const handleOnBlur = ()=>{
     socket.emit("not_typing", user.choosenFriend?.participation._id)
   }
+  const handleSendMessage = () => {
+    handleSend();
+  }
   return (
-    <div className="mx-8 px-6 border-collapse border border-glareGray200 rounded-full w-full relative flex items-center">
+    <div className="mx-8 px-6 border-collapse border border-glareGray200 rounded-full w-full relative flex items-center gap-x-2">
       <input
         type="text"
         className="text-black placeholder:text-glareGray500 px-1 py-1 outline-none bg-transparent w-full"
@@ -149,6 +168,9 @@ export function InputField() {
           }}
         />
       )}
+      <button ref={buttonSendRef} className="invisible transition-all duaration-300" onClick={handleSendMessage}>
+          <SendIcon />
+        </button>
     </div>
   );
 }

@@ -13,12 +13,18 @@ interface IUser {
         year: number,
     },
     conversations?: Array<IConversation>,
-    friends: Array<string>,
-    friendsPending: Array<string>,
-    friendsRejected: Array<string>,
-    friendsRequested: Array<string>,
+    friends: Array<IFriendsAll>,
+    friendsPending: Array<IFriendsAll>,
+    friendsRejected: Array<IFriendsAll>,
+    friendsRequested: Array<IFriendsAll>,
     notifications: Array<INotification>
 
+}
+export interface IFriendsAll {
+    _id: string,
+    username: string,
+    name?: string,
+    imgUrl: string,
 }
 export interface INotification {
     _id: string,

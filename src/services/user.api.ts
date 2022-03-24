@@ -1,8 +1,13 @@
 import { AxiosResponse } from "axios";
 import Exception from "../exceptions";
-import IUser, { IConversation, IGetMeResponse } from "../interface/IUser";
+import IUser, { IConversation, IFriendsAll, IGetMeResponse } from "../interface/IUser";
 import axiosClient from "./axiosClient";
-
+export interface DataResponseGetFriends {
+    friends: Array<IFriendsAll>,
+    friendsPending: Array<IFriendsAll>,
+    friendsRequested: Array<IFriendsAll>,
+    friendsRejected: Array<IFriendsAll>
+}
 const userApi = {
     login: async (username: string, password: string) => {
         const url = "/user/signin";
@@ -81,22 +86,12 @@ const userApi = {
         })
     },
     getListFriendAll: () => {
-        return new Promise<{
-            friends: Array<string>,
-            friendsPending: Array<string>,
-            friendsRejected: Array<string>,
-            friendsRequested: Array<string>,
-        }>(async (resolve, reject) => {
+        return new Promise<DataResponseGetFriends>(async (resolve, reject) => {
             try {
                 const url = "/user/friendsall"
                 const res = await axiosClient.get(url) as {
                     code: number,
-                    data: {
-                        friends: Array<string>,
-                        friendsPending: Array<string>,
-                        friendsRejected: Array<string>,
-                        friendsRequested: Array<string>,
-                    }
+                    data: DataResponseGetFriends
                 };
                 if (res.code === 200) {
                     resolve(res.data);

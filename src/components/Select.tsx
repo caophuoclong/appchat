@@ -13,6 +13,7 @@ interface Props {
 export default function SelectLanguage({options,onChange, value, children}: Props) {
     const handleOnChange = (event: React.ChangeEvent)=>{
         const value = (event.target as HTMLSelectElement).value;
+        console.log("asdfsdf");
         onChange(value);
     }
   return (

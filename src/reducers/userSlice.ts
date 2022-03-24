@@ -3,9 +3,9 @@ import {
     PayloadAction,
     createAsyncThunk,
 } from '@reduxjs/toolkit';
-import IUser, { IConversation, INotification, participation } from '../interface/IUser';
+import IUser, { IConversation, IFriendsAll, INotification, participation } from '../interface/IUser';
 import IMessage from "../interface/IMessage";
-import userApi from '../services/user.api';
+import userApi, { DataResponseGetFriends } from '../services/user.api';
 import notiApi from '../services/notification';
 export type dateType =
     | 1
@@ -126,12 +126,7 @@ export const refreshConversations = createAsyncThunk("refresh_conversations", ()
     })
 })
 export const refreshFriendsAll = createAsyncThunk("refresh_friends_all", () => {
-    return new Promise<{
-        friends: Array<string>,
-        friendsPending: Array<string>,
-        friendsRejected: Array<string>,
-        friendsRequested: Array<string>,
-    }>(async (resolve, reject) => {
+    return new Promise<DataResponseGetFriends>(async (resolve, reject) => {
         try {
             const xxx = userApi.getListFriendAll();
             resolve(xxx);
@@ -312,8 +307,8 @@ export const userSlice = createSlice({
         builder.addCase(refreshFriendsAll.fulfilled, (state, action) => {
             state.friends = action.payload.friends;
             state.friendsPending = action.payload.friendsPending;
-            state.friendsRejected = action.payload.friendsRejected;
             state.friendsRequested = action.payload.friendsRequested;
+            state.friendsRejected = action.payload.friendsRejected
         })
     },
 });

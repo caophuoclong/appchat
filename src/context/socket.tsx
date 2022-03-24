@@ -40,7 +40,9 @@ const Provider = (props: {children: JSX.Element})=>{
             dispatch(refreshFriendsAll());
         })
         socket.on("rep_accept_friend", ()=>{
+            dispatch(refreshNoti());
             dispatch(refreshConversations());
+            dispatch(refreshFriendsAll());
         })
         socket.on("check_online", ()=>{
 
