@@ -52,7 +52,7 @@ export default function Notification({}: Props) {
     <div className="px-4 relative">
         <button className="relative" onClick={handleOnShowNotifiModal}>
             <BsBellFill size="24px"/>
-            {numberOfNonSeenNoti !== 0 && <div className="absolute text-xs bg-red-500 text-gray-300 p-1 rounded-full w-5 h-5 top-0 right-0 translate-x-2 -translate-y-2">
+            {numberOfNonSeenNoti !== 0 && <div className="absolute text-xs bg-red-500 text-gray-300 p-1 rounded-full w-5 h-5 top-0 right-0 translate-x-2 -translate-y-2 z-10">
                 {numberOfNonSeenNoti}
             </div>}
         </button>
