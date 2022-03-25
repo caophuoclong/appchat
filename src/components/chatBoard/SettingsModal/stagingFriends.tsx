@@ -73,11 +73,10 @@ export default function StagingFriends({ _id }: Props) {
   }, [friends, friendsRequested, friendsPending]);
   const handleSelect = (value: 'n' | 'y') => {
     console.log(value);
-    setIsAccept(value);
-    setShowButtonUpdate(true);
+    handleUpdateFriend(_id, value);
   };
-  const handleUpdateFriend = async (id: string) => {
-    if (isAccept) {
+  const handleUpdateFriend = async (id: string, option: "n" | "y") => {
+    if (option === "y") {
       try {
         await friendApi.handleAcceptFriend(id);
         await notiApi.addNotification({
@@ -171,7 +170,7 @@ export default function StagingFriends({ _id }: Props) {
                 {lang === 'en' ? 'Select one option' : 'Hãy lựa chọn'}
               </option>
             </SelectLanguage>
-            {showButtonUpdate && (
+            {/* {showButtonUpdate && (
               <button
                 onClick={() => {
                   handleUpdateFriend(_id);
@@ -179,7 +178,7 @@ export default function StagingFriends({ _id }: Props) {
               >
                 <AiFillCheckCircle size="24px" fill="green" />
               </button>
-            )}
+            )} */}
           </div>
         );
       } else {

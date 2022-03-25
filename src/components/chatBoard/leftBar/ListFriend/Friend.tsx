@@ -9,6 +9,7 @@ import IMessage from '../../../../interface/IMessage';
 import { formatDate } from '../../mainChat/ChatBox/MessageList/Message';
 import { ImFilePicture } from 'react-icons/im';
 import { SocketContext } from '../../../../context/socket';
+import conversationApi from '../../../../services/conversation.api';
 
 export interface IFriendProps {
   friendInfo: {
@@ -37,7 +38,7 @@ export function Friend({ friendInfo, unReadLength }: IFriendProps) {
     });
   }, [user]);
   const dispatch = useAppDispatch();
-  const handleSelectUser = () => {
+  const handleSelectUser = async () => {
     if (participation) {
       dispatch(
         handleChooseFriend({ conversationId: _id, participation })
@@ -56,7 +57,7 @@ export function Friend({ friendInfo, unReadLength }: IFriendProps) {
 
   return (
     <div
-      className="flex gap-2 my-6 px-2 py-1 hover:bg-gray-200 bg-opacity-25 cursor-pointer"
+      className="flex gap-2 my-6 px-2 py-1 hover:bg-gray-200 bg-opacity-25 cursor-pointer z-0"
       onClick={handleSelectUser}
     >
       <img

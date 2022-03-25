@@ -10,11 +10,11 @@ export interface IMainChatProps {}
 export function MainChat(props: IMainChatProps) {
   const choosenFriend = useAppSelector((state) => state.user.choosenFriend);
   return (
-    <div className="w-5/6 h-full">
+    <div className="w-5/6 h-full flex items-center">
       {choosenFriend.conversationId !== "" ? (
-        <Chat className="flex flex-col h-full" />
+        <Chat className="flex flex-col h-full w-full" />
       ) : (
-        <Greeting className="w-1/2 my-80 mx-32 " />
+        <Greeting className="w-1/2 mx-32" />
       )}
     </div>
   );

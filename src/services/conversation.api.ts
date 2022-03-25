@@ -1,12 +1,12 @@
-import { AxiosResponse } from "axios";
 import IMessage from "../interface/IMessage";
-import message from "../reducers/message";
 import axiosClient from "./axiosClient";
 
 const conversationApi = {
     getConversation: (id: string, page: number) => {
         const url = "/conversation/" + id;
         return new Promise<{
+            page: number,
+            isMore: boolean,
             messageList: Array<IMessage>,
             conversationId: string
         }>(async (resolve, reject) => {
@@ -16,8 +16,13 @@ const conversationApi = {
                         page
                     }
                 });
-                const messages: Array<IMessage> = conversation.data.messages;
+                const messages: Array<IMessage> = conversation.data.conversation.messages;
+                const pageResult = conversation.data.conversation.page;
+                const isMore = conversation.data.conversation.isMore;
+                console.log(conversation);
                 resolve({
+                    page: pageResult,
+                    isMore,
                     messageList: messages,
                     conversationId: id
                 });
@@ -25,6 +30,12 @@ const conversationApi = {
                 console.log(error);
                 reject(new Error("Some thing wrong"))
             }
+        })
+    },
+    makeUnReadMessagesEmpty: (id: string) => {
+        const url = "/conversation/" + id;
+        return new Promise(async () => {
+            await axiosClient.put(url);
         })
     }
 };

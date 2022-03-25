@@ -9,7 +9,11 @@ import messageApi from '../services/message.api';
 
 interface MessageState {
     messagesList: {
-        [key: string]: Array<IMessage>
+        [key: string]: {
+            messages: Array<IMessage>,
+            page: number,
+            isMore: boolean,
+        }
     };
     loading: boolean;
 }
@@ -36,7 +40,9 @@ export const addMessage = createAsyncThunk(
 );
 
 const initialState: MessageState = {
-    messagesList: {},
+    messagesList: {
+
+    },
     loading: false,
 };
 
@@ -58,14 +64,18 @@ const messageSlice = createSlice({
             action: PayloadAction<{ message: IMessage, conversationId: string }>
         ) => {
             const data = action.payload;
+            console.log(data);
             return {
                 ...state,
                 messagesList: {
                     ...state.messagesList,
-                    [data.conversationId]: [
+                    [data.conversationId]: {
                         ...state.messagesList[data.conversationId],
-                        data.message,
-                    ],
+                        messages: [
+                            ...state.messagesList[data.conversationId].messages,
+                            data.message,
+                        ]
+                    },
                 },
             }
         },
@@ -75,14 +85,41 @@ const messageSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(getConversation.fulfilled, (state, action) => {
-            return {
-                ...state,
-                loading: false,
-                messagesList: {
-                    ...state.messagesList,
-                    [action.payload.conversationId]: action.payload.messageList,
-                }
-            };
+            if (state.messagesList[action.payload.conversationId]) {
+                return {
+                    ...state,
+                    loading: false,
+                    messagesList: {
+                        ...state.messagesList,
+                        [action.payload.conversationId]: {
+                            messages: [
+                                ...action.payload.messageList.reverse(),
+                                ...state.messagesList[action.payload.conversationId].messages
+                            ],
+                            page: action.payload.page,
+                            isMore: action.payload.isMore,
+                        },
+                    }
+                };
+
+            } else {
+                console.log(action.payload);
+                return {
+                    ...state,
+                    loading: false,
+                    messagesList: {
+                        ...state.messagesList,
+                        [action.payload.conversationId]: {
+                            messages:
+                                [...action.payload.messageList.reverse()]
+                            ,
+                            page: action.payload.page,
+                            isMore: action.payload.isMore,
+                        },
+                    }
+                };
+
+            }
         });
         builder.addCase(getConversation.rejected, (state, action) => {
             state.loading = false;

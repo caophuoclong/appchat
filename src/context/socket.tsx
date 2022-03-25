@@ -20,24 +20,11 @@ const Provider = (props: {children: JSX.Element})=>{
         socket.on("new_connection",(data=>{
             dispatch(handleSetSocketId(data));
         }))
-        socket.on("receive_message",(data: string)=>{
-            const {conversationId, message} = JSON.parse(data) as {
-                conversationId: string,
-                message: IMessage
-            }
-            dispatch(updateLatestMessage({
-                message,
-                conversationId
-            }))
-            dispatch(updateUnReadMessasges({conversationId, message}));
-            dispatch(addNewMessage({message, conversationId}));
-            dispatch(handleUpdateTemp(conversationId));
-        });
         socket.on("re_check_online", (data)=>{
             dispatch(handleSetOnline(data));
         })
         socket.on("rep_live_noti",()=>{
-            dispatch(refreshNoti());
+            dispatch(refreshNoti()); 
             dispatch(refreshFriendsAll());
         })
         socket.on("rep_accept_friend", ()=>{
@@ -61,11 +48,11 @@ const Provider = (props: {children: JSX.Element})=>{
                 message,
                 conversationId
             }))
-            // dispatch(updateUnReadMessasges({conversationId, message}));
-            dispatch(addNewMessage({message, conversationId: user.choosenFriend.conversationId}));
+            dispatch(updateUnReadMessasges({conversationId, message}));
+            dispatch(addNewMessage({message, conversationId}));
             dispatch(handleUpdateTemp(conversationId));
         });
-},[socket, user.choosenFriend.conversationId])
+},[socket])
     
 
     return(

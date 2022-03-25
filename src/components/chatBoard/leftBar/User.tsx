@@ -27,7 +27,7 @@ export function User (props: IUserProps) {
       dispatch(makeSearchedFriendsUndefined());
     },[selectedModal])
     return (
-    <div className={props.className}>
+    <div style={{height: "10%"}} className={props.className}>
       <img className="w-12 h-12 rounded-full" src={imgUrl || "https://picsum.photos/40"} alt="" />
       <div>
         <p className="text-glareBlack text-base font-semibold">{name}</p>

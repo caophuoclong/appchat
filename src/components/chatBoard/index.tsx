@@ -45,7 +45,7 @@ export function Chat (props: IChatProps) {
     },1);
   },[socket, user])
   React.useEffect(()=>{
-    console.log(123);
+    console.log(conversations);
       try{
         if(conversations){
           conversations.map(async conversation => {
@@ -61,7 +61,7 @@ export function Chat (props: IChatProps) {
       }catch(error){
         console.log(error);
       }
-  },[conversations?.length])
+  },[conversations?.length, conversations![0]._id])
 
   return (
     <div className="flex h-screen min-w-full">

@@ -217,7 +217,6 @@ export const userSlice = createSlice({
                     conversation.unreadmessages = []
                 }
             })
-            console.log(xxx);
             state.conversations = xxx;
         },
         updateLatestMessage: (state: UserState, action: PayloadAction<{
@@ -251,6 +250,7 @@ export const userSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(getMe.fulfilled, (state, action) => {
+            console.log(action.payload);
             if (action.payload) {
                 const { ...data } = action.payload as IUser;
                 state._id = data._id;

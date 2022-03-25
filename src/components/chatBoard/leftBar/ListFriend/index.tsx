@@ -35,9 +35,9 @@ export function ListFriend(props: IListFriendProps) {
 
 
   return (
-    <div className={props.className} style={{
-        
-    }}>
+    <div style={{
+      height: "65%"
+    }} className={props.className}>
       {/* {
         searchListFriend  ? searchListFriend.length === 0 ? <EmptySearchFriend/> : searchListFriend.map((value,index)=>
         <Friend key={index}  friendInfo={value}/>) :
