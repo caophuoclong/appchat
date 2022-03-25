@@ -20,7 +20,7 @@ export default function ShowFriends({}: Props) {
           transform: 'translate(-50%, -50%)',
           borderRadius: '20px',
           height: "580px",
-          width: "40%",
+          width: "50%",
           minWidth: "620px"
         },
     }
@@ -58,21 +58,21 @@ export default function ShowFriends({}: Props) {
        {
             selectView === "friends" ? (<div className="flex gap-x-4 gap-y-4 flex-wrap">
             {
-              friends.map((friend, index)=>  <Friends className="w-1/4 h-12" _id={friend._id} username={friend.username} imgUrl={friend.imgUrl} name={friend.name} key={index}/> )
+              friends.map((friend, index)=>  <Friends className="w-64 h-12" _id={friend._id} username={friend.username} imgUrl={friend.imgUrl} name={friend.name} key={index}/> )
             }
            </div>) : <div></div>
       }
        {
             selectView === "requested" ? (<div className="flex gap-1 gap-y-4 flex-wrap">
             {
-              friendsRequested.map((friend, index)=>  <Friends className="w-1/4 h-12" _id={friend._id} username={friend.username} imgUrl={friend.imgUrl} name={friend.name} key={index}/> )
+              friendsRequested.map((friend, index)=>  <Friends className="w-64 h-12" _id={friend._id} username={friend.username} imgUrl={friend.imgUrl} name={friend.name} key={index}/> )
             }
            </div>) : <div></div>
       }
        {
             selectView === "pending" ? (<div className="flex gap-x-4 gap-y-4 flex-wrap">
             {
-              friendsPending.map((friend, index)=>  <Friends className="w-1/4 h-12" _id={friend._id} username={friend.username} imgUrl={friend.imgUrl} name={friend.name} key={index}/> )
+              friendsPending.map((friend, index)=>  <Friends className="w-64 h-12" _id={friend._id} username={friend.username} imgUrl={friend.imgUrl} name={friend.name} key={index}/> )
             }
            </div>) : <div></div>
       }
