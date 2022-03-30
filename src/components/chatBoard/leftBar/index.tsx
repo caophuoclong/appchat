@@ -35,7 +35,7 @@ export function LeftBar(props: ILeftBarProps) {
           height: '90%',
         }}
       >
-        <div className="flex flex-col gap-4" >
+        <div className="flex flex-col gap-4">
           <Logo className="flex items-center m-6 mr-3 mb-2 mt-4" />
           <p className="text-2xl font-semibold m-6 mr-3  my-0">
             {lang === 'en' ? 'Message' : 'Tin nhắn'}
@@ -54,10 +54,13 @@ export function LeftBar(props: ILeftBarProps) {
           className="my-8 overflow-auto"
         />
       </div>
-      <div className="flex items-center bg-white z-50" style={{
-        height: "10%"
-      }}>
-        <User className="py-auto flex items-center gap-4 pl-2" />
+      <div
+        className="flex items-center bg-white z-50"
+        style={{
+          height: '10%',
+        }}
+      >
+        <User className="py-auto flex items-center w-full pl-2" />
       </div>
     </div>
   );
