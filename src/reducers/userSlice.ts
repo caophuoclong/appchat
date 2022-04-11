@@ -243,6 +243,9 @@ export const userSlice = createSlice({
         },
         turnOffLoading: (state: UserState, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
+        },
+        setEmptyChoosen: (state: UserState) => {
+            state.choosenFriend.conversationId = "";
         }
     },
     extraReducers: (builder) => {
@@ -316,5 +319,5 @@ export const userSlice = createSlice({
     },
 });
 
-export const { updateId, handleChooseFriend, updateLatestMessage, updateUnReadMessasges, makeUnReadMessagesEmpty, handleUpdateTemp, handleSetOnline, turnOffLoading } = userSlice.actions;
+export const { updateId, handleChooseFriend, updateLatestMessage, updateUnReadMessasges, makeUnReadMessagesEmpty, handleUpdateTemp, handleSetOnline, turnOffLoading, setEmptyChoosen } = userSlice.actions;
 export default userSlice.reducer;

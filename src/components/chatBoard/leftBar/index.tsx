@@ -10,7 +10,11 @@ import ShowFriends from './ShowFriends';
 export interface ILeftBarProps {}
 
 export function LeftBar(props: ILeftBarProps) {
+  const leftBarRef = React.useRef<HTMLDivElement>(null);
   const lang = useAppSelector((state) => state.global.language);
+  const choosenFriend = useAppSelector(
+    (state) => state.user.choosenFriend
+  );
   const [resultSearch, setResultSearch] = React.useState<
     IFriend[] | null
   >(null);
@@ -23,12 +27,32 @@ export function LeftBar(props: ILeftBarProps) {
     //   return e.name.search(re) !== -1 || e.username.search(re) !== -1;
     // }))
   };
+  const leftBarReponsive = () => {
+    const width = window.innerWidth;
+    if (width < 1024) {
+      if (choosenFriend.conversationId !== '') {
+        leftBarRef.current?.classList.add('hidden');
+        leftBarRef.current?.classList.remove('w-full');
+      } else {
+        leftBarRef.current?.classList.add('w-full');
+        leftBarRef.current?.classList.remove('hidden');
+      }
+    } else {
+      leftBarRef.current?.classList.remove('hidden');
+    }
+  };
+  React.useEffect(() => {
+    leftBarReponsive();
+    console.log('123');
+  }, [choosenFriend]);
+  window.addEventListener('resize', leftBarReponsive);
   return (
     <div
+      ref={leftBarRef}
       style={{
         boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.25)',
       }}
-      className="w-1/5 min-w-400 bg-leftBarBackground h-full"
+      className="lg:w-1/5 lg:min-w-400 bg-leftBarBackground h-full"
     >
       <div
         style={{

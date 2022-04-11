@@ -44,6 +44,9 @@ module.exports = {
         "30": "7.5rem",
         "40": "10rem",
         "50": "12.5rem"
+      },
+      screen: {
+        "phone": "640px",
       }
     },
   },

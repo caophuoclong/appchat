@@ -1,5 +1,9 @@
 import * as React from 'react';
-import { GifIcon, PictureIcon, SendIcon } from '../../../../../assets/icons';
+import {
+  GifIcon,
+  PictureIcon,
+  SendIcon,
+} from '../../../../../assets/icons';
 import { useAppDispatch } from '../../../../../hook';
 import { handleChangeImageFile } from '../../../../../reducers/globalSlice';
 import { InputField } from './InputField';
@@ -11,30 +15,29 @@ export interface IInputBoxProps {
 
 export function InputBox(props: IInputBoxProps) {
   const dispatch = useAppDispatch();
-  const readFile = (file: File)=>{
-    return new Promise<ArrayBuffer | string >((resolve, reject)=>{
+  const readFile = (file: File) => {
+    return new Promise<ArrayBuffer | string>((resolve, reject) => {
       const fr = new FileReader();
-      fr.onload = ()=>{
+      fr.onload = () => {
         resolve(fr.result!);
-      }
-      fr.onerror = ()=>{
-        reject(fr)
-      }
+      };
+      fr.onerror = () => {
+        reject(fr);
+      };
       fr.readAsDataURL(file);
-    })
-  }
-  const handleFileUpload = (event: React.ChangeEvent)=>{
+    });
+  };
+  const handleFileUpload = (event: React.ChangeEvent) => {
     const fileArray = (event.target as HTMLInputElement).files;
-    if(fileArray){
-      for(let i = 0; i < fileArray.length; i++){
+    if (fileArray) {
+      for (let i = 0; i < fileArray.length; i++) {
         const file = fileArray[i];
-        readFile(file).then((result)=>{
-          dispatch(handleChangeImageFile(result))
-        })
+        readFile(file).then((result) => {
+          dispatch(handleChangeImageFile(result));
+        });
       }
     }
-
-  }
+  };
   return (
     <div
       className={props.className}
@@ -42,7 +45,7 @@ export function InputBox(props: IInputBoxProps) {
         boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.25)',
       }}
     >
-      <PreviewImage/>
+      <PreviewImage />
       <div className="flex gap-3 items-center">
         <input
           type="file"
@@ -52,14 +55,19 @@ export function InputBox(props: IInputBoxProps) {
           hidden
           onChange={handleFileUpload}
         />
-        <label htmlFor="choosePictureFile">
-          <input type="file" id="chooseGifFile" hidden accept="image/gif" />
+        <label className="cursor-pointer" htmlFor="choosePictureFile">
           <PictureIcon />
         </label>
-        <label htmlFor="chooseGifFile">
+        <input
+          type="file"
+          id="chooseGifFile"
+          hidden
+          accept="image/gif"
+        />
+        <label className="cursor-pointer" htmlFor="chooseGifFile">
           <GifIcon />
         </label>
-        <InputField/>
+        <InputField />
       </div>
     </div>
   );

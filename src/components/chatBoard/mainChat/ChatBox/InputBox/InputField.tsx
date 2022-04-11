@@ -3,17 +3,25 @@ import type { IEmojiData } from 'emoji-picker-react';
 import * as React from 'react';
 import { Emoij, SendIcon } from '../../../../../assets/icons';
 import { useAppDispatch, useAppSelector } from '../../../../../hook';
-import {  handleChangeMessageText, handleMakeImageListEmpty } from '../../../../../reducers/globalSlice';
-import IMessage from "../../../../../interface/IMessage";
-import { addMessage, addNewMessage } from '../../../../../reducers/message';
+import {
+  handleChangeMessageText,
+  handleMakeImageListEmpty,
+} from '../../../../../reducers/globalSlice';
+import IMessage from '../../../../../interface/IMessage';
+import {
+  addMessage,
+  addNewMessage,
+} from '../../../../../reducers/message';
 import { uploadImage } from '../../../../../services';
 import { CLOUD_NAME } from '../../../../../configs';
-import { emojiRegex, escapeSpecialChars} from "../../../../../constants/textIsEmoji"
+import {
+  emojiRegex,
+  escapeSpecialChars,
+} from '../../../../../constants/textIsEmoji';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { updateLatestMessage } from '../../../../../reducers/userSlice';
 import { SocketContext } from '../../../../../context/socket';
-export interface IInputFieldProps {
-}
+export interface IInputFieldProps {}
 
 export function InputField() {
   const [isPickerShow, setIsPickerShow] = React.useState(false);
@@ -24,31 +32,32 @@ export function InputField() {
   const dispatch = useAppDispatch();
   const text = useAppSelector((state) => state.global.message.text);
   const files = useAppSelector((state) => state.global.message.file);
-  const conversationId = useAppSelector((state) => state.user.choosenFriend.conversationId);
+  const conversationId = useAppSelector(
+    (state) => state.user.choosenFriend.conversationId
+  );
   const user = useAppSelector((state) => state.user);
   const lang = useAppSelector((state) => state.global.language);
   const userState = useAppSelector((state) => state.user);
-  const buttonSendRef = React.useRef<HTMLButtonElement>(null)
+  const buttonSendRef = React.useRef<HTMLButtonElement>(null);
   const handleTypingText = (event: React.ChangeEvent) => {
     const element = event.target as HTMLInputElement;
     // const value = element.value;
     let textss = element.value;
-      for (let i in emojiRegex){
-        const regex = new RegExp(escapeSpecialChars(i), "gim");
-        textss = textss = textss.replace(regex, emojiRegex[i])
-      }
-    dispatch(handleChangeMessageText(textss));
-    
-  };
-  React.useEffect(()=>{
-    if(text.length > 0 || files.length > 0){
-      buttonSendRef.current?.classList.remove("invisible");
-      buttonSendRef.current?.classList.add("visible");
-    }else{
-      buttonSendRef.current?.classList.add("invisible");
-      buttonSendRef.current?.classList.remove("visible");
+    for (let i in emojiRegex) {
+      const regex = new RegExp(escapeSpecialChars(i), 'gim');
+      textss = textss = textss.replace(regex, emojiRegex[i]);
     }
-  },[text, files])
+    dispatch(handleChangeMessageText(textss));
+  };
+  React.useEffect(() => {
+    if (text.length > 0 || files.length > 0) {
+      buttonSendRef.current?.classList.remove('hidden');
+      buttonSendRef.current?.classList.add('inline');
+    } else {
+      buttonSendRef.current?.classList.add('hidden');
+      buttonSendRef.current?.classList.remove('inline');
+    }
+  }, [text, files]);
   const handleEmojiClick = (event: any, emojiObject: IEmojiData) => {
     dispatch(handleChangeMessageText(text + emojiObject.emoji));
   };
@@ -63,94 +72,127 @@ export function InputField() {
   //   //   // console.log(textss);
   //   // }
   // }
-  const handleSend = async ()=>{
-    if(text.length > 0){
-      const message: IMessage ={
+  const handleSend = async () => {
+    if (text.length > 0) {
+      const message: IMessage = {
         text: text,
         receiverId: userState.choosenFriend!.participation._id,
         senderId: userState._id,
         createAt: new Date().toString(),
-        type:"text"
-      }
-      dispatch(addNewMessage({message, conversationId}));
-      const actionResult = await dispatch(addMessage({message, conversationId: conversationId!}));
+        type: 'text',
+      };
+      dispatch(addNewMessage({ message, conversationId }));
+      const actionResult = await dispatch(
+        addMessage({ message, conversationId: conversationId! })
+      );
       const unwrap = unwrapResult(actionResult);
-      dispatch(handleChangeMessageText(""));
-      dispatch(updateLatestMessage({
-        message,
-        conversationId: conversationId!,
-      }))
+      dispatch(handleChangeMessageText(''));
+      dispatch(
+        updateLatestMessage({
+          message,
+          conversationId: conversationId!,
+        })
+      );
       // console.log(socket);
-      socket.emit("send_message", JSON.stringify({
-        message,
-        conversationId: conversationId!,
-      }))
-      socket.emit("check_online", user.choosenFriend?.participation._id);
-      
+      socket.emit(
+        'send_message',
+        JSON.stringify({
+          message,
+          conversationId: conversationId!,
+        })
+      );
+      socket.emit(
+        'check_online',
+        user.choosenFriend?.participation._id
+      );
     }
-    if(files.length > 0){
-      document.getElementById("previewPicture")?.classList.add("invisible");
-      files.forEach((file)=>{
-        uploadImage(file).then(async result=>{
-          const {status, data} = result;
-          if(status === 200){
-            const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`
-            const message: IMessage ={
-              text: url,
-              receiverId: userState.choosenFriend!.participation._id,
-              senderId: userState._id,
-              createAt: new Date().toString(),
-              type:"image"
+    if (files.length > 0) {
+      document
+        .getElementById('previewPicture')
+        ?.classList.add('invisible');
+      files.forEach((file) => {
+        uploadImage(file)
+          .then(async (result) => {
+            const { status, data } = result;
+            if (status === 200) {
+              const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`;
+              const message: IMessage = {
+                text: url,
+                receiverId:
+                  userState.choosenFriend!.participation._id,
+                senderId: userState._id,
+                createAt: new Date().toString(),
+                type: 'image',
+              };
+              dispatch(addNewMessage({ message, conversationId }));
+              const actionResult = await dispatch(
+                addMessage({
+                  message,
+                  conversationId: conversationId!,
+                })
+              );
+              const unwrap = unwrapResult(actionResult);
+              dispatch(
+                updateLatestMessage({
+                  message,
+                  conversationId: conversationId!,
+                })
+              );
+              socket.emit(
+                'send_message',
+                JSON.stringify({
+                  message,
+                  conversationId: conversationId!,
+                })
+              );
+              socket.emit(
+                'check_online',
+                user.choosenFriend?.participation._id
+              );
             }
-            dispatch(addNewMessage({message, conversationId}));
-            const actionResult = await dispatch(addMessage({message, conversationId: conversationId!}));
-      const unwrap = unwrapResult(actionResult);
-      dispatch(updateLatestMessage({
-        message,
-        conversationId: conversationId!,
-      }))
-      socket.emit("send_message", JSON.stringify({
-        message,
-        conversationId: conversationId!,
-      }))
-      socket.emit("check_online", user.choosenFriend?.participation._id);
-      }
-        }).catch(error=>{
-          console.log(error);
-          // alert("Something went wrong!\n" + error);
-        });
-      })
+          })
+          .catch((error) => {
+            console.log(error);
+            // alert("Something went wrong!\n" + error);
+          });
+      });
       dispatch(handleMakeImageListEmpty());
-      document.getElementById("previewPicture")?.classList.remove("invisible");
+      document
+        .getElementById('previewPicture')
+        ?.classList.remove('invisible');
     }
-  }
-  
-  const handleEnterPress = async (event: React.KeyboardEvent<HTMLInputElement>) =>{
-    if(event.key === "Enter") {
+  };
+
+  const handleEnterPress = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === 'Enter') {
       handleSend();
     }
-  }
-  const handleOnFocus =  ()=>{
-    socket.emit("on_typing", {
+  };
+  const handleOnFocus = () => {
+    socket.emit('on_typing', {
       senderId: user.choosenFriend?.participation._id,
-      conversationId
+      conversationId,
     });
-  }
-  const handleOnBlur = ()=>{
-    socket.emit("not_typing", {
+  };
+  const handleOnBlur = () => {
+    socket.emit('not_typing', {
       senderId: user.choosenFriend?.participation._id,
-      conversationId
-    })
-  }
+      conversationId,
+    });
+  };
   const handleSendMessage = () => {
     handleSend();
-  }
+  };
   return (
-    <div className="mx-8 px-6 border-collapse border border-glareGray200 rounded-full w-full relative flex items-center gap-x-2">
+    <div className="mx-8 lg:px-6 px-2 border-collapse border border-glareGray200 rounded-full w-full relative flex items-center gap-x-2">
       <input
         type="text"
         className="text-black placeholder:text-glareGray500 px-1 py-1 outline-none bg-transparent w-full"
-        placeholder={lang === "en"? "Type a new message": "Nhập tin nhắn"}
+        placeholder={
+          lang === 'en' ? 'Type a new message' : 'Nhập tin nhắn'
+        }
         onChange={handleTypingText}
         onKeyDown={handleEnterPress}
         onFocus={handleOnFocus}
@@ -174,9 +216,13 @@ export function InputField() {
           }}
         />
       )}
-      <button ref={buttonSendRef} className="invisible transition-all duaration-300" onClick={handleSendMessage}>
-          <SendIcon />
-        </button>
+      <button
+        ref={buttonSendRef}
+        className="hidden transition-all duaration-300"
+        onClick={handleSendMessage}
+      >
+        <SendIcon />
+      </button>
     </div>
   );
 }

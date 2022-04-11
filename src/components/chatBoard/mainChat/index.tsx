@@ -8,13 +8,35 @@ import { Greeting } from './Greeting';
 export interface IMainChatProps {}
 
 export function MainChat(props: IMainChatProps) {
-  const choosenFriend = useAppSelector((state) => state.user.choosenFriend);
+  const choosenFriend = useAppSelector(
+    (state) => state.user.choosenFriend
+  );
+  const mainBoardRef = React.useRef<HTMLDivElement>(null);
+  const mainBoardReponsive = () => {
+    const width = window.innerWidth;
+    if (width < 1024) {
+      if (choosenFriend.conversationId === '') {
+        mainBoardRef.current?.classList.add('hidden');
+      } else {
+        mainBoardRef.current?.classList.remove('hidden');
+      }
+    } else {
+      mainBoardRef.current?.classList.remove('hidden');
+    }
+  };
+  React.useEffect(() => {
+    mainBoardReponsive();
+  }, [choosenFriend]);
+  window.addEventListener('resize', mainBoardReponsive);
   return (
-    <div className="w-5/6 h-full flex items-center">
-      {choosenFriend.conversationId !== "" ? (
+    <div
+      ref={mainBoardRef}
+      className="lg:w-5/6 w-full h-full flex items-center"
+    >
+      {choosenFriend.conversationId !== '' ? (
         <Chat className="flex flex-col h-full w-full" />
       ) : (
-        <Greeting className="w-1/2 mx-32" />
+        <Greeting className="w-1/2 mx-32 hidden lg:block" />
       )}
     </div>
   );
