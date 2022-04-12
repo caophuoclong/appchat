@@ -38,6 +38,7 @@ export function InputField() {
   const user = useAppSelector((state) => state.user);
   const lang = useAppSelector((state) => state.global.language);
   const userState = useAppSelector((state) => state.user);
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const buttonSendRef = React.useRef<HTMLButtonElement>(null);
   const handleTypingText = (event: React.ChangeEvent) => {
     const element = event.target as HTMLInputElement;
@@ -73,6 +74,7 @@ export function InputField() {
   //   // }
   // }
   const handleSend = async () => {
+    dispatch(handleChangeMessageText(''));
     if (text.length > 0) {
       const message: IMessage = {
         text: text,
@@ -193,6 +195,7 @@ export function InputField() {
         placeholder={
           lang === 'en' ? 'Type a new message' : 'Nhập tin nhắn'
         }
+        ref={inputRef}
         onChange={handleTypingText}
         onKeyDown={handleEnterPress}
         onFocus={handleOnFocus}

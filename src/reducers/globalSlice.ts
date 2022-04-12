@@ -9,6 +9,7 @@ export enum SelectedType {
     INFORMATION,
     MAKEFRIEND,
     SHOWFRIENDS,
+    MAKEGROUP,
 }
 interface GlobalState {
     showModalOption: boolean,

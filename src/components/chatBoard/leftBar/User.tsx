@@ -9,6 +9,7 @@ import {
 } from '../../../reducers/globalSlice';
 import Information from '../SettingsModal/Information';
 import MakeFriend from '../SettingsModal/Makefriend';
+import MakeGroup from '../SettingsModal/MakeGroup';
 import Settings from '../SettingsModal/Settings';
 import { ModalOptions } from './modalOptions';
 
@@ -63,6 +64,7 @@ export function User(props: IUserProps) {
       {selectedModal === SelectedType.INFORMATION && <Information />}
       {selectedModal === SelectedType.SETTINGS && <Settings />}
       {selectedModal === SelectedType.MAKEFRIEND && <MakeFriend />}
+      {selectedModal === SelectedType.MAKEGROUP && <MakeGroup />}
     </div>
   );
 }

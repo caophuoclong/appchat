@@ -14,7 +14,7 @@ import {
 import { AiOutlineCamera } from 'react-icons/ai';
 import Modal from './Modal';
 import upload from '../../../services/uploadImage';
-
+import { readFile } from '../../../utils';
 export interface IInformationProps {}
 
 export default function Information(props: IInformationProps) {
@@ -84,18 +84,7 @@ export default function Information(props: IInformationProps) {
       setIsIncorrectPhone(true);
     else setIsIncorrectPhone(false);
   }, [numberPhone]);
-  const readFile = (file: File) => {
-    return new Promise<ArrayBuffer | string>((resolve, reject) => {
-      const fr = new FileReader();
-      fr.onload = () => {
-        resolve(fr.result!);
-      };
-      fr.onerror = () => {
-        reject(fr);
-      };
-      fr.readAsDataURL(file);
-    });
-  };
+
   const handleChangeAvatar = (event: React.ChangeEvent) => {
     const file = (event.target! as HTMLInputElement).files![0];
     readFile(file).then((result) => {

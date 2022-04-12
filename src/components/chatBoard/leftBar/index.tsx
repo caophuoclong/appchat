@@ -64,11 +64,8 @@ export function LeftBar(props: ILeftBarProps) {
           <p className="text-2xl font-semibold m-6 mr-3  my-0">
             {lang === 'en' ? 'Message' : 'Tin nhắn'}
           </p>
-          <SearchBox
-            onSearch={handleSearch}
-            className="border-2 border-gray-300 flex px-4 py-2 justify-between rounded-full m-6 mr-3  my-0"
-          />
-          <div className="flex justify-end gap-4  my-0">
+          <SearchBox onSearch={handleSearch} className="mx-4" />
+          <div className="flex justify-end my-0">
             <ShowFriends />
             <Notification />
           </div>

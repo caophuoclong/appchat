@@ -74,7 +74,12 @@ export default function ShowFriends({}: Props) {
         >
           <BiUserPlus size="24px" />
         </button>
-        <button className="hidden group-hover:block transition-all border-blue-600 hover:border-b-2">
+        <button
+          onClick={() => {
+            dispatch(setSelectedModal(SelectedType.MAKEGROUP));
+          }}
+          className="hidden group-hover:block transition-all border-blue-600 hover:border-b-2"
+        >
           <AiOutlineUsergroupAdd size="24px" />
         </button>
         <button
