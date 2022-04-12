@@ -271,6 +271,7 @@ export const userSlice = createSlice({
                 state.friendsRequested = data.friendsRequested!;
                 state.notifications = data.notifications!
             }
+            state.loading = false;
         });
 
         builder.addCase(getMe.rejected, (state, action) => {

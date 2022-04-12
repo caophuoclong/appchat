@@ -2,8 +2,14 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import IUser from "../interface/IUser";
 import friendApi from "../services/friend";
 
-type SelectedType = "settings" | "information" | "makeFriend" | "showFriends" | null;
-
+// type SelectedType = "settings" | "information" | "makeFriend" | "showFriends" | null;
+export enum SelectedType {
+    NULL,
+    SETTINGS,
+    INFORMATION,
+    MAKEFRIEND,
+    SHOWFRIENDS,
+}
 interface GlobalState {
     showModalOption: boolean,
     leftBarLoading: boolean,
@@ -45,7 +51,7 @@ const initialState: GlobalState = {
     mainChatLoading: false,
     resultSearchFriendLoading: false,
     language: window.localStorage.getItem("lang") as "en" | "vn",
-    selectedModal: null,
+    selectedModal: SelectedType.NULL,
     socketId: "",
     message: {
         text: "",

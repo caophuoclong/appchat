@@ -9,7 +9,6 @@ import IMessage from '../../../../interface/IMessage';
 import { formatDate } from '../../mainChat/ChatBox/MessageList/Message';
 import { ImFilePicture } from 'react-icons/im';
 import { SocketContext } from '../../../../context/socket';
-import conversationApi from '../../../../services/conversation.api';
 
 export interface IFriendProps {
   friendInfo: {

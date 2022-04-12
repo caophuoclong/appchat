@@ -81,7 +81,7 @@ export default function Notification({}: Props) {
       </button>
       <div
         ref={modal}
-        className="absolute top-0 -right-2 translate-x-full w-96 h-52 bg-white shadow-2xl transition-all rounded-3xl border border-gray-300 invisible p-2 overflow-auto z-50"
+        className="absolute top-0 lg:-right-2 lg:translate-x-full w-80 h-48 bg-white shadow-2xl transition-all rounded-3xl border border-gray-300 right-2 invisible p-2 overflow-auto z-50"
       >
         <div className="flex justify-end pr-4">
           <button onClick={handleOnShowNotifiModal}>
@@ -103,7 +103,7 @@ export default function Notification({}: Props) {
               alt="avatar"
               className="w-10 h-10r rounded-full"
             />
-            <div className="ml-10">
+            <div className="ml-4">
               <Content type={notification.type} lang={lang}>
                 {notification.user.name}
               </Content>
