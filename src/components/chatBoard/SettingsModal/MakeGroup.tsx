@@ -4,23 +4,18 @@ import { useAppDispatch, useAppSelector } from '../../../hook';
 import Modal from './Modal';
 import { readFile } from '../../../utils';
 import { SearchBox } from '../leftBar/SearchBox';
-import {
-  SelectedType,
-  setSelectedModal,
-} from '../../../reducers/globalSlice';
+import { SelectedType, setSelectedModal } from '../../../reducers/globalSlice';
+import { createGroupChat } from '../../../reducers/userSlice';
 type Props = {};
 
 export default function MakeGroup({}: Props) {
   const lang = useAppSelector((state) => state.global.language);
-  const [groupAvatar, setGroupAvatar] = React.useState<
-    string | ArrayBuffer
-  >('');
+  const [groupAvatar, setGroupAvatar] = React.useState<string | ArrayBuffer>('');
   const heading = (
-    <p className="lg:text-2xl  text-sm font-bold">
-      {lang === 'en' ? 'Create group' : 'Tạo nhóm'}
-    </p>
+    <p className="lg:text-2xl  text-sm font-bold">{lang === 'en' ? 'Create group' : 'Tạo nhóm'}</p>
   );
   const friends = useAppSelector((state) => state.user.friends);
+  const userId = useAppSelector((state) => state.user._id);
   const customStyle = {
     content: {
       top: '50%',
@@ -57,14 +52,32 @@ export default function MakeGroup({}: Props) {
   React.useEffect(() => {
     inputText && !!count && setIsDisabled(false);
   }, [inputText, count]);
+  const handleCreateGroupChat = () => {
+    const friendChecked = document.getElementsByName(
+      'friendWishAddToGroup'
+    ) as NodeListOf<HTMLInputElement>;
+    const listFriend: Array<string> = [];
+    friendChecked.forEach((friend) => {
+      if (friend.checked) {
+        listFriend.push(friend.id.split('_')[1]);
+      }
+    });
+    // listFriend.push(userId);
+    console.log(listFriend);
+    dispatch(
+      createGroupChat({
+        name: inputText,
+        participants: listFriend,
+      })
+    );
+  };
   return (
     <Modal customStyle={customStyle} heading={heading}>
       <div className="flex flex-col h-full">
         <div className="flex my-4 justify-between">
           <input
             onChange={(event: React.ChangeEvent) => {
-              const file = (event.target! as HTMLInputElement)!
-                .files![0];
+              const file = (event.target! as HTMLInputElement)!.files![0];
               readFile(file).then((result) => {
                 setGroupAvatar(result);
               });
@@ -95,21 +108,14 @@ export default function MakeGroup({}: Props) {
               const value = event.target as HTMLInputElement;
               setInputText(value.value);
             }}
-            placeholder={
-              lang === 'en' ? 'Enter group name' : 'Nhập tên nhóm'
-            }
+            placeholder={lang === 'en' ? 'Enter group name' : 'Nhập tên nhóm'}
             className="w-3/4 lg:text-2xl text-md font-bold p-0 outline-none"
           />
         </div>
         <p className="lg:text-md text-sm font-semibold ">
-          {lang === 'en'
-            ? 'Add friends to group'
-            : 'Thêm bạn bè vào nhóm'}
+          {lang === 'en' ? 'Add friends to group' : 'Thêm bạn bè vào nhóm'}
         </p>
-        <SearchBox
-          onSearch={handleSearch}
-          className="mx-0 rounded-md"
-        />
+        <SearchBox onSearch={handleSearch} className="mx-0 rounded-md" />
 
         <p
           className={`text-md font-bold text-right text-blue-400 ${
@@ -121,16 +127,10 @@ export default function MakeGroup({}: Props) {
 
         <div className="h-4/6 my-4 overflow-y-auto">
           {friends.map((friend, index) => {
-            console.log(index);
             return (
               <div key={index}>
-                {friend
-                  .name!.toLowerCase()
-                  .match(searchText.toLowerCase()) && (
-                  <label
-                    className="flex gap-2 items-center "
-                    htmlFor={`checkbox_${friend._id}`}
-                  >
+                {friend.name!.toLowerCase().match(searchText.toLowerCase()) && (
+                  <label className="flex gap-2 items-center " htmlFor={`checkbox_${friend._id}`}>
                     <input
                       onChange={handleCountFriendChecked}
                       type="checkbox"
@@ -140,9 +140,7 @@ export default function MakeGroup({}: Props) {
                     />
                     <img
                       className="w-11 h-11 rounded-full"
-                      src={
-                        friend.imgUrl || 'https://picsum.photos/40'
-                      }
+                      src={friend.imgUrl || 'https://picsum.photos/40'}
                       alt={`Avatar ${friend.name}`}
                     />
                     <span className="truncate">{friend.name}</span>
@@ -164,7 +162,7 @@ export default function MakeGroup({}: Props) {
           </button>
           <button
             disabled={isDisabled}
-            // onClick={}
+            onClick={handleCreateGroupChat}
             className=" text-glareGray200 p-2 px-4 rounded-xl bg-blue-500 shadow-lg shadow-blue-500/50"
           >
             {lang === 'en' ? 'Create' : 'Tạo nhóm'}

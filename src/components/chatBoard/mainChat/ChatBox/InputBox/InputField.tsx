@@ -8,19 +8,14 @@ import {
   handleMakeImageListEmpty,
 } from '../../../../../reducers/globalSlice';
 import IMessage from '../../../../../interface/IMessage';
-import {
-  addMessage,
-  addNewMessage,
-} from '../../../../../reducers/message';
+import { addMessage, addNewMessage } from '../../../../../reducers/message';
 import { uploadImage } from '../../../../../services';
 import { CLOUD_NAME } from '../../../../../configs';
-import {
-  emojiRegex,
-  escapeSpecialChars,
-} from '../../../../../constants/textIsEmoji';
+import { emojiRegex, escapeSpecialChars } from '../../../../../constants/textIsEmoji';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { updateLatestMessage } from '../../../../../reducers/userSlice';
 import { SocketContext } from '../../../../../context/socket';
+import { checkOnlineInGroup } from '../../../../../utils';
 export interface IInputFieldProps {}
 
 export function InputField() {
@@ -32,9 +27,15 @@ export function InputField() {
   const dispatch = useAppDispatch();
   const text = useAppSelector((state) => state.global.message.text);
   const files = useAppSelector((state) => state.global.message.file);
-  const conversationId = useAppSelector(
-    (state) => state.user.choosenFriend.conversationId
-  );
+  const conversationId = useAppSelector((state) => state.user.choosenFriend.conversationId);
+  const conversations = useAppSelector((state) => state.user.conversations);
+  const participants = conversations!.find(
+    (conversation) => conversation._id === conversationId
+  )?.participants;
+  const typeOfConversation = conversations!.find(
+    (conversation) => conversation._id === conversationId
+  )!.type;
+
   const user = useAppSelector((state) => state.user);
   const lang = useAppSelector((state) => state.global.language);
   const userState = useAppSelector((state) => state.user);
@@ -75,43 +76,35 @@ export function InputField() {
   // }
   const handleSend = async () => {
     dispatch(handleChangeMessageText(''));
+    console.log(typeOfConversation);
     if (text.length > 0) {
       const message: IMessage = {
         text: text,
-        receiverId: userState.choosenFriend!.participation._id,
         senderId: userState._id,
         createAt: new Date().toString(),
         type: 'text',
       };
       dispatch(addNewMessage({ message, conversationId }));
-      const actionResult = await dispatch(
-        addMessage({ message, conversationId: conversationId! })
-      );
+      const actionResult = await dispatch(addMessage({ message, conversationId: conversationId! }));
       const unwrap = unwrapResult(actionResult);
-      dispatch(handleChangeMessageText(''));
       dispatch(
         updateLatestMessage({
           message,
           conversationId: conversationId!,
         })
       );
-      // console.log(socket);
       socket.emit(
         'send_message',
         JSON.stringify({
           message,
           conversationId: conversationId!,
+          type: typeOfConversation,
         })
       );
-      socket.emit(
-        'check_online',
-        user.choosenFriend?.participation._id
-      );
+      checkOnlineInGroup(socket, user._id, participants!);
     }
     if (files.length > 0) {
-      document
-        .getElementById('previewPicture')
-        ?.classList.add('invisible');
+      document.getElementById('previewPicture')?.classList.add('invisible');
       files.forEach((file) => {
         uploadImage(file)
           .then(async (result) => {
@@ -120,8 +113,6 @@ export function InputField() {
               const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.version}/${data.public_id}.png`;
               const message: IMessage = {
                 text: url,
-                receiverId:
-                  userState.choosenFriend!.participation._id,
                 senderId: userState._id,
                 createAt: new Date().toString(),
                 type: 'image',
@@ -145,12 +136,10 @@ export function InputField() {
                 JSON.stringify({
                   message,
                   conversationId: conversationId!,
+                  type: typeOfConversation,
                 })
               );
-              socket.emit(
-                'check_online',
-                user.choosenFriend?.participation._id
-              );
+              checkOnlineInGroup(socket, user._id, participants!);
             }
           })
           .catch((error) => {
@@ -159,28 +148,24 @@ export function InputField() {
           });
       });
       dispatch(handleMakeImageListEmpty());
-      document
-        .getElementById('previewPicture')
-        ?.classList.remove('invisible');
+      document.getElementById('previewPicture')?.classList.remove('invisible');
     }
   };
 
-  const handleEnterPress = async (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const handleEnterPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       handleSend();
     }
   };
   const handleOnFocus = () => {
     socket.emit('on_typing', {
-      senderId: user.choosenFriend?.participation._id,
+      //senderId: user.choosenFriend?.participation._id,
       conversationId,
     });
   };
   const handleOnBlur = () => {
     socket.emit('not_typing', {
-      senderId: user.choosenFriend?.participation._id,
+      //senderId: user.choosenFriend?.participation._id,
       conversationId,
     });
   };
@@ -192,9 +177,7 @@ export function InputField() {
       <input
         type="text"
         className="text-black placeholder:text-glareGray500 px-1 py-1 outline-none bg-transparent w-full"
-        placeholder={
-          lang === 'en' ? 'Type a new message' : 'Nhập tin nhắn'
-        }
+        placeholder={lang === 'en' ? 'Type a new message' : 'Nhập tin nhắn'}
         ref={inputRef}
         onChange={handleTypingText}
         onKeyDown={handleEnterPress}
@@ -202,10 +185,7 @@ export function InputField() {
         onBlur={handleOnBlur}
         value={text}
       />
-      <button
-        className="flex justify-center items-center"
-        onClick={handleShowEmojiPicker}
-      >
+      <button className="flex justify-center items-center" onClick={handleShowEmojiPicker}>
         <Emoij />
       </button>
       {isPickerShow && (

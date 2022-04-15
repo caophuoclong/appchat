@@ -1,5 +1,6 @@
 import axios from "axios"
 import queryString from "query-string"
+import userApi from "./user.api"
 const axiosClient = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
     headers: {
@@ -18,9 +19,19 @@ axiosClient.interceptors.request.use((config) => {
 
 axiosClient.interceptors.response.use((response) => {
     if (response && response.data) {
+        if (response.data.code === 400 && response.data.message === "Token expired!") {
+            userApi.refreshToken().then(() => {
+                window.location.reload()
+            }
+            )
+        } else if (response.data.status === "relogin") {
+            window.localStorage.removeItem("access_token");
+            window.location.href = "/"
+        }
         return response.data
     }
 }, error => {
+
     throw error
 })
 

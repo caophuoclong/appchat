@@ -19,7 +19,6 @@ const conversationApi = {
                 const messages: Array<IMessage> = conversation.data.conversation.messages;
                 const pageResult = conversation.data.conversation.page;
                 const isMore = conversation.data.conversation.isMore;
-                console.log(conversation);
                 resolve({
                     page: pageResult,
                     isMore,

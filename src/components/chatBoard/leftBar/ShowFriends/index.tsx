@@ -18,12 +18,8 @@ enum SelectedView {
 export default function ShowFriends({}: Props) {
   const dispatch = useAppDispatch();
   const lang = useAppSelector((state) => state.global.language);
-  const selectedModal = useAppSelector(
-    (state) => state.global.selectedModal
-  );
-  const [selectView, setSelectView] = React.useState<SelectedView>(
-    SelectedView.FRIENDS
-  );
+  const selectedModal = useAppSelector((state) => state.global.selectedModal);
+  const [selectView, setSelectView] = React.useState<SelectedView>(SelectedView.FRIENDS);
   const customStyle = {
     content: {
       top: '50%',
@@ -38,12 +34,8 @@ export default function ShowFriends({}: Props) {
     },
   };
   const friends = useAppSelector((state) => state.user.friends);
-  const friendsRequested = useAppSelector(
-    (state) => state.user.friendsRequested
-  );
-  const friendsPending = useAppSelector(
-    (state) => state.user.friendsPending
-  );
+  const friendsRequested = useAppSelector((state) => state.user.friendsRequested);
+  const friendsPending = useAppSelector((state) => state.user.friendsPending);
   const options = [
     {
       label: lang === 'en' ? 'Friends' : 'Bạn bè',
@@ -59,10 +51,6 @@ export default function ShowFriends({}: Props) {
     },
   ];
   const numberOfFriendRequest = friendsRequested.length;
-  React.useEffect(() => {
-    console.log(friends);
-    console.log(selectView == 1);
-  }, [selectView]);
   return (
     <div className="">
       <div className="flex gap-x-2 items-center group p-1 px-4 hover:bg-gray-400 rounded-full transition-all duration-300 h-8">
@@ -100,11 +88,7 @@ export default function ShowFriends({}: Props) {
       {selectedModal === SelectedType.SHOWFRIENDS && (
         <Modal
           customStyle={customStyle}
-          heading={
-            <div>
-              {lang === 'en' ? 'Friends' : 'Danh sách bạn bè'}
-            </div>
-          }
+          heading={<div>{lang === 'en' ? 'Friends' : 'Danh sách bạn bè'}</div>}
         >
           <div className="lg:flex p-1 gap-4 bg-green-200 my-2 rounded-2xl">
             <Select
@@ -127,13 +111,10 @@ export default function ShowFriends({}: Props) {
             <button
               onClick={() => setSelectView(SelectedView.REQUESTED)}
               className={` lg:block hidden relative cursor-pointer w-1/3 rounded-2xl transition-colors duration-500 text-center py-1 ${
-                selectView === SelectedView.REQUESTED &&
-                'bg-glareGreen'
+                selectView === SelectedView.REQUESTED && 'bg-glareGreen'
               }`}
             >
-              {lang === 'en'
-                ? 'Friends Requested'
-                : 'Yêu cầu kết bạn'}
+              {lang === 'en' ? 'Friends Requested' : 'Yêu cầu kết bạn'}
               {numberOfFriendRequest !== 0 && (
                 <div className="absolute text-xs bg-red-500 text-gray-300 p-1 rounded-full w-5 h-5 top-0 right-0 translate-x-2 -translate-y-2">
                   {numberOfFriendRequest}

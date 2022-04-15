@@ -3,10 +3,12 @@ import {
     PayloadAction,
     createAsyncThunk,
 } from '@reduxjs/toolkit';
-import IUser, { IConversation, IFriendsAll, INotification, participation } from '../interface/IUser';
+import IUser, { IConversation, INotification } from '../interface/IUser';
 import IMessage from "../interface/IMessage";
 import userApi, { DataResponseGetFriends } from '../services/user.api';
 import notiApi from '../services/notification';
+import IGroup from '../interface/IGroup';
+import { groupApi } from '../services';
 export type dateType =
     | 1
     | 2
@@ -41,7 +43,6 @@ export type dateType =
 interface UserState extends IUser {
     choosenFriend: {
         conversationId: string;
-        participation: participation;
     };
     loading: boolean;
     temp: string,
@@ -135,45 +136,32 @@ export const refreshFriendsAll = createAsyncThunk("refresh_friends_all", () => {
         }
     })
 })
+export const createGroupChat = createAsyncThunk("create_group_chat", (params: IGroup) => {
+    return new Promise<string>(async (resolve, reject) => {
+        try {
+            const group = await groupApi.createGroup(params);
+            resolve(group)
+        } catch (error) {
+            reject("failed")
+        }
+    })
+})
 const initialState: UserState = {
-    _id: '26032001',
-    name: 'Phuoc Long',
-    email: 'caophuoclong1@gmail.com',
-    numberPhone: '0342200770',
+    _id: '',
+    name: '',
+    email: '',
+    numberPhone: '',
     dateOfBirth: {
         date: 15,
         month: 2,
         year: 2008,
     },
-    gender: 'male',
-    username: 'caophuoclong1',
-    imgUrl: 'https://picsum.photos/40',
-    conversations: [
-        {
-            _id: '',
-            participants: [
-                {
-                    _id: '222',
-                    imgUrl: 'https://picsum.photos/40',
-                    name: 'longs',
-                    username: 'asdfojskl',
-                },
-            ],
-            latest: {
-                _id: '',
-                text: '',
-                senderId: '',
-                receiverId: '',
-                type: 'text',
-                createAt: '',
-            },
-            unreadmessages: [],
-        },
-    ],
-
+    gender: '',
+    username: '',
+    imgUrl: '',
+    conversations: [],
     choosenFriend: {
         conversationId: '',
-        participation: {} as participation,
     },
     loading: false,
     friends: [],
@@ -192,13 +180,17 @@ export const userSlice = createSlice({
             const { payload } = action;
             state._id = payload;
         },
-        handleSetOnline: (state: UserState, action: PayloadAction<boolean>) => {
-            state.choosenFriend!.participation!.isOnline = action.payload;
+        handleSetOnline: (state: UserState, action: PayloadAction<{ id: string, check: boolean }>) => {
+            state.friends.filter(friend => {
+                if (friend._id === action.payload.id) {
+                    friend.isOnline = action.payload.check;
+                }
+                return [];
+            })
         },
         handleChooseFriend: (
             state: UserState,
             action: PayloadAction<{
-                participation: participation;
                 conversationId: string;
             }>
         ) => {
@@ -213,8 +205,20 @@ export const userSlice = createSlice({
         makeUnReadMessagesEmpty: (state: UserState, action: PayloadAction<{ conversationId: string }>) => {
             const xxx: Array<IConversation> = JSON.parse(JSON.stringify([...state.conversations!]));
             xxx.forEach((conversation: IConversation) => {
-                if (conversation._id === action.payload.conversationId) {
-                    conversation.unreadmessages = []
+                if (conversation.type === "direct") {
+                    if (conversation._id === action.payload.conversationId) {
+                        conversation.unreadmessages = []
+                    }
+                } else if (conversation.type === "group") {
+                    if (conversation._id === action.payload.conversationId) {
+                        if (conversation.groupUnRead) {
+                            const found = conversation.groupUnRead.find(gr => gr.user === state._id)
+                            if (found) {
+                                found.messages = [];
+                            }
+
+                        }
+                    }
                 }
             })
             state.conversations = xxx;
@@ -232,10 +236,27 @@ export const userSlice = createSlice({
             })
             state.conversations = xxx;
         },
-        updateUnReadMessasges: (state: UserState, action: PayloadAction<{ conversationId: string, message: IMessage }>) => {
+        updateUnReadGroupMessage: (state: UserState, action: PayloadAction<{
+            conversationId: string; message: IMessage;
+        }>) => {
             const xxx: Array<IConversation> = JSON.parse(JSON.stringify([...state.conversations!]));
             xxx.forEach((conversation: IConversation) => {
                 if (conversation._id === action.payload.conversationId) {
+                    const x = conversation.groupUnRead!.find(gr => {
+                        return gr.user === state._id
+                    })!;
+                    if (x && action.payload.conversationId !== state.choosenFriend.conversationId) {
+                        x.messages.push(action.payload.message)
+                    }
+                    console.log(x);
+                }
+            })
+            state.conversations = xxx;
+        },
+        updateUnReadMessasges: (state: UserState, action: PayloadAction<{ conversationId: string, message: IMessage }>) => {
+            const xxx: Array<IConversation> = JSON.parse(JSON.stringify([...state.conversations!]));
+            xxx.forEach((conversation: IConversation) => {
+                if (conversation._id === action.payload.conversationId && action.payload.conversationId !== state.choosenFriend.conversationId) {
                     conversation.unreadmessages.push(action.payload.message);
                 }
             })
@@ -253,7 +274,6 @@ export const userSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(getMe.fulfilled, (state, action) => {
-            console.log(action.payload);
             if (action.payload) {
                 const { ...data } = action.payload as IUser;
                 state._id = data._id;
@@ -294,7 +314,7 @@ export const userSlice = createSlice({
 
             } = action.payload;
             console.log(action.payload);
-            state.name = name;
+            state.name = name!;
             state.email = email!;
             state.gender = gender;
             state.dateOfBirth = dateOfBirth!;
@@ -320,5 +340,5 @@ export const userSlice = createSlice({
     },
 });
 
-export const { updateId, handleChooseFriend, updateLatestMessage, updateUnReadMessasges, makeUnReadMessagesEmpty, handleUpdateTemp, handleSetOnline, turnOffLoading, setEmptyChoosen } = userSlice.actions;
+export const { updateId, handleChooseFriend, updateLatestMessage, updateUnReadMessasges, updateUnReadGroupMessage, makeUnReadMessagesEmpty, handleUpdateTemp, handleSetOnline, turnOffLoading, setEmptyChoosen } = userSlice.actions;
 export default userSlice.reducer;

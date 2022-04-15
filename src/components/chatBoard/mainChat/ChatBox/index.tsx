@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { ChatHeader } from './Header';
+import { ChatHeader } from '../Header';
 import { InputBox } from './InputBox';
 import MessageList from './MessageList';
-//@ts-ignore
-import ScrollToBottom from 'react-scroll-to-bottom';
-import { group } from 'console';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { getConversation } from '../../../../reducers/message';
 export interface IChatProps {
@@ -15,9 +12,7 @@ export function Chat(props: IChatProps) {
   const messages = React.useRef<HTMLDivElement>(null);
   const [isScroll, setIsScroll] = React.useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const conversationId = useAppSelector(
-    (state) => state.user.choosenFriend.conversationId
-  );
+  const conversationId = useAppSelector((state) => state.user.choosenFriend.conversationId);
   const getMessage = useAppSelector((state) => state.messages);
   const scrollToBottom = () => {
     const div = messages.current;
@@ -31,25 +26,20 @@ export function Chat(props: IChatProps) {
   };
   React.useEffect(() => {
     if (!isScroll) scrollToBottom();
-  });
-  const handleScroll = async (
-    event: React.UIEvent<HTMLDivElement>
-  ) => {
+  }, [getMessage.messagesList[conversationId]]);
+  const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const e = event.target as HTMLDivElement;
-    if (e.scrollHeight - e.scrollTop === e.clientHeight)
-      setIsScroll(false);
-    else setIsScroll(true);
+    if (e.scrollHeight - e.scrollTop >= e.clientHeight + 400) setIsScroll(true);
+    else setIsScroll(false);
     if (e.scrollTop === 0) {
       if (getMessage.messagesList[conversationId].isMore) {
         await dispatch(
           getConversation({
             id: conversationId,
-            page:
-              Number(getMessage.messagesList[conversationId].page) +
-              1,
+            page: Number(getMessage.messagesList[conversationId].page) + 1,
           })
         );
-        e.scrollTop = 24;
+        e.scrollTop = 512;
       }
     }
   };
@@ -64,7 +54,7 @@ export function Chat(props: IChatProps) {
       >
         <MessageList />
       </div>
-      <InputBox className="lg:px-9 px-2 py-5 mt-auto mr-0" />
+      <InputBox className="lg:px-9 px-2 py-5 mt-auto mr-0 relative" />
     </div>
   );
 }

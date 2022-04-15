@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useAppSelector } from '../../../hook';
 import { IFriend } from '../../../interface/IFriend';
-import { ListFriend } from './ListFriend';
+import { ListFriend } from './ListConversation';
 import { Logo } from './Logo';
 import { SearchBox } from './SearchBox';
 import { User } from './User';
@@ -12,12 +12,8 @@ export interface ILeftBarProps {}
 export function LeftBar(props: ILeftBarProps) {
   const leftBarRef = React.useRef<HTMLDivElement>(null);
   const lang = useAppSelector((state) => state.global.language);
-  const choosenFriend = useAppSelector(
-    (state) => state.user.choosenFriend
-  );
-  const [resultSearch, setResultSearch] = React.useState<
-    IFriend[] | null
-  >(null);
+  const choosenFriend = useAppSelector((state) => state.user.choosenFriend);
+  const [resultSearch, setResultSearch] = React.useState<IFriend[] | null>(null);
   const handleSearch = (event: React.ChangeEvent) => {
     const text = (event.target as HTMLInputElement).value;
     if (!text) setResultSearch([]);
@@ -59,7 +55,7 @@ export function LeftBar(props: ILeftBarProps) {
           height: '90%',
         }}
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <Logo className="flex items-center m-6 mr-3 mb-2 mt-4" />
           <p className="text-2xl font-semibold m-6 mr-3  my-0">
             {lang === 'en' ? 'Message' : 'Tin nhắn'}
@@ -70,10 +66,7 @@ export function LeftBar(props: ILeftBarProps) {
             <Notification />
           </div>
         </div>
-        <ListFriend
-          searchListFriend={resultSearch}
-          className="my-8 overflow-auto"
-        />
+        <ListFriend searchListFriend={resultSearch} className="mt-4 overflow-auto h-4/5" />
       </div>
       <div
         className="flex items-center bg-white z-50"

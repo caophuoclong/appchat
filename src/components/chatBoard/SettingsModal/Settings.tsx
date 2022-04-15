@@ -50,7 +50,7 @@ export default function Settings(props: ISettingsProps) {
     >
       <div>
         <label className="flex items-center gap-4 py-3">
-          <span>
+          <span className="lg:text-xl text-sm">
             {lang === 'en'
               ? 'Change language: '
               : 'Thay đổi ngôn ngữ: '}

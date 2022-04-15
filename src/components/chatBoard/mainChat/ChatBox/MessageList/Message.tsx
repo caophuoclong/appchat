@@ -30,9 +30,7 @@ const Right = ({
           {message}
 
           <br />
-          <p className="text-right text-xs text-glareGray500 mt-2">
-            {formatDate(date)}
-          </p>
+          <p className="text-right text-xs text-glareGray500 mt-2">{formatDate(date)}</p>
         </div>
       );
     case 'image':
@@ -41,9 +39,7 @@ const Right = ({
           <img className="max-h-96" src={message} alt="" />
 
           <br />
-          <p className="text-right text-xs text-glareGray500 mt-2">
-            {formatDate(date)}
-          </p>
+          <p className="text-right text-xs text-glareGray500 mt-2">{formatDate(date)}</p>
         </div>
       );
     default:
@@ -59,17 +55,12 @@ const Left = ({
   date: number;
   type: 'image' | 'text';
 }) => {
-  const choosendFriend = useAppSelector(
-    (state) => state.user.choosenFriend
-  );
   switch (type) {
     case 'text':
       return (
         <div className="bg-glareGray text-white w-fit max-w-1/2 ml-4 py-3 px-8 my-2 rounded-2xl rounded-bl-none text-sm lg:text-xl">
           {message}
-          <p className="text-xs text-glareGray500 mt-2">
-            {formatDate(date)}
-          </p>
+          <p className="text-xs text-glareGray500 mt-2">{formatDate(date)}</p>
         </div>
       );
     case 'image':
@@ -77,9 +68,7 @@ const Left = ({
         <div className="text-white w-fit max-w-1/2 ml-4 py-3 my-2 rounded-2xl rounded-bl-none">
           <img src={message} alt="" />
           <br />
-          <p className="text-right text-xs text-glareGray500 mt-2">
-            {formatDate(date)}
-          </p>
+          <p className="text-right text-xs text-glareGray500 mt-2">{formatDate(date)}</p>
         </div>
       );
     default:

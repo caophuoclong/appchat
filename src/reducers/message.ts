@@ -20,6 +20,7 @@ interface MessageState {
 export const getConversation = createAsyncThunk(
     'getMessages',
     async ({ id, page }: { id: string, page: number }) => {
+        console.log(123);
         return await conversationApi.getConversation(id, page);
     }
 );
@@ -103,7 +104,6 @@ const messageSlice = createSlice({
                 };
 
             } else {
-                console.log(action.payload);
                 return {
                     ...state,
                     loading: false,

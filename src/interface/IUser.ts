@@ -2,7 +2,7 @@ import IMessage from "./IMessage"
 interface IUser {
     _id: string,
     username: string,
-    name?: string,
+    name: string,
     email: string,
     numberPhone?: string,
     gender?: string,
@@ -23,8 +23,9 @@ interface IUser {
 export interface IFriendsAll {
     _id: string,
     username: string,
-    name?: string,
+    name: string,
     imgUrl: string,
+    isOnline: boolean,
 }
 export interface INotification {
     _id: string,
@@ -42,7 +43,16 @@ export interface IConversation {
     participants: Array<participation>,
     latest?: IMessage,
     unreadmessages: Array<IMessage>,
+    type: string,
+    name?: string,
+    imgUrl?: string,
+    creator?: string,
+    groupUnRead?: Array<{
+        user: string;
+        messages: Array<IMessage>;
+    }>;
 }
+
 export interface IGetMeResponse {
     code: number,
     status: string,

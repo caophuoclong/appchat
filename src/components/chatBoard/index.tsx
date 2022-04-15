@@ -17,10 +17,8 @@ export function Chat(props: IChatProps) {
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.user.loading);
   const socket = React.useContext(SocketContext);
-  const conversations = useAppSelector(
-    (state) => state.user.conversations
-  );
-  const [user, setUser] = React.useState<IUser>({} as IUser);
+  const conversations = useAppSelector((state) => state.user.conversations);
+  const [user1, setUser1] = React.useState({} as IUser);
   React.useEffect(() => {
     const access_token = localStorage.getItem('access_token');
     if (!access_token) {
@@ -30,7 +28,7 @@ export function Chat(props: IChatProps) {
       try {
         const actionResult = await dispatch(getMe());
         const unwrap = unwrapResult(actionResult);
-        setUser(unwrap);
+        setUser1(unwrap);
         setTimeout(() => {
           dispatch(turnOffLoading(false));
         }, 500);
@@ -39,14 +37,22 @@ export function Chat(props: IChatProps) {
       }
     };
     xxx();
-  }, []);
+  }, [dispatch, navigate]);
   React.useEffect(() => {
-    setTimeout(() => {
-      socket && user._id && socket.emit('init_user', user._id);
-    }, 1);
-  }, [socket, user]);
+    if (typeof socket.emit === 'function')
+      socket && user1._id && socket.emit('init_user', user1._id);
+  }, [socket, user1]);
   React.useEffect(() => {
     console.log(conversations);
+    if (socket) {
+      if (conversations) {
+        conversations.forEach((conversation) => {
+          socket.emit('join_room', conversation._id);
+        });
+      }
+    }
+  }, [socket, conversations?.length]);
+  React.useEffect(() => {
     try {
       if (conversations) {
         conversations.map(async (conversation) => {
@@ -57,14 +63,14 @@ export function Chat(props: IChatProps) {
                 page: 1,
               })
             );
-            const unwrap = unwrapResult(actionResult);
+            unwrapResult(actionResult);
           }
         });
       }
     } catch (error) {
       console.log(error);
     }
-  }, [conversations?.length && conversations![0]._id]);
+  }, []);
 
   return (
     <div className="flex h-screen min-w-full">

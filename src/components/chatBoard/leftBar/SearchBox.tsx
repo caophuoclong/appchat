@@ -21,7 +21,7 @@ export function SearchBox(props: ISearchBoxProps) {
       <input
         id="searchFriend"
         onChange={props.onSearch}
-        className="w-full ml-4 outline-none text-base"
+        className="w-full ml-4 outline-none text-base bg-transparent"
         type="text"
         placeholder={lang === 'en' ? 'Search' : 'Tìm kiếm'}
       />

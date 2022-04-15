@@ -42,7 +42,7 @@ export function User(props: IUserProps) {
         src={imgUrl || 'https://picsum.photos/40'}
         alt=""
       />
-      <div>
+      <div className="mx-2">
         <p className="text-glareBlack text-base font-semibold">
           {name}
         </p>
