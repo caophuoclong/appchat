@@ -78,6 +78,7 @@ const Left = ({
 
 export function Message({ message }: IMessageProps) {
   const user = useAppSelector((state) => state.user);
+  const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
   let isCurrentUser = false;
   if (user._id === message.senderId) {
     isCurrentUser = true;

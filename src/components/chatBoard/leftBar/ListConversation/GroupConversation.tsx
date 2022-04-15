@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
-import { participation } from '../../../../interface/IUser';
+import { IConversation, participation } from '../../../../interface/IUser';
 import { handleChooseFriend, makeUnReadMessagesEmpty } from '../../../../reducers/userSlice';
 import IMessage from '../../../../interface/IMessage';
 import { SocketContext } from '../../../../context/socket';
 import RenderInfoConversation from './RenderInfoConversation';
+import { setConversationChoosen } from '../../../../reducers/globalSlice';
 
 export interface IFriendProps {
   converstationInfor: {
@@ -18,6 +19,7 @@ export interface IFriendProps {
       user: string;
       messages: Array<IMessage>;
     }>;
+    createAt?: Date | string;
   };
 }
 
@@ -38,6 +40,7 @@ export function GroupConversation({ converstationInfor }: IFriendProps) {
   const handleSelectUser = async () => {
     if (choosenFriend.conversationId !== _id) {
       dispatch(handleChooseFriend({ conversationId: _id }));
+      dispatch(setConversationChoosen(converstationInfor as IConversation));
       dispatch(makeUnReadMessagesEmpty({ conversationId: _id }));
       socket.emit(
         'choose_conversation',
@@ -59,6 +62,7 @@ export function GroupConversation({ converstationInfor }: IFriendProps) {
         latest={latest}
         _id={_id}
         name={converstationInfor.name!}
+        conversationCreateAt={converstationInfor.createAt}
         username={''}
         unReadLength={unReadLength}
       />

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import IUser from "../interface/IUser";
+import IUser, { IConversation } from "../interface/IUser";
 import friendApi from "../services/friend";
 
 // type SelectedType = "settings" | "information" | "makeFriend" | "showFriends" | null;
@@ -10,6 +10,7 @@ export enum SelectedType {
     MAKEFRIEND,
     SHOWFRIENDS,
     MAKEGROUP,
+    ADDMEMBER
 }
 interface GlobalState {
     showModalOption: boolean,
@@ -24,6 +25,8 @@ interface GlobalState {
         file: Array<ArrayBuffer | string>;
     },
     searchedFriend?: Array<Pick<IUser, "_id" | "name" | "username" | "imgUrl">>,
+    showGroupDetail: boolean,
+    conversation: IConversation;
 }
 export const handleSearchFriend = createAsyncThunk("search_friend", (params: {
     type: string, value: string
@@ -53,17 +56,29 @@ const initialState: GlobalState = {
     resultSearchFriendLoading: false,
     language: window.localStorage.getItem("lang") as "en" | "vn",
     selectedModal: SelectedType.NULL,
+    showGroupDetail: false,
     socketId: "",
     message: {
         text: "",
         file: [],
     },
+    conversation: {} as IConversation
 }
 
 const globalSlice = createSlice({
     name: "globalSlice",
     initialState,
     reducers: {
+        setConversationChoosen: (state: GlobalState, action: PayloadAction<IConversation>) => {
+            state.conversation = action.payload;
+        },
+        setShowGroupDetail: (state: GlobalState) => {
+            state.showGroupDetail = true;
+
+        },
+        setHideGroupDetail: (state: GlobalState) => {
+            state.showGroupDetail = false;
+        },
         setShowModalOptionFalse: (state: GlobalState) => {
             return {
                 ...state,
@@ -161,5 +176,5 @@ const globalSlice = createSlice({
 
 })
 
-export const { setShowModalOptionFalse, setShowModalOptionTrue, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined, handleSetSocketId } = globalSlice.actions;
+export const { setShowModalOptionFalse, setShowModalOptionTrue, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined, handleSetSocketId, setShowGroupDetail, setHideGroupDetail, setConversationChoosen } = globalSlice.actions;
 export default globalSlice.reducer;

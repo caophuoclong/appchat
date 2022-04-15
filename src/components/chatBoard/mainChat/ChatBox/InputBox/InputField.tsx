@@ -76,6 +76,7 @@ export function InputField() {
   // }
   const handleSend = async () => {
     dispatch(handleChangeMessageText(''));
+
     console.log(typeOfConversation);
     if (text.length > 0) {
       const message: IMessage = {
@@ -85,14 +86,14 @@ export function InputField() {
         type: 'text',
       };
       dispatch(addNewMessage({ message, conversationId }));
-      const actionResult = await dispatch(addMessage({ message, conversationId: conversationId! }));
-      const unwrap = unwrapResult(actionResult);
       dispatch(
         updateLatestMessage({
           message,
           conversationId: conversationId!,
         })
       );
+      const actionResult = await dispatch(addMessage({ message, conversationId: conversationId! }));
+      const unwrap = unwrapResult(actionResult);
       socket.emit(
         'send_message',
         JSON.stringify({
@@ -118,6 +119,12 @@ export function InputField() {
                 type: 'image',
               };
               dispatch(addNewMessage({ message, conversationId }));
+              dispatch(
+                updateLatestMessage({
+                  message,
+                  conversationId: conversationId!,
+                })
+              );
               const actionResult = await dispatch(
                 addMessage({
                   message,
@@ -125,12 +132,7 @@ export function InputField() {
                 })
               );
               const unwrap = unwrapResult(actionResult);
-              dispatch(
-                updateLatestMessage({
-                  message,
-                  conversationId: conversationId!,
-                })
-              );
+
               socket.emit(
                 'send_message',
                 JSON.stringify({

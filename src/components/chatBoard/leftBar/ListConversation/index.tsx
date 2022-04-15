@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Socket } from 'socket.io-client';
 import { SocketContext } from '../../../../context/socket';
 import { useAppSelector } from '../../../../hook';
 import { IFriend } from '../../../../interface/IFriend';

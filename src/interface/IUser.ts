@@ -46,7 +46,10 @@ export interface IConversation {
     type: string,
     name?: string,
     imgUrl?: string,
-    creator?: string,
+    creator?: {
+        name: string;
+        imgUrl: string;
+    },
     groupUnRead?: Array<{
         user: string;
         messages: Array<IMessage>;

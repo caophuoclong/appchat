@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import { ImFilePicture } from 'react-icons/im';
 import IMessage from '../../../../interface/IMessage';
@@ -10,6 +11,7 @@ interface Props {
   imgUrl?: string;
   unReadLength: number;
   lang: 'en' | 'vn';
+  conversationCreateAt?: Date | string;
 }
 
 export default function RenderInfoConversation({
@@ -20,7 +22,14 @@ export default function RenderInfoConversation({
   username,
   unReadLength,
   lang,
+  conversationCreateAt,
 }: Props) {
+  let time: Date | string | undefined;
+  if (latest) time = latest?.createAt;
+  else {
+    time = conversationCreateAt;
+  }
+
   return (
     <>
       <img
@@ -29,19 +38,12 @@ export default function RenderInfoConversation({
         alt="Avatar"
       />
       <div className="w-full">
-        <div className="flex justify-between gap-8 w-full items-center">
-          <div className="flex gap-2 w-52">
-            <p id={_id} className="text-base font-semibold truncate">
-              {name}
-            </p>
-            {name ? (
-              name!.length <= 12 ? (
-                <p className="truncate text-sm">{username ? `@${username}` : ''}</p>
-              ) : null
-            ) : null}
-          </div>
-          <div>
-            <p className="text-xs">{formatDate(new Date(latest?.createAt as Date).getTime())}</p>
+        <div className="flex  gap-8 w-full items-center">
+          <p id={_id} className="text-base font-semibold truncate">
+            {name}
+          </p>
+          <div className="ml-auto">
+            <p className="text-xs">{moment(new Date(time as Date)).fromNow()}</p>
             {unReadLength === 0 ? null : (
               <div
                 className="text-white bg-red-500 rounded-full flex w-4 h-4 mx-auto justify-center items-center"

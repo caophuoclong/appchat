@@ -87,6 +87,7 @@ const messageSlice = createSlice({
         });
         builder.addCase(getConversation.fulfilled, (state, action) => {
             if (state.messagesList[action.payload.conversationId]) {
+                console.log(action.payload);
                 return {
                     ...state,
                     loading: false,

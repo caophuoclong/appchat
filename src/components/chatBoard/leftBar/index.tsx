@@ -46,9 +46,9 @@ export function LeftBar(props: ILeftBarProps) {
     <div
       ref={leftBarRef}
       style={{
-        boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.25)',
+        boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.5)',
       }}
-      className="lg:w-1/5 lg:min-w-400 bg-leftBarBackground h-full"
+      className="lg:w-1/5 lg:min-w-400 bg-leftBarBackground h-full flex  flex-col"
     >
       <div
         style={{
@@ -68,12 +68,7 @@ export function LeftBar(props: ILeftBarProps) {
         </div>
         <ListFriend searchListFriend={resultSearch} className="mt-4 overflow-auto h-4/5" />
       </div>
-      <div
-        className="flex items-center bg-white z-50"
-        style={{
-          height: '10%',
-        }}
-      >
+      <div className="flex items-center bg-white z-50 shadow-md mt-auto py-2">
         <User className="py-auto flex items-center w-full pl-2" />
       </div>
     </div>

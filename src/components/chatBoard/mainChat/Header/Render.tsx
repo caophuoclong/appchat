@@ -1,13 +1,24 @@
 import React from 'react';
-import { useAppSelector } from '../../../../hook';
+import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { IConversation } from '../../../../interface/IUser';
+import { setHideGroupDetail, setShowGroupDetail } from '../../../../reducers/globalSlice';
 
 interface RenderProps {
   type?: string;
   conversation: IConversation;
 }
 
-const GroupConversation = (imgUrl: string, name: string, numberMember: number) => {
+const GroupConversation = ({
+  imgUrl,
+  name,
+  numberMember,
+  handleSetShowGroupDetail,
+}: {
+  imgUrl: string;
+  name: string;
+  numberMember: number;
+  handleSetShowGroupDetail: () => void;
+}) => {
   return (
     <>
       <div className="flex items-center gap-4 w-full">
@@ -16,7 +27,9 @@ const GroupConversation = (imgUrl: string, name: string, numberMember: number) =
           <p className="text-xl font-bold text-glareBlack">{name}</p>
           <p className="text-xs text-gray-400 font-medium">{numberMember + 1} members</p>
         </div>
-        <div className="ml-auto mr-4">...</div>
+        <div className="ml-auto mr-4 cursor-pointer" onClick={handleSetShowGroupDetail}>
+          ...
+        </div>
       </div>
     </>
   );
@@ -43,9 +56,26 @@ const DirectConversation = (imgUrl: string, isOnline: boolean, name: string, use
 
 export default function Render({ type, conversation }: RenderProps) {
   const user = useAppSelector((state) => state.user);
+  const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
+  const dispatch = useAppDispatch();
+  const handleSetShowGroupDetail = () => {
+    console.log(123);
+    if (!isShowGroupDetail) {
+      dispatch(setShowGroupDetail());
+    } else {
+      dispatch(setHideGroupDetail());
+    }
+  };
   if (type === 'group') {
     const numberMember = conversation.participants.length;
-    return GroupConversation(conversation.imgUrl!, conversation.name!, numberMember);
+    return (
+      <GroupConversation
+        imgUrl={conversation.imgUrl!}
+        name={conversation.name!}
+        numberMember={numberMember}
+        handleSetShowGroupDetail={handleSetShowGroupDetail}
+      />
+    );
   } else {
     const participants = conversation.participants;
     const participant = participants.find((participant) => participant._id !== user._id)!;
