@@ -9,7 +9,10 @@ import FullPageLoading from './FullPageLoading';
 import { SocketContext } from '../../context/socket';
 import IUser from '../../interface/IUser';
 import { getConversation } from '../../reducers/message';
-
+import moment from 'moment';
+import 'moment/locale/es-us';
+import 'moment/locale/vi';
+import InforConversation from './InfoConversation';
 export interface IChatProps {}
 
 export function Chat(props: IChatProps) {
@@ -19,6 +22,14 @@ export function Chat(props: IChatProps) {
   const socket = React.useContext(SocketContext);
   const conversations = useAppSelector((state) => state.user.conversations);
   const [user1, setUser1] = React.useState({} as IUser);
+  const lang = useAppSelector((state) => state.global.language);
+  React.useEffect(() => {
+    if (lang === 'en') {
+      moment.locale('es');
+    } else {
+      moment.locale('vi');
+    }
+  }, [lang]);
   React.useEffect(() => {
     const access_token = localStorage.getItem('access_token');
     if (!access_token) {
@@ -29,6 +40,7 @@ export function Chat(props: IChatProps) {
         const actionResult = await dispatch(getMe());
         const unwrap = unwrapResult(actionResult);
         setUser1(unwrap);
+        console.log(unwrap);
         setTimeout(() => {
           dispatch(turnOffLoading(false));
         }, 500);
@@ -70,13 +82,14 @@ export function Chat(props: IChatProps) {
     } catch (error) {
       console.log(error);
     }
-  }, []);
-
+  }, [conversations?.length]);
+  const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
   return (
     <div className="flex h-screen min-w-full">
       {loading && <FullPageLoading className="h-screen" />}
       <LeftBar />
       <MainChat />
+      {isShowGroupDetail && <InforConversation />}
     </div>
   );
 }
