@@ -9,6 +9,7 @@ export interface IMainChatProps {}
 export function MainChat(props: IMainChatProps) {
   const choosenFriend = useAppSelector((state) => state.user.choosenFriend);
   const mainBoardRef = React.useRef<HTMLDivElement>(null);
+  const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
   const mainBoardReponsive = () => {
     const width = window.innerWidth;
     if (width < 1024) {
@@ -26,7 +27,7 @@ export function MainChat(props: IMainChatProps) {
   }, [choosenFriend]);
   window.addEventListener('resize', mainBoardReponsive);
   return (
-    <div ref={mainBoardRef} className="lg:w-5/6 w-full h-full flex items-center">
+    <div ref={mainBoardRef} className={`lg:w-5/6 w-full h-full flex items-center`}>
       {choosenFriend.conversationId !== '' ? (
         <Chat className="flex flex-col h-full w-full" />
       ) : (

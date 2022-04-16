@@ -19,13 +19,14 @@ const GroupConversation = ({
   numberMember: number;
   handleSetShowGroupDetail: () => void;
 }) => {
+  const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
   return (
     <>
       <div className="flex items-center gap-4 w-full">
         <img className="w-9 h-9 rounded-full" src={imgUrl || 'https://picsum.photos/40'} alt="" />
         <div className="flex flex-col">
-          <p className="text-xl font-bold text-glareBlack">{name}</p>
-          <p className="text-xs text-gray-400 font-medium">{numberMember + 1} members</p>
+          <p className="lg:text-xl text-sm font-bold text-glareBlack">{name}</p>
+          <p className={`text-xs text-gray-400 font-medium`}>{numberMember + 1} members</p>
         </div>
         <div className="ml-auto mr-4 cursor-pointer" onClick={handleSetShowGroupDetail}>
           ...
@@ -47,7 +48,7 @@ const DirectConversation = (imgUrl: string, isOnline: boolean, name: string, use
         )}
       </div>
       <div>
-        <p className="text-base text-glareBlack">{name}</p>
+        <p className="lg:text-base text-sm text-glareBlack">{name}</p>
         <p className="text-xs text-glareGray ">@{username}</p>
       </div>
     </>
