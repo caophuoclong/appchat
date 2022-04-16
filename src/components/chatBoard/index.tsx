@@ -2,7 +2,7 @@ import * as React from 'react';
 import { LeftBar } from './leftBar';
 import { MainChat } from './mainChat';
 import { useNavigate } from 'react-router-dom';
-import { getMe, turnOffLoading } from '../../reducers/userSlice';
+import { getMe, setLoading, turnOffLoading } from '../../reducers/userSlice';
 import { setConversationChoosen } from '../../reducers/globalSlice';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { unwrapResult } from '@reduxjs/toolkit';
@@ -25,6 +25,7 @@ export function Chat(props: IChatProps) {
   const conversation = useAppSelector((state) => state.global.conversation);
   const [user1, setUser1] = React.useState({} as IUser);
   const lang = useAppSelector((state) => state.global.language);
+  const messages = useAppSelector((state) => state.messages.messagesList);
   const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
 
   React.useEffect(() => {
@@ -38,9 +39,9 @@ export function Chat(props: IChatProps) {
         const unwrap = unwrapResult(actionResult);
         setUser1(unwrap);
         console.log(unwrap);
-        setTimeout(() => {
-          dispatch(turnOffLoading(false));
-        }, 500);
+        // setTimeout(() => {
+        //   dispatch(turnOffLoading(false));
+        // }, 500);
       } catch (error) {
         console.log(error);
       }
@@ -60,31 +61,46 @@ export function Chat(props: IChatProps) {
       }
     }
   }, [socket, conversations?.length]);
-  React.useEffect(() => {
-    try {
-      if (conversations) {
-        conversations.map(async (conversation) => {
-          if (conversation._id !== '') {
-            const actionResult = await dispatch(
-              getMessages({
-                id: conversation._id,
-                page: 1,
-              })
-            );
-            unwrapResult(actionResult);
-          }
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [conversations?.length]);
+  // React.useEffect(() => {
+  //   dispatch(turnOffLoading(true));
+  //   try {
+  //     if (conversations) {
+  //       conversations.map(async (conversation) => {
+  //         if (conversation._id !== '') {
+  //           const actionResult = await dispatch(
+  //             getMessages({
+  //               id: conversation._id,
+  //               page: 1,
+  //             })
+  //           );
+  //           const unwrap = unwrapResult(actionResult);
+  //           console.log(unwrap);
+  //         }
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, [conversations?.length]);
   React.useEffect(() => {
     (async () => {
+      dispatch(setLoading());
       if (choosenFriend.conversationId) {
         const result = await dispatch(getConversationInfo({ id: choosenFriend.conversationId }));
         const unwrap = unwrapResult(result);
+        // console.log();
+        if (!messages[choosenFriend.conversationId]) {
+          const actionResult = await dispatch(
+            getMessages({
+              id: choosenFriend.conversationId,
+              page: 1,
+            })
+          );
+          const unwrap1 = unwrapResult(actionResult);
+          console.log(unwrap1);
+        }
         dispatch(setConversationChoosen(unwrap));
+        dispatch(turnOffLoading());
       }
     })();
   }, [choosenFriend.conversationId]);
