@@ -5,8 +5,8 @@ import { handleChooseFriend, makeUnReadMessagesEmpty } from '../../../../reducer
 import IMessage from '../../../../interface/IMessage';
 import { SocketContext } from '../../../../context/socket';
 import RenderInfoConversation from './RenderInfoConversation';
-import { setConversationChoosen } from '../../../../reducers/globalSlice';
-
+import { getConversationInfo, setConversationChoosen } from '../../../../reducers/globalSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
 export interface IFriendProps {
   converstationInfor: {
     _id: string;
@@ -51,6 +51,7 @@ export function GroupConversation({ converstationInfor }: IFriendProps) {
       );
     }
   };
+
   return (
     <div
       className="flex gap-2 my-6 px-2 py-1 hover:bg-gray-200 bg-opacity-25 cursor-pointer z-0"

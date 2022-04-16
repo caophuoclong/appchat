@@ -39,7 +39,6 @@ export function LeftBar(props: ILeftBarProps) {
   };
   React.useEffect(() => {
     leftBarReponsive();
-    console.log('123');
   }, [choosenFriend]);
   window.addEventListener('resize', leftBarReponsive);
   return (

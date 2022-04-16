@@ -2,7 +2,7 @@ import IMessage from "../interface/IMessage";
 import axiosClient from "./axiosClient";
 
 const conversationApi = {
-    getConversation: (id: string, page: number) => {
+    getMessages: (id: string, page: number) => {
         const url = "/conversation/" + id;
         return new Promise<{
             page: number,

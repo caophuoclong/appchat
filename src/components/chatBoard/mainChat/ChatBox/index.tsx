@@ -3,7 +3,7 @@ import { ChatHeader } from '../Header';
 import { InputBox } from './InputBox';
 import MessageList from './MessageList';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
-import { getConversation } from '../../../../reducers/message';
+import { getMessages } from '../../../../reducers/message';
 export interface IChatProps {
   className: string;
 }
@@ -34,7 +34,7 @@ export function Chat(props: IChatProps) {
     if (e.scrollTop === 0) {
       if (getMessage.messagesList[conversationId].isMore) {
         await dispatch(
-          getConversation({
+          getMessages({
             id: conversationId,
             page: Number(getMessage.messagesList[conversationId].page) + 1,
           })

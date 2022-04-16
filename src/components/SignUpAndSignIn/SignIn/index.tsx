@@ -19,11 +19,7 @@ interface formValue {
   username: string;
   password: string;
 }
-export default function SignIn({
-  language,
-  userNameAndPassowrd,
-  handleSetShowSigning,
-}: Props) {
+export default function SignIn({ language, userNameAndPassowrd, handleSetShowSigning }: Props) {
   const navigate = useNavigate();
   React.useEffect(() => {
     const access_token = window.localStorage.getItem('access_token');
@@ -34,18 +30,10 @@ export default function SignIn({
   const schema = yup.object().shape({
     username: yup
       .string()
-      .required(
-        language === 'en'
-          ? 'Username is required'
-          : 'Tên đăng nhập không được trống'
-      ),
+      .required(language === 'en' ? 'Username is required' : 'Tên đăng nhập không được trống'),
     password: yup
       .string()
-      .required(
-        language === 'en'
-          ? 'Password is required'
-          : 'Mật khẩu không được trống'
-      ),
+      .required(language === 'en' ? 'Password is required' : 'Mật khẩu không được trống'),
   });
   const {
     register,
@@ -69,14 +57,8 @@ export default function SignIn({
       };
     } = await userApi.login(data.username, data.password);
     if (user.code === 200) {
-      window.localStorage.setItem(
-        'access_token',
-        JSON.stringify(user.data.accessToken)
-      );
-      window.localStorage.setItem(
-        'refresh_token',
-        JSON.stringify(user.data.refreshToken)
-      );
+      window.localStorage.setItem('access_token', JSON.stringify(user.data.accessToken));
+      window.localStorage.setItem('refresh_token', JSON.stringify(user.data.refreshToken));
       window.location.href = '/';
       setTimeout(() => {
         handleSetShowSigning(false);
@@ -86,14 +68,8 @@ export default function SignIn({
       sw2.fire({
         icon: 'error',
         title: 'Oops...',
-        text:
-          language === 'en'
-            ? 'Your account is not exist!'
-            : 'Tài khoản không tồn tại!',
-        footer:
-          language === 'en'
-            ? 'Please register!.'
-            : 'Vui lòng đăng ký tài khoản',
+        text: language === 'en' ? 'Your account is not exist!' : 'Tài khoản không tồn tại!',
+        footer: language === 'en' ? 'Please register!.' : 'Vui lòng đăng ký tài khoản',
         timer: 2000,
       });
       setTimeout(() => {
@@ -104,14 +80,8 @@ export default function SignIn({
       sw2.fire({
         icon: 'error',
         title: 'Oops...',
-        text:
-          language === 'en'
-            ? 'Your password is incorrect!'
-            : 'Mật khẩu không đúng!',
-        footer:
-          language === 'en'
-            ? 'Please retype your password!.'
-            : 'Vui lòng nhập lại mật khẩu!',
+        text: language === 'en' ? 'Your password is incorrect!' : 'Mật khẩu không đúng!',
+        footer: language === 'en' ? 'Please retype your password!.' : 'Vui lòng nhập lại mật khẩu!',
         timer: 2000,
       });
       setTimeout(() => {
@@ -138,10 +108,7 @@ export default function SignIn({
         <BiKey size="24px" />
       </Input>
       <div className="flex justify-center items-center my-2">
-        <button
-          className="rounded-full py-2 px-8 bg-glareBrown text-white"
-          type="submit"
-        >
+        <button className="rounded-full py-2 px-8 bg-glareBrown text-white" type="submit">
           {language === 'en' ? 'Sign In' : 'Đăng nhập'}
         </button>
       </div>

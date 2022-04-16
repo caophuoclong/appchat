@@ -10,19 +10,19 @@ function Content({
   lang,
   type,
   children,
+  groupName,
 }: {
   lang: string;
   type: string;
   children: string;
+  groupName?: string;
 }) {
   if (type === 'makeFriend')
     return (
       <>
         <span className="font-semibold text-md">{children}</span>
         <p className="text-sm pr-6">
-          {lang === 'en'
-            ? ' sent you friend request'
-            : ' đã gửi lời mời kết bạn cho bạn.'}
+          {lang === 'en' ? ' sent you friend request' : ' đã gửi lời mời kết bạn cho bạn.'}
         </p>
       </>
     );
@@ -37,16 +37,24 @@ function Content({
         </p>
       </>
     );
+  else if (type === 'addToGroup')
+    return (
+      <>
+        <span className="font-bold">{children}</span>
+        <p className="text-sm pr-6">
+          {lang === 'en'
+            ? ` have added you to group ${groupName}.`
+            : ` vừa mới mời bạn vào nhóm ${groupName}`}
+        </p>
+      </>
+    );
   else return <p>Test noti</p>;
 }
 
 export default function Notification({}: Props) {
-  const notifications = useAppSelector(
-    (state) => state.user.notifications
-  );
+  const notifications = useAppSelector((state) => state.user.notifications);
   const lang = useAppSelector((state) => state.global.language);
-  const [numberOfNonSeenNoti, setNumberOfNonSeenNoti] =
-    React.useState(0);
+  const [numberOfNonSeenNoti, setNumberOfNonSeenNoti] = React.useState(0);
   const dispatch = useAppDispatch();
   const modal = React.useRef<HTMLDivElement>(null);
   const handleOnShowNotifiModal = () => {
@@ -61,9 +69,7 @@ export default function Notification({}: Props) {
   };
   React.useEffect(() => {
     setNumberOfNonSeenNoti(
-      notifications.filter(
-        (notification) => notification.seen === false
-      ).length
+      notifications.filter((notification) => notification.seen === false).length
     );
   }, [notifications]);
   const handleMarkReadNoti = (_id: string) => {
@@ -97,19 +103,21 @@ export default function Notification({}: Props) {
             className="mb-4 mt-2 flex gap-2 items-center cursor-pointer relative"
           >
             <img
-              src={
-                notification.user.imgUrl || 'https://picsum.photos/40'
-              }
+              src={notification.user.imgUrl || 'https://picsum.photos/40'}
               alt="avatar"
               className="w-10 h-10r rounded-full"
             />
             <div className="ml-4">
-              <Content type={notification.type} lang={lang}>
-                {notification.user.name}
-              </Content>
-              <p className="text-xs text-blue-500">
-                {moment(notification.date).fromNow()}
-              </p>
+              {notification.group ? (
+                <Content type={notification.type} lang={lang} groupName={notification!.group!.name}>
+                  {notification.user.name}
+                </Content>
+              ) : (
+                <Content type={notification.type} lang={lang}>
+                  {notification.user.name}
+                </Content>
+              )}
+              <p className="text-xs text-blue-500">{moment(notification.date).fromNow()}</p>
             </div>
             {!notification.seen && (
               <div className="absolute w-5 h-5 bg-blue-500 rounded-full right-0"></div>

@@ -58,8 +58,12 @@ export default function Render({ type, conversation }: RenderProps) {
   const user = useAppSelector((state) => state.user);
   const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
   const dispatch = useAppDispatch();
+  const choosenFriend = useAppSelector((state) => state.user.choosenFriend.conversationId);
+
+  React.useEffect(() => {
+    dispatch(setHideGroupDetail());
+  }, [choosenFriend]);
   const handleSetShowGroupDetail = () => {
-    console.log(123);
     if (!isShowGroupDetail) {
       dispatch(setShowGroupDetail());
     } else {

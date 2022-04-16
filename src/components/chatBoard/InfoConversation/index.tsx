@@ -2,8 +2,9 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hook';
 import { GoTriangleRight, GoTriangleDown } from 'react-icons/go';
 import Member from './Member';
-import { BiUserPlus } from 'react-icons/bi';
+import { AiOutlineEdit } from 'react-icons/ai';
 import { SelectedType, setSelectedModal } from '../../../reducers/globalSlice';
+import UpdateInfoGroup from './updateInfoGroup';
 
 interface Props {}
 
@@ -13,6 +14,7 @@ export default function InforConversation({}: Props) {
   const btnAddMember = React.useRef<HTMLDivElement>(null);
   const memberList = React.useRef<HTMLDivElement>(null);
   const [showGroupMember, setShowGroupMember] = React.useState(false);
+  const [showEditName, setShowEditName] = React.useState(false);
   const handleShowGroupMember = () => {
     setShowGroupMember(!showGroupMember);
   };
@@ -37,7 +39,12 @@ export default function InforConversation({}: Props) {
       </div>
       <div className="flex flex-col gap-2 items-center justify-center border-b py-4">
         <img src={conversation.imgUrl} alt="avatar group" className="rounded-full w-14 h-14" />
-        <p className="text-3xl font-bold">{conversation.name}</p>
+        <div className="text-3xl font-bold flex gap-x-2 items-center">
+          {conversation.name}
+          <button className="p-1 rounded-full bg-gray-400">
+            <AiOutlineEdit size="16px" />
+          </button>
+        </div>
       </div>
       <div className="border-b p-2">
         <div
@@ -76,6 +83,7 @@ export default function InforConversation({}: Props) {
           ))}
         </div>
       )}
+      {showEditName && <UpdateInfoGroup />}
     </div>
   );
 }
