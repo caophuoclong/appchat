@@ -100,8 +100,8 @@ export function Chat(props: IChatProps) {
           console.log(unwrap1);
         }
         dispatch(setConversationChoosen(unwrap));
-        dispatch(turnOffLoading());
       }
+      dispatch(turnOffLoading());
     })();
   }, [choosenFriend.conversationId]);
   return (
