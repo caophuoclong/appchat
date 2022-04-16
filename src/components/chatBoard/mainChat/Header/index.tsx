@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { IConversation } from '../../../../interface/IUser';
+import { setHideGroupDetail } from '../../../../reducers/globalSlice';
 import { setEmptyChoosen } from '../../../../reducers/userSlice';
 import Render from './Render';
 
@@ -13,6 +14,7 @@ export function ChatHeader(props: IChatHeaderProps) {
   const conversations = useAppSelector((state) => state.user.conversations);
   const dispatch = useAppDispatch();
   const onBack = () => {
+    dispatch(setHideGroupDetail());
     dispatch(setEmptyChoosen());
   };
 

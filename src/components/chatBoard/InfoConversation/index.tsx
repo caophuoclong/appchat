@@ -3,7 +3,8 @@ import { useAppDispatch, useAppSelector } from '../../../hook';
 import { GoTriangleRight, GoTriangleDown } from 'react-icons/go';
 import Member from './Member';
 import { AiOutlineEdit } from 'react-icons/ai';
-import { SelectedType, setSelectedModal } from '../../../reducers/globalSlice';
+import { TiTimes } from 'react-icons/ti';
+import { SelectedType, setHideGroupDetail, setSelectedModal } from '../../../reducers/globalSlice';
 import UpdateInfoGroup from './updateInfoGroup';
 
 interface Props {}
@@ -33,13 +34,26 @@ export default function InforConversation({}: Props) {
     dispatch(setSelectedModal(SelectedType.ADDMEMBER));
   };
   return (
-    <div className="lg:w-4/12 w-2/3  border">
-      <div className="text-center border-b p-4 text-2xl font-bold">
+    <div className="lg:w-4/12 w-11/12  border relative">
+      <button
+        onClick={() => {
+          dispatch(setHideGroupDetail());
+        }}
+        className="absolute right-2 top-2 rounded-full hover:bg-gray-400"
+      >
+        <TiTimes size="24px" />
+      </button>
+
+      <div className="text-center border-b p-4 lg:text-2xl text-sm font-bold">
         {lang === 'en' ? 'Group info' : 'Thông tin nhóm'}
       </div>
       <div className="flex flex-col gap-2 items-center justify-center border-b py-4">
-        <img src={conversation.imgUrl} alt="avatar group" className="rounded-full w-14 h-14" />
-        <div className="text-3xl font-bold flex gap-x-2 items-center">
+        <img
+          src={conversation.imgUrl}
+          alt="avatar group"
+          className="rounded-full lg:w-14 lg:h-14 w-12 h-12"
+        />
+        <div className="lg:text-3xl text-md font-bold flex gap-x-2 items-center">
           {conversation.name}
           <button className="p-1 rounded-full bg-gray-400">
             <AiOutlineEdit size="16px" />
@@ -68,7 +82,7 @@ export default function InforConversation({}: Props) {
           <div>
             <div
               onClick={handleAddMember}
-              className="bg-gray-400 rounded-md p-1 mx-auto w-fit cursor-pointer"
+              className="bg-gray-400 rounded-md p-1 mx-auto w-fit cursor-pointer text-sm lg:text-base mb-4"
             >
               {lang === 'en' ? 'Add members' : 'Thêm thành viên'}
             </div>

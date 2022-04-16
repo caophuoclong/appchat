@@ -84,8 +84,8 @@ export function Chat(props: IChatProps) {
   // }, [conversations?.length]);
   React.useEffect(() => {
     (async () => {
-      dispatch(setLoading());
       if (choosenFriend.conversationId) {
+        dispatch(setLoading());
         const result = await dispatch(getConversationInfo({ id: choosenFriend.conversationId }));
         const unwrap = unwrapResult(result);
         // console.log();
@@ -100,8 +100,8 @@ export function Chat(props: IChatProps) {
           console.log(unwrap1);
         }
         dispatch(setConversationChoosen(unwrap));
+        dispatch(turnOffLoading());
       }
-      dispatch(turnOffLoading());
     })();
   }, [choosenFriend.conversationId]);
   return (
