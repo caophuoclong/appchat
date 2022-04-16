@@ -18,7 +18,8 @@ export function ChatHeader(props: IChatHeaderProps) {
 
   const conversation1 = useAppSelector((state) => state.global.conversation);
   const conversation2 = conversations!.find((conversation) => conversation._id === conversationId)!;
-  const conversation = conversation1 || conversation2;
+  let conversation;
+  conversation = Object.keys(conversation1).length !== 0 ? conversation1 : conversation2;
   return (
     <div
       className={props.className}

@@ -3,7 +3,8 @@ import { ChatHeader } from '../Header';
 import { InputBox } from './InputBox';
 import MessageList from './MessageList';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
-import { getMessages } from '../../../../reducers/message';
+import { getMessages, setLoadingMessage, turnOfLoadingMessage } from '../../../../reducers/message';
+import { unwrapResult } from '@reduxjs/toolkit';
 export interface IChatProps {
   className: string;
 }
@@ -33,12 +34,15 @@ export function Chat(props: IChatProps) {
     else setIsScroll(false);
     if (e.scrollTop === 0) {
       if (getMessage.messagesList[conversationId].isMore) {
-        await dispatch(
+        dispatch(setLoadingMessage());
+        const result = await dispatch(
           getMessages({
             id: conversationId,
             page: Number(getMessage.messagesList[conversationId].page) + 1,
           })
         );
+        const unwrap = unwrapResult(result);
+        dispatch(turnOfLoadingMessage());
         e.scrollTop = 512;
       }
     }

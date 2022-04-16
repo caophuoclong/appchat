@@ -50,6 +50,12 @@ const messageSlice = createSlice({
     name: 'Message Slice',
     initialState,
     reducers: {
+        setLoadingMessage: (state: MessageState) => {
+            state.loading = true;
+        },
+        turnOfLoadingMessage: (state: MessageState) => {
+            state.loading = false;
+        },
         initMessage: (
             state: MessageState,
             action: PayloadAction<Array<IMessage>>
@@ -81,14 +87,11 @@ const messageSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(getMessages.pending, (state, action) => {
-            state.loading = true;
         });
         builder.addCase(getMessages.fulfilled, (state, action) => {
             if (state.messagesList[action.payload.conversationId]) {
-                console.log(action.payload);
                 return {
                     ...state,
-                    loading: false,
                     messagesList: {
                         ...state.messagesList,
                         [action.payload.conversationId]: {
@@ -105,7 +108,6 @@ const messageSlice = createSlice({
             } else {
                 return {
                     ...state,
-                    loading: false,
                     messagesList: {
                         ...state.messagesList,
                         [action.payload.conversationId]: {
@@ -121,7 +123,6 @@ const messageSlice = createSlice({
             }
         });
         builder.addCase(getMessages.rejected, (state, action) => {
-            state.loading = false;
         })
         builder.addCase(addMessage.pending, (state, action) => {
             console.log("Pending");
@@ -135,6 +136,6 @@ const messageSlice = createSlice({
     },
 });
 
-export const { initMessage, addNewMessage } = messageSlice.actions;
+export const { initMessage, addNewMessage, setLoadingMessage, turnOfLoadingMessage } = messageSlice.actions;
 
 export default messageSlice.reducer;

@@ -33,7 +33,7 @@ export default function MessageList(props: IMessageListProps) {
           <Message key={index} message={message} />
         ))
       ) : (
-        <div>{'123'}</div>
+        <div className="w-full h-full flex items-center justify-center"></div>
       )}
     </>
   );

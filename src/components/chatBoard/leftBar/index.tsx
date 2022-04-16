@@ -67,7 +67,7 @@ export function LeftBar(props: ILeftBarProps) {
         </div>
         <ListFriend searchListFriend={resultSearch} className="mt-4 overflow-auto h-4/5" />
       </div>
-      <div className="flex items-center bg-white z-50 shadow-md mt-auto py-2">
+      <div className="flex items-center bg-white  shadow-md mt-auto py-2">
         <User className="py-auto flex items-center w-full pl-2" />
       </div>
     </div>
