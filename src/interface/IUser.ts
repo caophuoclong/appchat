@@ -37,6 +37,9 @@ export interface INotification {
     type: string,
     date: Date
     seen: boolean
+    group?: {
+        name: string
+    }
 }
 export interface IConversation {
     _id: string,
@@ -47,6 +50,7 @@ export interface IConversation {
     name?: string,
     imgUrl?: string,
     creator?: {
+        _id: string
         name: string;
         imgUrl: string;
     },

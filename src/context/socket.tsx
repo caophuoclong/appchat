@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../hook';
 import { handleSetSocketId } from '../reducers/globalSlice';
 import IMessage from '../interface/IMessage';
 import {
+  addConversation,
   handleSetOnline,
   handleUpdateTemp,
   refreshConversations,
@@ -15,6 +16,7 @@ import {
   updateUnReadMessasges,
 } from '../reducers/userSlice';
 import { addNewMessage } from '../reducers/message';
+import { IConversation } from '../interface/IUser';
 export const SocketContext = React.createContext<Socket>({} as Socket);
 const Provider = (props: { children: JSX.Element }) => {
   const [socket, setSocket] = React.useState<Socket>({} as Socket);
@@ -65,6 +67,11 @@ const Provider = (props: { children: JSX.Element }) => {
       }
       dispatch(addNewMessage({ message, conversationId }));
       dispatch(handleUpdateTemp(conversationId));
+    });
+    socket.on('add_conversation', (data: string) => {
+      const data1: IConversation = JSON.parse(data);
+      console.log(data1);
+      dispatch(addConversation(data1));
     });
   }, []);
 

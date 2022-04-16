@@ -30,6 +30,7 @@ const notiApi = {
         notification: {
             user: string;
             type: string,
+            group?: string,
         };
         _id: string;
     }) => {

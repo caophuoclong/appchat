@@ -3,7 +3,7 @@ import {
     PayloadAction,
     createAsyncThunk,
 } from '@reduxjs/toolkit';
-import IUser, { IConversation, INotification } from '../interface/IUser';
+import IUser, { IConversation, INotification, participation } from '../interface/IUser';
 import IMessage from "../interface/IMessage";
 import userApi, { DataResponseGetFriends } from '../services/user.api';
 import notiApi from '../services/notification';
@@ -137,12 +137,22 @@ export const refreshFriendsAll = createAsyncThunk("refresh_friends_all", () => {
     })
 })
 export const createGroupChat = createAsyncThunk("create_group_chat", (params: IGroup) => {
-    return new Promise<string>(async (resolve, reject) => {
+    return new Promise<IConversation>(async (resolve, reject) => {
         try {
             const group = await groupApi.createGroup(params);
             resolve(group)
         } catch (error) {
             reject("failed")
+        }
+    })
+})
+export const addMemberToGroup = createAsyncThunk("add_member_to_group", (params: { participants: Array<string>, conversationId: string }) => {
+    return new Promise<[IConversation, string]>(async (resolve, reject) => {
+        try {
+            const conversation = await groupApi.addMemberToGroup(params)
+            resolve(conversation)
+        } catch (error) {
+            reject("Add failed")
         }
     })
 })
@@ -194,6 +204,7 @@ export const userSlice = createSlice({
                 conversationId: string;
             }>
         ) => {
+            console.log(action.payload.conversationId);
             return {
                 ...state,
                 choosenFriend: action.payload,
@@ -248,7 +259,6 @@ export const userSlice = createSlice({
                     if (x && action.payload.conversationId !== state.choosenFriend.conversationId) {
                         x.messages.push(action.payload.message)
                     }
-                    console.log(x);
                 }
             })
             state.conversations = xxx;
@@ -267,7 +277,11 @@ export const userSlice = createSlice({
         },
         setEmptyChoosen: (state: UserState) => {
             state.choosenFriend.conversationId = "";
+        },
+        addConversation: (state: UserState, action: PayloadAction<IConversation>) => {
+            state.conversations!.push(action.payload);
         }
+
     },
     extraReducers: (builder) => {
         builder.addCase(getMe.pending, (state, action) => {
@@ -337,8 +351,11 @@ export const userSlice = createSlice({
             state.friendsRequested = action.payload.friendsRequested;
             state.friendsRejected = action.payload.friendsRejected
         })
+        builder.addCase(createGroupChat.fulfilled, (state, action) => {
+            state.conversations!.push(action.payload);
+        })
     },
 });
 
-export const { updateId, handleChooseFriend, updateLatestMessage, updateUnReadMessasges, updateUnReadGroupMessage, makeUnReadMessagesEmpty, handleUpdateTemp, handleSetOnline, turnOffLoading, setEmptyChoosen } = userSlice.actions;
+export const { updateId, handleChooseFriend, updateLatestMessage, updateUnReadMessasges, updateUnReadGroupMessage, makeUnReadMessagesEmpty, handleUpdateTemp, handleSetOnline, turnOffLoading, setEmptyChoosen, addConversation } = userSlice.actions;
 export default userSlice.reducer;

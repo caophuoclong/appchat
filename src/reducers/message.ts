@@ -17,11 +17,10 @@ interface MessageState {
     };
     loading: boolean;
 }
-export const getConversation = createAsyncThunk(
+export const getMessages = createAsyncThunk(
     'getMessages',
     async ({ id, page }: { id: string, page: number }) => {
-        console.log(123);
-        return await conversationApi.getConversation(id, page);
+        return await conversationApi.getMessages(id, page);
     }
 );
 export const addMessage = createAsyncThunk(
@@ -65,7 +64,6 @@ const messageSlice = createSlice({
             action: PayloadAction<{ message: IMessage, conversationId: string }>
         ) => {
             const data = action.payload;
-            console.log(data);
             return {
                 ...state,
                 messagesList: {
@@ -82,10 +80,10 @@ const messageSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(getConversation.pending, (state, action) => {
+        builder.addCase(getMessages.pending, (state, action) => {
             state.loading = true;
         });
-        builder.addCase(getConversation.fulfilled, (state, action) => {
+        builder.addCase(getMessages.fulfilled, (state, action) => {
             if (state.messagesList[action.payload.conversationId]) {
                 console.log(action.payload);
                 return {
@@ -122,7 +120,7 @@ const messageSlice = createSlice({
 
             }
         });
-        builder.addCase(getConversation.rejected, (state, action) => {
+        builder.addCase(getMessages.rejected, (state, action) => {
             state.loading = false;
         })
         builder.addCase(addMessage.pending, (state, action) => {

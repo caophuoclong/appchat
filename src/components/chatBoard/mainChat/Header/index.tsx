@@ -15,7 +15,10 @@ export function ChatHeader(props: IChatHeaderProps) {
   const onBack = () => {
     dispatch(setEmptyChoosen());
   };
-  const conversation = conversations!.find((conversation) => conversation._id === conversationId)!;
+
+  const conversation1 = useAppSelector((state) => state.global.conversation);
+  const conversation2 = conversations!.find((conversation) => conversation._id === conversationId)!;
+  const conversation = conversation1 || conversation2;
   return (
     <div
       className={props.className}

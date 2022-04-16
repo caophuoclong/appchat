@@ -25,9 +25,6 @@ export default function MessageList(props: IMessageListProps) {
       conversationApi.makeUnReadMessagesEmpty(user.choosenFriend.conversationId);
     }
   }, [user.choosenFriend.conversationId]);
-  console.log(user.choosenFriend?.conversationId!);
-  console.log(messages);
-
   return (
     <>
       {loading && <FullPageLoading />}

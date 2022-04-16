@@ -4,14 +4,29 @@ import { useAppDispatch, useAppSelector } from '../../../hook';
 import Modal from './Modal';
 import { readFile } from '../../../utils';
 import { SearchBox } from '../leftBar/SearchBox';
-import { SelectedType, setSelectedModal } from '../../../reducers/globalSlice';
-import { createGroupChat } from '../../../reducers/userSlice';
+import {
+  SelectedType,
+  setConversationChoosen,
+  setSelectedModal,
+} from '../../../reducers/globalSlice';
+import { addMemberToGroup, createGroupChat } from '../../../reducers/userSlice';
+import { CLOUD_NAME } from '../../../configs';
+import { uploadImage } from '../../../services';
+import FullPageLoading from '../mainChat/ChatBox/MessageList/FullPageLoading';
+import { unwrapResult } from '@reduxjs/toolkit';
+import sw2 from 'sweetalert2';
+import { IConversation } from '../../../interface/IUser';
+import { SocketContext } from '../../../context/socket';
+import notiApi from '../../../services/notification';
 type Props = {};
 
 export default function MakeGroup({}: Props) {
   const lang = useAppSelector((state) => state.global.language);
   const selectedModal = useAppSelector((state) => state.global.selectedModal);
   const [groupAvatar, setGroupAvatar] = React.useState<string | ArrayBuffer>('');
+  const socket = React.useContext(SocketContext);
+  const conversation = useAppSelector((state) => state.global.conversation);
+  const user = useAppSelector((state) => state.user);
   const heading =
     SelectedType.MAKEGROUP === selectedModal ? (
       <p className="lg:text-2xl  text-sm font-bold">
@@ -46,12 +61,14 @@ export default function MakeGroup({}: Props) {
   const [inputText, setInputText] = React.useState('');
   const [listIdFriends, setListIdFriends] = React.useState<Array<string>>([]);
   const participants = useAppSelector((state) => state.global.conversation.participants);
+  const chossenFriend = useAppSelector((state) => state.user.choosenFriend.conversationId);
+  const [newConversation, setNewConversation] = React.useState<IConversation>({} as IConversation);
+  const [loading, setLoading] = React.useState(false);
   React.useEffect(() => {
     const x: string[] = [];
-    participants.forEach((participant) => x.push(participant._id));
+    if (participants) participants.forEach((participant) => x.push(participant._id));
     setListIdFriends(x);
   }, [participants]);
-  console.log(listIdFriends);
   const dispatch = useAppDispatch();
   const handleCountFriendChecked = () => {
     const friendChecked = document.getElementsByName(
@@ -68,7 +85,9 @@ export default function MakeGroup({}: Props) {
   React.useEffect(() => {
     inputText && !!count && setIsDisabled(false);
   }, [inputText, count]);
-  const handleCreateGroupChat = () => {
+  React.useEffect(() => {}, []);
+  const handleCreateGroupChat = async () => {
+    setLoading(true);
     const friendChecked = document.getElementsByName(
       'friendWishAddToGroup'
     ) as NodeListOf<HTMLInputElement>;
@@ -78,16 +97,78 @@ export default function MakeGroup({}: Props) {
         listFriend.push(friend.id.split('_')[1]);
       }
     });
-    // listFriend.push(userId);
-    dispatch(
-      createGroupChat({
-        name: inputText,
-        participants: listFriend,
-      })
-    );
+    if (SelectedType.ADDMEMBER === selectedModal) {
+      const actionResult = await dispatch(
+        addMemberToGroup({
+          participants: listFriend,
+          conversationId: chossenFriend,
+        })
+      );
+      const unwrap = unwrapResult(actionResult);
+      console.log(unwrap);
+      listFriend.forEach((friend) => {
+        unwrap[0].groupUnRead!.push({
+          user: friend,
+          messages: [],
+        });
+      });
+
+      dispatch(setConversationChoosen(unwrap[0]));
+      setNewConversation(unwrap[0]);
+      setLoading(false);
+    } else {
+      let url;
+      if (groupAvatar) {
+        const data = await uploadImage(groupAvatar!);
+        url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${data.data.version}/${data.data.public_id}.png`;
+      }
+      const actionResult = await dispatch(
+        createGroupChat({
+          name: inputText,
+          participants: listFriend,
+          avatar: url ? url : 'https://picsum.photos/56',
+        })
+      );
+      try {
+        const unwrap = unwrapResult(actionResult);
+        setNewConversation(unwrap);
+        sw2.fire({
+          icon: 'success',
+          text: lang === 'en' ? 'Create group successfully!' : 'Tạo nhóm thành công!',
+          timer: 1500,
+        });
+        dispatch(setSelectedModal(SelectedType.NULL));
+      } catch (error) {}
+      setLoading(false);
+    }
   };
+  React.useEffect(() => {
+    if (newConversation.participants) {
+      newConversation.participants.forEach(async (participant) => {
+        if (participant._id !== user._id) {
+          socket.emit(
+            'add_conversation',
+            JSON.stringify({
+              id: participant._id,
+              conversation: newConversation,
+            })
+          );
+          await notiApi.addNotification({
+            notification: {
+              type: 'addToGroup',
+              user: userId,
+              group: newConversation._id,
+            },
+            _id: participant._id,
+          });
+          socket.emit('live_noti', participant._id);
+        }
+      });
+    }
+  }, [socket, newConversation]);
   return (
     <Modal customStyle={customStyle} heading={heading}>
+      {loading ? <FullPageLoading /> : <></>}
       <div className="flex flex-col h-full">
         {selectedModal === SelectedType.MAKEGROUP && (
           <div className="flex my-4 justify-between">
@@ -144,11 +225,37 @@ export default function MakeGroup({}: Props) {
 
         <div className="h-4/6 my-4 overflow-y-auto">
           {friends.map((friend, index) => {
-            return (
-              <div key={index} className="mb-4">
-                {friend.name!.toLowerCase().match(searchText.toLowerCase()) &&
-                  selectedModal === SelectedType.ADDMEMBER &&
-                  !listIdFriends.includes(friend._id) && (
+            if (selectedModal === SelectedType.ADDMEMBER) {
+              return (
+                <div key={index} className="mb-4">
+                  {friend.name!.toLowerCase().match(searchText.toLowerCase()) &&
+                    !listIdFriends.includes(friend._id) &&
+                    friend._id !== conversation.creator!._id && (
+                      <label
+                        className="flex gap-2 items-center "
+                        htmlFor={`checkbox_${friend._id}`}
+                      >
+                        <input
+                          onChange={handleCountFriendChecked}
+                          type="checkbox"
+                          id={`checkbox_${friend._id}`}
+                          name="friendWishAddToGroup"
+                          className="text-lg rounded-full"
+                        />
+                        <img
+                          className="w-11 h-11 rounded-full"
+                          src={friend.imgUrl || 'https://picsum.photos/40'}
+                          alt={`Avatar ${friend.name}`}
+                        />
+                        <span className="truncate">{friend.name}</span>
+                      </label>
+                    )}
+                </div>
+              );
+            } else
+              return (
+                <div key={index} className="mb-4">
+                  {friend.name!.toLowerCase().match(searchText.toLowerCase()) && (
                     <label className="flex gap-2 items-center " htmlFor={`checkbox_${friend._id}`}>
                       <input
                         onChange={handleCountFriendChecked}
@@ -165,8 +272,8 @@ export default function MakeGroup({}: Props) {
                       <span className="truncate">{friend.name}</span>
                     </label>
                   )}
-              </div>
-            );
+                </div>
+              );
           })}
           <div></div>
         </div>
@@ -180,7 +287,7 @@ export default function MakeGroup({}: Props) {
             {lang === 'en' ? 'Cancel' : 'Huỷ'}
           </button>
           <button
-            disabled={isDisabled}
+            disabled={isDisabled && selectedModal === SelectedType.MAKEGROUP}
             onClick={handleCreateGroupChat}
             className=" text-glareGray200 p-2 px-4 rounded-xl bg-blue-500 shadow-lg shadow-blue-500/50"
           >

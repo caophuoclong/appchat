@@ -21,23 +21,17 @@ const options: Array<{ value: string; label: string }> = [
 
 export default function Sign(props: ISignProps) {
   const [isSignUp, setIsSignUp] = React.useState(true);
-  const [language, setLanguage] = React.useState(
-    window.localStorage.getItem('lang') || 'vn'
-  );
-  const [userNameAndPassowrd, setUserNameAndPassword] =
-    React.useState({
-      username: '',
-      password: '',
-    });
+  const [language, setLanguage] = React.useState(window.localStorage.getItem('lang') || 'vn');
+  const [userNameAndPassowrd, setUserNameAndPassword] = React.useState({
+    username: '',
+    password: '',
+  });
   const [isLoading, setShowLoading] = React.useState(false);
   const handleChangeLanguage: (value: string) => void = (value) => {
     window.localStorage.setItem('lang', value);
     setLanguage(value);
   };
-  const handleSetUserNameAndPassword = (value: {
-    username: string;
-    password: string;
-  }) => {
+  const handleSetUserNameAndPassword = (value: { username: string; password: string }) => {
     setUserNameAndPassword(value);
   };
   const handleSetShowSigning = (value: boolean) => {
@@ -48,16 +42,10 @@ export default function Sign(props: ISignProps) {
       {isLoading && <FullPageLoading />}
       <div className="lg:w-1/2 lg:visible invisible"></div>
       <div className="border-2 border-black lg:w-1/2 relative h-full w-full">
-        <SelectLanguage
-          value={language}
-          onChange={handleChangeLanguage}
-          options={options}
-        />
+        <SelectLanguage value={language} onChange={handleChangeLanguage} options={options} />
         <div className="lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-1/2 w-full">
           <p className="text-center">
-            {language === 'en'
-              ? 'Welcome to Glare'
-              : 'Chào mừng đến với Glare'}
+            {language === 'en' ? 'Welcome to Glare' : 'Chào mừng đến với Glare'}
           </p>
           <Switch
             option1={language === 'en' ? 'Sign in' : 'Đăng nhập'}
@@ -72,9 +60,7 @@ export default function Sign(props: ISignProps) {
             <SignUp
               language={language}
               setIsSignUp={setIsSignUp}
-              handleSetUserNameAndPassword={
-                handleSetUserNameAndPassword
-              }
+              handleSetUserNameAndPassword={handleSetUserNameAndPassword}
             />
           ) : (
             <SignIn

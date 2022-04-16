@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import IUser, { IConversation } from "../interface/IUser";
+import { groupApi } from "../services";
 import friendApi from "../services/friend";
-
+import moment from 'moment';
+import 'moment/locale/en-au';
+import 'moment/locale/vi';
 // type SelectedType = "settings" | "information" | "makeFriend" | "showFriends" | null;
 export enum SelectedType {
     NULL,
@@ -39,6 +42,13 @@ export const handleSearchFriend = createAsyncThunk("search_friend", (params: {
             reject(error);
         })
     });
+})
+export const getConversationInfo = createAsyncThunk("get_conversation_info", (params: { id: string }) => {
+    return new Promise<IConversation>(async (resolve, reject) => {
+        groupApi.getGroupConversation(params).then(result => {
+            resolve(result)
+        })
+    })
 })
 export const sendFriendRequest = createAsyncThunk("send_friend_request", (param: string) => {
     return new Promise<any>((resolve, reject) => {
@@ -136,6 +146,11 @@ const globalSlice = createSlice({
             }
         },
         changeLanguage: (state: GlobalState, action: PayloadAction<"en" | "vn">) => {
+            if (action.payload === "en") {
+                moment.locale("en-au")
+            } else {
+                moment.locale("vi")
+            }
             return {
                 ...state,
                 language: action.payload

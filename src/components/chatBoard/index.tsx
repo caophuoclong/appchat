@@ -3,16 +3,16 @@ import { LeftBar } from './leftBar';
 import { MainChat } from './mainChat';
 import { useNavigate } from 'react-router-dom';
 import { getMe, turnOffLoading } from '../../reducers/userSlice';
+import { setConversationChoosen } from '../../reducers/globalSlice';
 import { useAppDispatch, useAppSelector } from '../../hook';
 import { unwrapResult } from '@reduxjs/toolkit';
 import FullPageLoading from './FullPageLoading';
 import { SocketContext } from '../../context/socket';
 import IUser from '../../interface/IUser';
-import { getConversation } from '../../reducers/message';
-import moment from 'moment';
-import 'moment/locale/es-us';
-import 'moment/locale/vi';
+import { getMessages } from '../../reducers/message';
+
 import InforConversation from './InfoConversation';
+import { getConversationInfo } from '../../reducers/globalSlice';
 export interface IChatProps {}
 
 export function Chat(props: IChatProps) {
@@ -21,15 +21,12 @@ export function Chat(props: IChatProps) {
   const loading = useAppSelector((state) => state.user.loading);
   const socket = React.useContext(SocketContext);
   const conversations = useAppSelector((state) => state.user.conversations);
+  const choosenFriend = useAppSelector((state) => state.user.choosenFriend);
+  const conversation = useAppSelector((state) => state.global.conversation);
   const [user1, setUser1] = React.useState({} as IUser);
   const lang = useAppSelector((state) => state.global.language);
-  React.useEffect(() => {
-    if (lang === 'en') {
-      moment.locale('es');
-    } else {
-      moment.locale('vi');
-    }
-  }, [lang]);
+  const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
+
   React.useEffect(() => {
     const access_token = localStorage.getItem('access_token');
     if (!access_token) {
@@ -55,7 +52,6 @@ export function Chat(props: IChatProps) {
       socket && user1._id && socket.emit('init_user', user1._id);
   }, [socket, user1]);
   React.useEffect(() => {
-    console.log(conversations);
     if (socket) {
       if (conversations) {
         conversations.forEach((conversation) => {
@@ -70,7 +66,7 @@ export function Chat(props: IChatProps) {
         conversations.map(async (conversation) => {
           if (conversation._id !== '') {
             const actionResult = await dispatch(
-              getConversation({
+              getMessages({
                 id: conversation._id,
                 page: 1,
               })
@@ -83,7 +79,15 @@ export function Chat(props: IChatProps) {
       console.log(error);
     }
   }, [conversations?.length]);
-  const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
+  React.useEffect(() => {
+    (async () => {
+      if (choosenFriend.conversationId) {
+        const result = await dispatch(getConversationInfo({ id: choosenFriend.conversationId }));
+        const unwrap = unwrapResult(result);
+        dispatch(setConversationChoosen(unwrap));
+      }
+    })();
+  }, [choosenFriend.conversationId]);
   return (
     <div className="flex h-screen min-w-full">
       {loading && <FullPageLoading className="h-screen" />}
