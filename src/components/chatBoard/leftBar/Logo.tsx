@@ -5,11 +5,11 @@ export interface ILogoProps {
   className: string;
 }
 
-export function Logo (props: ILogoProps) {
+export function Logo(props: ILogoProps) {
   return (
     <div className={props.className}>
-      <LogoIcon/>
-      <span className="text-glareBlack text-3xl font-semibold">Glare</span>
+      <LogoIcon />
+      <span className="text-glareBlack text-3xl font-semibold">CyberChat</span>
     </div>
   );
 }
