@@ -45,7 +45,7 @@ export default function Sign(props: ISignProps) {
         <SelectLanguage value={language} onChange={handleChangeLanguage} options={options} />
         <div className="lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-1/2 w-full">
           <p className="text-center">
-            {language === 'en' ? 'Welcome to Glare' : 'Chào mừng đến với Glare'}
+            {language === 'en' ? 'Welcome to CyperChat' : 'Chào mừng đến với CyperChat'}
           </p>
           <Switch
             option1={language === 'en' ? 'Sign in' : 'Đăng nhập'}
