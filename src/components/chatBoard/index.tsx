@@ -29,26 +29,6 @@ export function Chat(props: IChatProps) {
   const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
 
   React.useEffect(() => {
-    const access_token = localStorage.getItem('access_token');
-    if (!access_token) {
-      navigate('/sign');
-    }
-    const xxx = async () => {
-      try {
-        const actionResult = await dispatch(getMe());
-        const unwrap = unwrapResult(actionResult);
-        setUser1(unwrap);
-        console.log(unwrap);
-        // setTimeout(() => {
-        //   dispatch(turnOffLoading(false));
-        // }, 500);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    xxx();
-  }, [dispatch, navigate]);
-  React.useEffect(() => {
     if (typeof socket.emit === 'function')
       socket && user1._id && socket.emit('init_user', user1._id);
   }, [socket, user1]);
@@ -88,7 +68,6 @@ export function Chat(props: IChatProps) {
         dispatch(setLoading());
         const result = await dispatch(getConversationInfo({ id: choosenFriend.conversationId }));
         const unwrap = unwrapResult(result);
-        // console.log();
         if (!messages[choosenFriend.conversationId]) {
           const actionResult = await dispatch(
             getMessages({

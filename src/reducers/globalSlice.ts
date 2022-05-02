@@ -30,6 +30,7 @@ interface GlobalState {
     searchedFriend?: Array<Pick<IUser, "_id" | "name" | "username" | "imgUrl">>,
     showGroupDetail: boolean,
     conversation: IConversation;
+    showMessageModal: boolean,
 }
 export const handleSearchFriend = createAsyncThunk("search_friend", (params: {
     type: string, value: string
@@ -72,7 +73,8 @@ const initialState: GlobalState = {
         text: "",
         file: [],
     },
-    conversation: {} as IConversation
+    conversation: {} as IConversation,
+    showMessageModal: false,
 }
 
 const globalSlice = createSlice({
@@ -173,6 +175,18 @@ const globalSlice = createSlice({
                 ...state,
                 socketId: action.payload
             }
+        },
+        showMessageModal: (state) => {
+            return {
+                ...state,
+                showMessageModal: true,
+            };
+        },
+        hideMessageModal: (state) => {
+            return {
+                ...state,
+                showMessageModal: false,
+            }
         }
     },
     extraReducers: (builder) => {
@@ -191,5 +205,5 @@ const globalSlice = createSlice({
 
 })
 
-export const { setShowModalOptionFalse, setShowModalOptionTrue, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined, handleSetSocketId, setShowGroupDetail, setHideGroupDetail, setConversationChoosen } = globalSlice.actions;
+export const { setShowModalOptionFalse, setShowModalOptionTrue, handleChangeMessageText, handleChangeImageFile, handleRemoveImageFile, handleMakeImageListEmpty, setSelectedModal, changeLanguage, makeSearchedFriendsUndefined, handleSetSocketId, setShowGroupDetail, setHideGroupDetail, setConversationChoosen, showMessageModal, hideMessageModal } = globalSlice.actions;
 export default globalSlice.reducer;

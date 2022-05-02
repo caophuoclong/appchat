@@ -6,17 +6,31 @@ import './app.css';
 import SocketProvider from './context/socket';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sign from './components/SignUpAndSignIn';
+import HomePage from './components/HomePage';
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<ChatMain />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/messages/:id" element={<ChatMain />} />
         <Route path="/sign" element={<Sign />} />
       </Routes>
     </Router>
   );
 }
-
+function Home() {
+  React.useEffect(() => {
+    const lang = window.localStorage.getItem('lang');
+    if (!lang) window.localStorage.setItem('lang', 'vn');
+  }, []);
+  return (
+    <Provider store={store}>
+      <SocketProvider>
+        <HomePage />
+      </SocketProvider>
+    </Provider>
+  );
+}
 function ChatMain() {
   React.useEffect(() => {
     const lang = window.localStorage.getItem('lang');

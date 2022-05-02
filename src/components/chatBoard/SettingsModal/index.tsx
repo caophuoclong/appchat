@@ -8,6 +8,7 @@ import {
   setSelectedModal,
   setShowModalOptionFalse,
 } from '../../../reducers/globalSlice';
+import { useNavigate } from 'react-router-dom';
 export interface ISettingModalProps {}
 
 const Button = (props: {
@@ -18,9 +19,7 @@ const Button = (props: {
   return (
     <button
       onClick={props.onClick}
-      className={`flex my-2 gap-4 ${
-        props.className ? props.className : ''
-      }`}
+      className={`flex my-2 gap-4 ${props.className ? props.className : ''}`}
     >
       {props.children}
     </button>
@@ -33,12 +32,10 @@ export function SettingModal(props: ISettingModalProps) {
   const handleCloseModal = () => {
     dispatch(setShowModalOptionFalse());
   };
+  const navigate = useNavigate();
   return (
     <>
-      <Button
-        onClick={handleCloseModal}
-        className="mr-0 ml-auto my-0 absolute right-4"
-      >
+      <Button onClick={handleCloseModal} className="mr-0 ml-auto my-0 absolute right-4">
         <FaTimes size="24px" />
       </Button>
       <Button
@@ -47,9 +44,7 @@ export function SettingModal(props: ISettingModalProps) {
         }}
       >
         <BiUser size="24px" />
-        <p>
-          {lang === 'en' ? 'Information' : 'Thông tin người dùng'}
-        </p>
+        <p>{lang === 'en' ? 'Information' : 'Thông tin người dùng'}</p>
       </Button>
       <Button
         onClick={() => {
@@ -70,7 +65,7 @@ export function SettingModal(props: ISettingModalProps) {
       <Button
         onClick={() => {
           window.localStorage.removeItem('access_token');
-          window.location.reload();
+          navigate('/');
         }}
         className="mt-12 mb-0"
       >

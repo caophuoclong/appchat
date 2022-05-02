@@ -7,6 +7,7 @@ import { SearchBox } from './SearchBox';
 import { User } from './User';
 import Notification from './notification';
 import ShowFriends from './ShowFriends';
+import { Link } from 'react-router-dom';
 export interface ILeftBarProps {}
 
 export function LeftBar(props: ILeftBarProps) {
@@ -54,7 +55,7 @@ export function LeftBar(props: ILeftBarProps) {
           height: '90%',
         }}
       >
-        <div className="flex flex-col gap-2">
+        <Link to="/" className="flex flex-col gap-2">
           <Logo className="flex items-center m-6 mr-3 mb-2 mt-4" />
           <p className="text-2xl font-semibold m-6 mr-3  my-0">
             {lang === 'en' ? 'Message' : 'Tin nhắn'}
@@ -64,7 +65,7 @@ export function LeftBar(props: ILeftBarProps) {
             <ShowFriends />
             <Notification />
           </div>
-        </div>
+        </Link>
         <ListFriend searchListFriend={resultSearch} className="mt-4 overflow-auto h-4/5" />
       </div>
       <div className="flex items-center bg-white  shadow-md mt-auto py-2">

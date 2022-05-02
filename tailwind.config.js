@@ -34,7 +34,7 @@ module.exports = {
       },
       height: {
         "90": "90%",
-        "10": "10%",
+        // "10": "10%",
         "75": "75%",
         "85": "85%",
         "10r": "2.5rem",
@@ -50,5 +50,10 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require("tailwind-scrollbar")
+  ],
+  variants: {
+    scrollbar: ['rounded']
+  }
 }

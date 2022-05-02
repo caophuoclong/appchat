@@ -14,10 +14,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-html,body{
+/* html,body{
   width: 100vw;
   overflow: hidden;
-}
+} */
 input[type='radio'] + label span {
   transition: background 0.2s, transform 0.2s;
 }
@@ -38,4 +38,30 @@ input[type='radio']:checked + label {
 select{
   appearance: none;
 
+}
+@keyframes border_anim {
+	0%{
+		width: 60%;
+	}
+	100%{
+		width: 100%;
+	}
+}
+.active{
+  border-bottom: 1px solid ;
+  border-top: 1px solid;
+  border-color: rgb(156, 153, 175);
+  border-left: 2px solid rgb(59 130 246);
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding-left: 32px  !important;
+  padding-right: 32px !important;
+  background-color: rgb(229 231 235);
+}
+
+.sidebar {
+    position: sticky;
+    top: 12vh;
+    height: 90vh;
+    box-sizing: border-box;
 }
