@@ -1,7 +1,12 @@
+import { unwrapResult } from '@reduxjs/toolkit';
 import React from 'react';
 import { IoIosMore } from 'react-icons/io';
+import { SocketContext } from '../../../../context/socket';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { showMessageModal } from '../../../../reducers/globalSlice';
+import { getMessages } from '../../../../reducers/message';
+import { handleChooseFriend, makeUnReadMessagesEmpty } from '../../../../reducers/userSlice';
+import { sortConversationByLatest } from '../../../../utils/sortConversationByLatest';
 type Props = {
   className?: string;
 };
@@ -9,18 +14,35 @@ function ContactItem({
   numberUnRead,
   imgUrl,
   name,
+  id,
 }: {
   numberUnRead?: number;
   imgUrl?: string;
   name?: string;
+  id: string;
 }) {
   const dispatch = useAppDispatch();
-  const handleChangeShowMessageModal = (event: React.MouseEvent<HTMLDivElement>) => {
+  const messageList = useAppSelector((state) => state.messages.messagesList);
+  const handleChangeShowMessageModal = async (event: React.MouseEvent<HTMLDivElement>) => {
     console.log(event.currentTarget.tagName);
+    dispatch(handleChooseFriend({ conversationId: id }));
     if (event.currentTarget.tagName === 'DIV') {
       dispatch(showMessageModal());
     }
+    dispatch(makeUnReadMessagesEmpty({ conversationId: id }));
+
+    if (!Object.keys(messageList).includes(id)) {
+      const result = await dispatch(
+        getMessages({
+          id: id,
+          page: 1,
+        })
+      );
+      const unwrap = unwrapResult(result);
+      console.log(unwrap);
+    }
   };
+
   const handleMoreClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     console.log('!23123123');
@@ -40,9 +62,10 @@ function ContactItem({
             {numberUnRead <= 5 ? numberUnRead : '5+'}
           </div>
         ) : (
-          <button onClick={handleMoreClick} className="py-1px px-1 border rounded-lg" title="More">
-            <IoIosMore size="24px" />
-          </button>
+          <></>
+          // <button onClick={handleMoreClick} className="py-1px px-1 border rounded-lg" title="More">
+          //   <IoIosMore size="24px" />
+          // </button>
         )}
       </div>
     </div>
@@ -67,45 +90,39 @@ export default function Contacts({ className }: Props) {
         style={{ height: '90%' }}
       >
         {conversations &&
-          [...conversations]
-            .sort((a, b) => {
-              if (!a.latest) return -1;
-              if (!b.latest) return -1;
+          sortConversationByLatest(conversations).map((conversation, index) => {
+            if (conversation.type === 'direct') {
               return (
-                new Date(b.latest.createAt!).getTime() - new Date(a.latest.createAt!).getTime()
+                <ContactItem
+                  key={index}
+                  imgUrl={conversation.participants.filter((u) => u._id !== user._id)[0].imgUrl}
+                  name={conversation.participants.filter((u) => u._id !== user._id)[0].name}
+                  id={conversation._id}
+                  numberUnRead={(() =>
+                    conversation.unreadmessages
+                      ? conversation.unreadmessages.filter(
+                          (message) => message.senderId !== user._id
+                        ).length
+                      : 0)()}
+                />
               );
-            })
-            .map((conversation, index) => {
-              if (conversation.type === 'direct') {
-                return (
+            } else if (conversation.type === 'group') {
+              return (
+                (
                   <ContactItem
                     key={index}
-                    imgUrl={conversation.participants.filter((u) => u._id !== user._id)[0].imgUrl}
-                    name={conversation.participants.filter((u) => u._id !== user._id)[0].name}
-                    numberUnRead={(() =>
-                      conversation.unreadmessages
-                        ? conversation.unreadmessages.filter(
-                            (message) => message.senderId !== user._id
-                          ).length
-                        : 0)()}
+                    id={conversation._id}
+                    numberUnRead={
+                      conversation.groupUnRead?.filter((cc) => cc.user === user._id)[0]?.messages
+                        .length
+                    }
+                    imgUrl={conversation.imgUrl}
+                    name={conversation.name}
                   />
-                );
-              } else if (conversation.type === 'group') {
-                return (
-                  (
-                    <ContactItem
-                      key={index}
-                      numberUnRead={
-                        conversation.groupUnRead?.filter((cc) => cc.user === user._id)[0].messages
-                          .length
-                      }
-                      imgUrl={conversation.imgUrl}
-                      name={conversation.name}
-                    />
-                  ) || <></>
-                );
-              }
-            })}
+                ) || <></>
+              );
+            }
+          })}
       </div>
     </div>
   );

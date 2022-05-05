@@ -8,17 +8,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sign from './components/SignUpAndSignIn';
 import HomePage from './components/HomePage';
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/messages/:id" element={<ChatMain />} />
-        <Route path="/sign" element={<Sign />} />
-      </Routes>
-    </Router>
-  );
-}
-function Home() {
   React.useEffect(() => {
     const lang = window.localStorage.getItem('lang');
     if (!lang) window.localStorage.setItem('lang', 'vn');
@@ -26,23 +15,35 @@ function Home() {
   return (
     <Provider store={store}>
       <SocketProvider>
-        <HomePage />
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/messages/:id" element={<Chat />} />
+            <Route path="/sign" element={<Sign />} />
+          </Routes>
+        </Router>
       </SocketProvider>
     </Provider>
   );
 }
-function ChatMain() {
-  React.useEffect(() => {
-    const lang = window.localStorage.getItem('lang');
-    if (!lang) window.localStorage.setItem('lang', 'vn');
-  }, []);
-  return (
-    <Provider store={store}>
-      <SocketProvider>
-        <Chat />
-      </SocketProvider>
-    </Provider>
-  );
-}
+// function Home() {
+
+//   return (
+
+//   );
+// }
+// function ChatMain() {
+//   React.useEffect(() => {
+//     const lang = window.localStorage.getItem('lang');
+//     if (!lang) window.localStorage.setItem('lang', 'vn');
+//   }, []);
+//   return (
+//     <Provider store={store}>
+//       <SocketProvider>
+//         <Chat />
+//       </SocketProvider>
+//     </Provider>
+//   );
+// }
 
 export default App;

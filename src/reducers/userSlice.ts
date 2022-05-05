@@ -284,11 +284,10 @@ export const userSlice = createSlice({
         addConversation: (state: UserState, action: PayloadAction<IConversation>) => {
             state.conversations!.push(action.payload);
         }
-
     },
     extraReducers: (builder) => {
         builder.addCase(getMe.pending, (state, action) => {
-            state.loading = true;
+            state.loading = false;
         });
         builder.addCase(getMe.fulfilled, (state, action) => {
             if (action.payload) {

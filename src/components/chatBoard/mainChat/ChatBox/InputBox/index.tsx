@@ -90,7 +90,7 @@ export function InputBox(props: IInputBoxProps) {
       )}
 
       <PreviewImage />
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-2 items-center">
         <input
           type="file"
           id="choosePictureFile"

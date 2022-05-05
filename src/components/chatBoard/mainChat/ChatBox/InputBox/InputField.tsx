@@ -32,9 +32,9 @@ export function InputField() {
   const participants = conversations!.find(
     (conversation) => conversation._id === conversationId
   )?.participants;
-  const typeOfConversation = conversations!.find(
+  const typeOfConversation = conversations?.find(
     (conversation) => conversation._id === conversationId
-  )!.type;
+  )?.type;
 
   const user = useAppSelector((state) => state.user);
   const lang = useAppSelector((state) => state.global.language);
@@ -82,7 +82,7 @@ export function InputField() {
       const message: IMessage = {
         text: text,
         senderId: userState._id,
-        createAt: new Date().toString(),
+        createAt: new Date().toISOString(),
         type: 'text',
       };
       dispatch(addNewMessage({ message, conversationId }));
@@ -115,7 +115,7 @@ export function InputField() {
               const message: IMessage = {
                 text: url,
                 senderId: userState._id,
-                createAt: new Date().toString(),
+                createAt: new Date().toISOString(),
                 type: 'image',
               };
               dispatch(addNewMessage({ message, conversationId }));
@@ -175,7 +175,7 @@ export function InputField() {
     handleSend();
   };
   return (
-    <div className="mx-8 lg:px-6 px-2 border-collapse border border-glareGray200 rounded-full w-full relative flex items-center gap-x-2">
+    <div className="mx-2 lg:px-6 px-2 border-collapse border border-glareGray200 rounded-full w-full relative flex items-center gap-x-2">
       <input
         type="text"
         className="text-black placeholder:text-glareGray500 px-1 py-1 outline-none bg-transparent w-full"

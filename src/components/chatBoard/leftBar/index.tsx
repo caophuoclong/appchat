@@ -57,15 +57,15 @@ export function LeftBar(props: ILeftBarProps) {
       >
         <Link to="/" className="flex flex-col gap-2">
           <Logo className="flex items-center m-6 mr-3 mb-2 mt-4" />
-          <p className="text-2xl font-semibold m-6 mr-3  my-0">
-            {lang === 'en' ? 'Message' : 'Tin nhắn'}
-          </p>
-          <SearchBox onSearch={handleSearch} className="mx-4" />
-          <div className="flex justify-end my-0">
-            <ShowFriends />
-            <Notification />
-          </div>
         </Link>
+        <p className="text-2xl font-semibold m-6 mr-3  my-0">
+          {lang === 'en' ? 'Message' : 'Tin nhắn'}
+        </p>
+        <SearchBox onSearch={handleSearch} className="mx-4" />
+        <div className="flex justify-end my-0">
+          <ShowFriends />
+          <Notification />
+        </div>
         <ListFriend searchListFriend={resultSearch} className="mt-4 overflow-auto h-4/5" />
       </div>
       <div className="flex items-center bg-white  shadow-md mt-auto py-2">

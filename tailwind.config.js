@@ -27,6 +27,7 @@ module.exports = {
       },
       maxWidth: {
         "1/2": "50%",
+        "3/4": "75%",
       },
       maxHeight: {
         "70": "70%",
@@ -47,6 +48,9 @@ module.exports = {
       },
       screen: {
         "phone": "640px",
+      },
+      padding: {
+        "1px": "1px"
       }
     },
   },

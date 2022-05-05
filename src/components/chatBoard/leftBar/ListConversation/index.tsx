@@ -1,8 +1,10 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { SocketContext } from '../../../../context/socket';
 import { useAppSelector } from '../../../../hook';
 import { IFriend } from '../../../../interface/IFriend';
 import { checkFriendOnline } from '../../../../utils';
+import { sortConversationByLatest } from '../../../../utils/sortConversationByLatest';
 import { DirectConversation } from './DirectConversation';
 import { GroupConversation } from './GroupConversation';
 
@@ -53,16 +55,13 @@ export function ListFriend(props: IListFriendProps) {
       {listConversation.length === 0 ? (
         <EmptySearchFriend />
       ) : (
-        [...listConversation]
-          .sort((a, b) => {
-            if (!a.latest) return -1;
-            if (!b.latest) return -1;
-            return new Date(b.latest.createAt!).getTime() - new Date(a.latest.createAt!).getTime();
-          })
-          .map((item, i) =>
-            item.type === 'group' ? (
+        sortConversationByLatest(listConversation).map((item, i) =>
+          item.type === 'group' ? (
+            <Link to={`/messages/${item._id}`}>
               <GroupConversation key={i} converstationInfor={item} />
-            ) : (
+            </Link>
+          ) : (
+            <Link to={`/messages/${item._id}`}>
               <DirectConversation
                 key={i}
                 converstationInfor={item}
@@ -71,8 +70,9 @@ export function ListFriend(props: IListFriendProps) {
                     ? item.unreadmessages.filter((message) => message.senderId !== user._id).length
                     : 0)()}
               />
-            )
+            </Link>
           )
+        )
       )}
     </div>
   );

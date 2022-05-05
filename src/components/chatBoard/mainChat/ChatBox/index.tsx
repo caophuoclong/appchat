@@ -8,8 +8,13 @@ import { unwrapResult } from '@reduxjs/toolkit';
 export interface IChatProps {
   className: string;
 }
-
-export function Chat(props: IChatProps) {
+export const ComponentScroll = ({
+  children,
+  className,
+}: {
+  children: JSX.Element;
+  className?: string;
+}) => {
   const messages = React.useRef<HTMLDivElement>(null);
   const [isScroll, setIsScroll] = React.useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -33,7 +38,7 @@ export function Chat(props: IChatProps) {
     if (e.scrollHeight - e.scrollTop >= e.clientHeight + 400) setIsScroll(true);
     else setIsScroll(false);
     if (e.scrollTop === 0) {
-      if (getMessage.messagesList[conversationId].isMore) {
+      if (getMessage.messagesList[conversationId]?.isMore) {
         dispatch(setLoadingMessage());
         const result = await dispatch(
           getMessages({
@@ -48,16 +53,18 @@ export function Chat(props: IChatProps) {
     }
   };
   return (
+    <div onScroll={handleScroll} ref={messages} id="messagesList" className={`${className}`}>
+      {children}
+    </div>
+  );
+};
+export function Chat(props: IChatProps) {
+  return (
     <div className={props.className}>
       <ChatHeader className="lg:px-9 px-4 py-3" />
-      <div
-        onScroll={handleScroll}
-        ref={messages}
-        id="messagesList"
-        className="h-85 overflow-auto relative"
-      >
+      <ComponentScroll className="h-85 overflow-auto relative">
         <MessageList />
-      </div>
+      </ComponentScroll>
       <InputBox className="lg:px-9 px-2 py-5 mt-auto mr-0 relative" />
     </div>
   );

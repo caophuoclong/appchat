@@ -3,6 +3,6 @@ interface message {
     text: string,
     senderId: string,
     type: "image" | "text",
-    createAt?: Date | string,
+    createAt: Date | string,
 }
 export default message;

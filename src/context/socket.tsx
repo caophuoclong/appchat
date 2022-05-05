@@ -18,7 +18,8 @@ import {
 import { addNewMessage } from '../reducers/message';
 import { IConversation } from '../interface/IUser';
 export const SocketContext = React.createContext<Socket>({} as Socket);
-const Provider = (props: { children: JSX.Element }) => {
+const Provider = (props: { children: JSX.Element | JSX.Element[] }) => {
+  console.log('!23');
   const [socket, setSocket] = React.useState<Socket>({} as Socket);
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
@@ -44,6 +45,7 @@ const Provider = (props: { children: JSX.Element }) => {
     });
     socket.on('check_online', () => {});
     socket.on('receive_message', (data: string) => {
+      console.log(data);
       const { conversationId, message, type } = JSON.parse(data) as {
         conversationId: string;
         message: IMessage;
