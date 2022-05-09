@@ -1,6 +1,7 @@
 import { unwrapResult } from '@reduxjs/toolkit';
 import React from 'react';
 import { IoIosMore } from 'react-icons/io';
+import LoadingSkeleton from '../../../../Common/LoadingSkeleton';
 import { SocketContext } from '../../../../context/socket';
 import { useAppDispatch, useAppSelector } from '../../../../hook';
 import { showMessageModal } from '../../../../reducers/globalSlice';
@@ -71,8 +72,19 @@ function ContactItem({
     </div>
   );
 }
+const ContactItemLoading = () => {
+  return (
+    <div className="mb-2 rounded-lg p-2 flex gap-x-2">
+      <LoadingSkeleton className="w-10 h-10 rounded-lg"></LoadingSkeleton>
+      <p className="w-7/12 truncate text-sm font-bold">
+        <LoadingSkeleton className="w-[150px] h-[15px] mt-2"></LoadingSkeleton>
+      </p>
+    </div>
+  );
+};
 export default function Contacts({ className }: Props) {
   const user = useAppSelector((state) => state.user);
+  const isLoading = user.loading;
   const conversations = user.conversations;
   // console.log(conversations);
   // conversations?.map((conversation) => {
@@ -89,40 +101,44 @@ export default function Contacts({ className }: Props) {
         className="overflow-y-auto shadow-xl rounded-xl py-4 px-2 bg-white contactsItem scrollbar-thin scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full"
         style={{ height: '90%' }}
       >
-        {conversations &&
-          sortConversationByLatest(conversations).map((conversation, index) => {
-            if (conversation.type === 'direct') {
-              return (
-                <ContactItem
-                  key={index}
-                  imgUrl={conversation.participants.filter((u) => u._id !== user._id)[0].imgUrl}
-                  name={conversation.participants.filter((u) => u._id !== user._id)[0].name}
-                  id={conversation._id}
-                  numberUnRead={(() =>
-                    conversation.unreadmessages
-                      ? conversation.unreadmessages.filter(
-                          (message) => message.senderId !== user._id
-                        ).length
-                      : 0)()}
-                />
-              );
-            } else if (conversation.type === 'group') {
-              return (
-                (
+        {isLoading
+          ? Array(5)
+              .fill(0)
+              .map((item, index) => <ContactItemLoading key={index} />)
+          : conversations &&
+            sortConversationByLatest(conversations).map((conversation, index) => {
+              if (conversation.type === 'direct') {
+                return (
                   <ContactItem
                     key={index}
+                    imgUrl={conversation.participants.filter((u) => u._id !== user._id)[0].imgUrl}
+                    name={conversation.participants.filter((u) => u._id !== user._id)[0].name}
                     id={conversation._id}
-                    numberUnRead={
-                      conversation.groupUnRead?.filter((cc) => cc.user === user._id)[0]?.messages
-                        .length
-                    }
-                    imgUrl={conversation.imgUrl}
-                    name={conversation.name}
+                    numberUnRead={(() =>
+                      conversation.unreadmessages
+                        ? conversation.unreadmessages.filter(
+                            (message) => message.senderId !== user._id
+                          ).length
+                        : 0)()}
                   />
-                ) || <></>
-              );
-            }
-          })}
+                );
+              } else if (conversation.type === 'group') {
+                return (
+                  (
+                    <ContactItem
+                      key={index}
+                      id={conversation._id}
+                      numberUnRead={
+                        conversation.groupUnRead?.filter((cc) => cc.user === user._id)[0]?.messages
+                          .length
+                      }
+                      imgUrl={conversation.imgUrl}
+                      name={conversation.name}
+                    />
+                  ) || <></>
+                );
+              }
+            })}
       </div>
     </div>
   );

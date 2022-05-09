@@ -1,7 +1,7 @@
 import React from 'react';
 import PostType from '../../../interface/IPost';
 import MediaType from '../../../interface/IMedia';
-import Feed from './Feed';
+import Feed, { FeedLoading } from './Feed';
 import Post from './Post';
 import Story from './Story';
 
@@ -78,13 +78,21 @@ export default function Main({ className }: Props) {
       comment: ['123', '456', '789'],
     },
   ];
+  const [isLoading, setIsLoading] = React.useState(true);
+  React.useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+  }, []);
   return (
     <div className={`${className} w-3/5 mx-auto`}>
       <Story />
       <Post />
-      {newsFeed.map((feed, index) => (
-        <Feed key={index} {...feed} />
-      ))}
+      {isLoading
+        ? Array(Math.round(Math.random() * 4))
+            .fill(0)
+            .map((item, index) => <FeedLoading key={index} />)
+        : newsFeed.map((feed, index) => <Feed key={index} {...feed} />)}
     </div>
   );
 }

@@ -56,7 +56,6 @@ export default function HomePage({}: Props) {
   return (
     <div className="">
       <Header />
-      {loading && <FullPageLoading className="h-screen" />}
       <div className="grid grid-cols-10 gap-10 mx-8 grid-flow-col">
         <LeftBar className="col-span-2 sidebar mt-4" />
         <Main className="col-span-6 flex flex-col gap-y-10 pb-8" />

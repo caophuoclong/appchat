@@ -6,8 +6,47 @@ import ImageGrid from './ImagesGrid';
 import MediaType from '../../../../interface/IMedia';
 import Interaction from './Interaction';
 import DropInteract from './DropInteract';
-import Comment from './Comment';
+import Comment, { CommentLoading } from './Comment';
 import ReadMore from '../../../../Common/Readmore';
+import LoadingSkeleton from '../../../../Common/LoadingSkeleton';
+
+export function FeedLoading() {
+  return (
+    <div
+      className="py-6 flex flex-col gap-y-2 rounded-xl bg-white shadow-lg"
+      style={{
+        color: '#65676b',
+      }}
+    >
+      <div className="flex items-center gap-x-4 w-full px-6">
+        <LoadingSkeleton className="w-11 h-11 rounded-xl" />
+        <div>
+          <p className="font-bold text-black">
+            <LoadingSkeleton className="w-[100px] h-[16px]" />
+          </p>
+          <p style={{ color: '#D0D6DE' }}>
+            <LoadingSkeleton className="w-[45px] h-[12px]" />
+          </p>
+        </div>
+        <button className="p-1 px-2  rounded-lg border-2 ml-auto" style={{ padding: '1px 8px' }}>
+          <IoIosMore size="24px" />
+        </button>
+      </div>
+      <div className="px-6 text-black">
+        <LoadingSkeleton className="w-[150px] h-[20px]" />
+        <LoadingSkeleton className="w-[300px] h-[20px]" />
+        <LoadingSkeleton className="w-[270px] h-[20px]" />
+        <LoadingSkeleton className="w-[180px] h-[20px]" />
+        <LoadingSkeleton className="w-[90px] h-[20px]" />
+      </div>
+      <LoadingSkeleton className="w-full h-80" />
+
+      {/* <Interaction comment={comment} reaction={reaction} share={share} /> */}
+      <DropInteract />
+      <CommentLoading />
+    </div>
+  );
+}
 
 export default function Post({
   imgUrl,

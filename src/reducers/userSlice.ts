@@ -287,7 +287,7 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(getMe.pending, (state, action) => {
-            state.loading = false;
+            state.loading = true;
         });
         builder.addCase(getMe.fulfilled, (state, action) => {
             if (action.payload) {
@@ -308,6 +308,9 @@ export const userSlice = createSlice({
                 state.notifications = data.notifications!
             }
             state.loading = false;
+
+            // setTimeout(() => {
+            // }, 2000)
         });
 
         builder.addCase(getMe.rejected, (state, action) => {

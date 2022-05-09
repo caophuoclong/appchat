@@ -23,8 +23,6 @@ export function Chat(props: IChatProps) {
   const user = useAppSelector((state) => state.user);
   const conversations = useAppSelector((state) => state.user.conversations);
   const choosenFriend = useAppSelector((state) => state.user.choosenFriend);
-  const conversation = useAppSelector((state) => state.global.conversation);
-  const lang = useAppSelector((state) => state.global.language);
   const messages = useAppSelector((state) => state.messages.messagesList);
   const isShowGroupDetail = useAppSelector((state) => state.global.showGroupDetail);
   const { id } = useParams();
